@@ -5,6 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession } from "next-auth/react";
+import { useCart } from "@/lib/CartContext";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const sidebarCategories = [
   { 
@@ -44,10 +47,6 @@ const sidebarCategories = [
   }
 ];
 
-import { useSession } from "next-auth/react";
-import { useCart } from "@/lib/CartContext";
-import { useRouter, useSearchParams } from "next/navigation";
-
 export default function Navbar() {
   const { data: session } = useSession();
   const { cartCount } = useCart();
@@ -75,7 +74,6 @@ export default function Navbar() {
     };
     window.addEventListener("scroll", handleScroll);
     
-    // Body scroll lock for mobile menu
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -89,8 +87,8 @@ export default function Navbar() {
   }, [isMobileMenuOpen]);
 
   return (
-    <nav className="w-full z-[100] flex flex-col">
-      {/* 1. Motta Top Bar */}
+    <nav className="w-full z-[100] flex flex-col kill-scroll">
+      {/* 1. Motta Top Bar (Hidden on Mobile) */}
       <div className="bg-[#021D24] text-white/50 py-3 border-b border-white/5 hidden md:flex justify-between items-center text-[10px] font-black uppercase">
         <div className="responsive-container flex justify-between items-center w-full">
           <div className="flex gap-10 items-center">
@@ -134,24 +132,35 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* 2. Main Navigation */}
+      {/* 2. Main Navigation (Center-First on Mobile) */}
       <div className={cn(
-        "bg-white transition-all duration-700 w-full z-[100]",
-        isScrolled ? "fixed top-0 left-0 right-0 py-3 md:py-4 shadow-lg glass border-b border-white/50" : "py-6 md:py-10"
+        "bg-white transition-all duration-700 w-full z-[100] kill-scroll",
+        isScrolled ? "fixed top-0 left-0 right-0 py-2 md:py-4 shadow-lg glass border-b border-white/50" : "py-3 md:py-10"
       )}>
-        <div className="responsive-container flex items-center justify-between gap-4 md:gap-16">
-          <Link href="/" className="flex items-center gap-4 md:gap-8 flex-shrink-0 group">
-            <div className="relative w-12 h-12 md:w-24 md:h-24 overflow-hidden rounded-2xl md:rounded-[2rem] bg-white border-2 border-border/5 shadow-xl md:shadow-2xl group-hover:scale-105 transition-all p-2 md:p-3 ring-4 md:ring-[12px] ring-muted/20">
+        <div className="responsive-container flex items-center justify-center md:justify-between gap-4 md:gap-16 relative">
+          
+          {/* Mobile Menu Icon (Absolute Start) */}
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)} 
+            className="lg:hidden absolute left-4 md:left-8 w-10 h-10 bg-muted rounded-xl flex items-center justify-center hover:bg-[#1089A4] hover:text-white transition-all group"
+          >
+            <span className="material-symbols-rounded text-xl">segment</span>
+          </button>
+
+          {/* Logo (Centered on Mobile) */}
+          <Link href="/" className="flex items-center gap-2 md:gap-8 flex-shrink-0 group">
+            <div className="relative w-10 h-10 md:w-24 md:h-24 overflow-hidden rounded-xl md:rounded-[2rem] bg-white border-2 border-border/5 shadow-xl md:shadow-2xl group-hover:scale-105 transition-all p-1.5 md:p-3 ring-2 md:ring-[12px] ring-muted/20">
                <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
             </div>
             {!isScrolled && (
-              <div className="flex flex-col gap-1 md:gap-2">
-                <span className="text-xl md:text-4xl font-black tracking-tighter text-[#021D24] uppercase leading-none font-heading">Mersal</span>
-                <span className="text-[8px] md:text-[11px] text-[#F29124] font-black uppercase leading-none">Marketplace</span>
+              <div className="flex flex-col gap-0 md:gap-2">
+                <span className="text-sm md:text-4xl font-black tracking-tighter text-[#021D24] uppercase leading-none font-heading">Mersal</span>
+                <span className="text-[6px] md:text-[11px] text-[#F29124] font-black uppercase leading-none">Marketplace</span>
               </div>
             )}
           </Link>
 
+          {/* Desktop Search Bar */}
           <div className={cn(
             "hidden lg:flex flex-grow max-w-[900px] rounded-full border-4 transition-all duration-500",
             isScrolled ? "bg-white border-[#1089A4]/10 shadow-lg" : "bg-muted border-transparent"
@@ -175,15 +184,17 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div className="flex items-center gap-4 md:gap-14">
+          {/* Desktop/Mobile Right Controls */}
+          <div className="flex items-center gap-3 md:gap-14 absolute right-4 md:right-auto md:relative">
             {/* Mobile Search Toggle */}
             <button 
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="lg:hidden w-12 h-12 flex items-center justify-center rounded-2xl bg-muted text-[#1089A4] hover:bg-[#1089A4] hover:text-white transition-all"
+              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-muted text-[#1089A4] hover:bg-[#1089A4] hover:text-white transition-all shadow-sm"
             >
-              <span className="material-symbols-rounded text-2xl">{isSearchOpen ? 'close' : 'search'}</span>
+              <span className="material-symbols-rounded text-xl">{isSearchOpen ? 'close' : 'search'}</span>
             </button>
 
+            {/* Profile (Desktop Only) */}
             <Link href={session ? "/profile" : "/login"} className="hidden md:flex flex-col items-center gap-3 text-[#021D24]/40 hover:text-[#1089A4] transition-all group">
               {session?.user?.image ? (
                 <div className="relative w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border-2 border-border/20 group-hover:border-[#1089A4] transition-all">
@@ -194,42 +205,41 @@ export default function Navbar() {
               )}
               <span className="text-[10px] md:text-[11px] font-black uppercase">{session ? "حسابي" : "دخول"}</span>
             </Link>
-            <div className="flex items-center gap-4 md:gap-14 border-l-2 border-border/50 pl-4 md:pl-14">
+
+            {/* Cart Link (Desktop Only - Mobile uses Floating Nav) */}
+            <div className="hidden sm:flex items-center gap-4 md:gap-14 border-l-2 border-border/50 pl-4 md:pl-14">
               <Link href="/cart" className="relative group transition-all">
                 <span className="material-symbols-rounded text-3xl md:text-4xl text-[#1089A4] group-hover:scale-125 transition-all">shopping_cart</span>
                 <span className="absolute -top-2 -right-2 md:-top-4 md:-right-4 bg-[#F29124] text-[#021D24] text-[8px] md:text-[12px] font-black w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center border-4 md:border-[6px] border-white shadow-2xl">{cartCount}</span>
               </Link>
             </div>
-            <button onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden w-12 h-12 bg-muted rounded-2xl flex items-center justify-center hover:bg-[#1089A4] hover:text-white transition-all group">
-              <span className="material-symbols-rounded text-3xl">segment</span>
-            </button>
           </div>
         </div>
 
-        {/* Mobile Search Bar Expandable */}
+        {/* Mobile Search Bar Expansion */}
         <AnimatePresence>
           {isSearchOpen && (
             <motion.div 
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="lg:hidden overflow-hidden bg-white border-t border-border/5"
+              className="lg:hidden overflow-hidden bg-white border-t border-border/5 kill-scroll"
             >
               <div className="p-4 py-6">
-                <div className="relative flex items-center bg-muted rounded-3xl p-2 border-2 border-transparent focus-within:border-[#1089A4]/20 transition-all">
+                <div className="relative flex items-center bg-muted rounded-[2rem] p-2 border-2 border-[#1089A4]/10 focus-within:border-[#1089A4] transition-all">
                    <input 
                     type="text" 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                     placeholder="ابحث عن أجهزة، عطور، أو ملابس..." 
-                    className="flex-grow px-6 bg-transparent outline-none text-base font-bold text-[#021D24] placeholder:text-[#021D24]/20"
+                    className="flex-grow px-6 bg-transparent outline-none text-sm font-bold text-[#021D24] placeholder:text-[#021D24]/20"
                    />
                    <button 
                     onClick={handleSearch}
-                    className="bg-[#1089A4] text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg active:scale-95"
+                    className="bg-[#1089A4] text-white w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg active:scale-95"
                    >
-                     <span className="material-symbols-rounded text-xl">search</span>
+                     <span className="material-symbols-rounded text-lg">search</span>
                    </button>
                 </div>
               </div>
@@ -238,9 +248,9 @@ export default function Navbar() {
         </AnimatePresence>
       </div>
 
-      {/* 3. Elite Bottom Tier with Department Mega Menu */}
+      {/* 3. Bottom Tier (Desktop Only) */}
       <div className={cn(
-        "bg-white border-t border-border/50 py-5 transition-all duration-700 relative hidden lg:block",
+        "bg-white border-t border-border/50 py-5 transition-all duration-700 relative hidden lg:block kill-scroll",
         isScrolled && "opacity-0 h-0 p-0 overflow-hidden"
       )}>
         <div className="responsive-container flex items-center justify-between">
@@ -253,10 +263,8 @@ export default function Navbar() {
                 <span className="material-symbols-rounded text-xl">menu</span> كـافـة الأقـسـام
               </button>
 
-              {/* Department Wall - Mega Menu Synthesis */}
               <div className="absolute top-full right-0 mt-2 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none group-hover:pointer-events-auto flex z-[200]">
                  <div className="bg-white rounded-[3rem] shadow-[0_50px_100px_rgba(0,0,0,0.15)] border-4 border-white flex overflow-hidden">
-                    {/* Sidebar Sidebar */}
                     <div className="w-[300px] bg-muted/30 border-l-2 border-border/10 py-10">
                        {sidebarCategories.map((cat, i) => (
                          <div 
@@ -276,7 +284,6 @@ export default function Navbar() {
                        ))}
                     </div>
 
-                    {/* Content Hub */}
                     <AnimatePresence mode="wait">
                       {hoveredCategory && (
                         <motion.div 
@@ -318,20 +325,20 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* 4. Mobile Overlay */}
+      {/* 4. Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div initial={{ opacity: 0, x: "100%" }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: "100%" }} className="fixed inset-0 z-[300] bg-[#021D24]/10 backdrop-blur-3xl flex justify-end lg:hidden overflow-hidden">
-            <div className="w-[85%] max-w-[450px] bg-white h-full shadow-[-40px_0_80px_rgba(0,0,0,0.1)] flex flex-col p-12 overflow-y-auto">
-               <div className="flex items-center justify-between mb-16">
-                  <span className="text-3xl font-black text-[#1089A4] font-heading uppercase">Menu</span>
-                  <button onClick={() => setIsMobileMenuOpen(false)} className="w-14 h-14 bg-muted rounded-2xl flex items-center justify-center text-[#021D24]/30"><span className="material-symbols-rounded">close</span></button>
+            <div className="w-[85%] max-w-[450px] bg-white h-full shadow-[-40px_0_80px_rgba(0,0,0,0.1)] flex flex-col p-10 overflow-y-auto">
+               <div className="flex items-center justify-between mb-12">
+                  <span className="text-2xl font-black text-[#1089A4] font-heading uppercase">Menu</span>
+                  <button onClick={() => setIsMobileMenuOpen(false)} className="w-12 h-12 bg-muted rounded-2xl flex items-center justify-center text-[#021D24]/30"><span className="material-symbols-rounded">close</span></button>
                </div>
                <nav className="space-y-4">
                   <MobileNavItem icon="home" label="الرئيسية" href="/" onClick={() => setIsMobileMenuOpen(false)} />
                   <MobileNavItem icon="shopping_bag" label="المتجر العام" href="/shop" onClick={() => setIsMobileMenuOpen(false)} />
                   <MobileNavItem icon="bolt" label="عروض مرسال" href="/offers" onClick={() => setIsMobileMenuOpen(false)} />
-                  <div className="h-px bg-border/40 my-10" />
+                  <div className="h-px bg-border/40 my-8" />
                   <MobileNavItem icon="account_circle" label="حسابي" href="/login" onClick={() => setIsMobileMenuOpen(false)} />
                </nav>
             </div>
@@ -344,9 +351,9 @@ export default function Navbar() {
 
 function MobileNavItem({ icon, label, href, onClick }: any) {
   return (
-    <Link href={href} onClick={onClick} className="flex items-center gap-6 p-6 bg-muted/30 rounded-[2rem] border-2 border-transparent hover:border-[#1089A4]/20 transition-all group">
-      <span className="material-symbols-rounded text-2xl text-[#021D24]/20 group-hover:text-[#1089A4]">{icon}</span>
-      <span className="text-[13px] font-black text-[#021D24] uppercase">{label}</span>
+    <Link href={href} onClick={onClick} className="flex items-center gap-6 p-5 bg-muted/30 rounded-[1.5rem] border-2 border-transparent hover:border-[#1089A4]/20 transition-all group">
+      <span className="material-symbols-rounded text-xl text-[#021D24]/20 group-hover:text-[#1089A4]">{icon}</span>
+      <span className="text-[12px] font-black text-[#021D24] uppercase">{label}</span>
     </Link>
   );
 }

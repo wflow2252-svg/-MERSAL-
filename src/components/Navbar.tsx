@@ -91,43 +91,45 @@ export default function Navbar() {
   return (
     <nav className="w-full z-[100] flex flex-col">
       {/* 1. Motta Top Bar */}
-      <div className="bg-[#021D24] text-white/50 py-3 px-12 border-b border-white/5 hidden md:flex justify-between items-center text-[10px] font-black uppercase">
-        <div className="flex gap-10 items-center">
-          <span className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer group">
-            <span className="material-symbols-rounded text-sm text-[#1089A4] group-hover:scale-110 transition-transform">call</span> 0900000000
-          </span>
-          <span className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer group">
-            <span className="material-symbols-rounded text-sm text-[#F29124] group-hover:scale-110 transition-transform">location_on</span> الخرطوم، السودان
-          </span>
-        </div>
-        <div className="flex gap-10 items-center">
-          <Link href="/vendor/register" className="text-[#F29124] hover:brightness-125 transition-all animate-pulse">كن مورداً معنا</Link>
-          <div className="w-px h-3 bg-white/10" />
-          <div className="relative">
-            <div 
-              className="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors"
-              onClick={() => setIsLangOpen(!isLangOpen)}
-            >
-              <span>العربية</span>
-              <span className={cn("material-symbols-rounded text-[14px] transition-transform", isLangOpen && "rotate-180")}>expand_more</span>
+      <div className="bg-[#021D24] text-white/50 py-3 border-b border-white/5 hidden md:flex justify-between items-center text-[10px] font-black uppercase">
+        <div className="responsive-container flex justify-between items-center w-full">
+          <div className="flex gap-10 items-center">
+            <span className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer group">
+              <span className="material-symbols-rounded text-sm text-[#1089A4] group-hover:scale-110 transition-transform">call</span> 0900000000
+            </span>
+            <span className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer group">
+              <span className="material-symbols-rounded text-sm text-[#F29124] group-hover:scale-110 transition-transform">location_on</span> الخرطوم، السودان
+            </span>
+          </div>
+          <div className="flex gap-10 items-center">
+            <Link href="/vendor/register" className="text-[#F29124] hover:brightness-125 transition-all animate-pulse">كن مورداً معنا</Link>
+            <div className="w-px h-3 bg-white/10" />
+            <div className="relative">
+              <div 
+                className="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors"
+                onClick={() => setIsLangOpen(!isLangOpen)}
+              >
+                <span>العربية</span>
+                <span className={cn("material-symbols-rounded text-[14px] transition-transform", isLangOpen && "rotate-180")}>expand_more</span>
+              </div>
+              
+              <AnimatePresence>
+                {isLangOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full right-0 mt-4 bg-[#021D24] border border-white/10 rounded-2xl p-4 shadow-3xl z-[300] min-w-[150px] overflow-hidden"
+                  >
+                     {["العربية", "English"].map((lang) => (
+                       <div key={lang} className="p-3 hover:bg-white/5 rounded-xl cursor-pointer text-[10px] font-black text-white/40 hover:text-white transition-all flex items-center justify-between">
+                          {lang} {lang === "العربية" && <span className="material-symbols-rounded text-xs text-[#F29124]">check</span>}
+                       </div>
+                     ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-            
-            <AnimatePresence>
-              {isLangOpen && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full right-0 mt-4 bg-[#021D24] border border-white/10 rounded-2xl p-4 shadow-3xl z-[300] min-w-[150px] overflow-hidden"
-                >
-                   {["العربية", "English"].map((lang) => (
-                     <div key={lang} className="p-3 hover:bg-white/5 rounded-xl cursor-pointer text-[10px] font-black text-white/40 hover:text-white transition-all flex items-center justify-between">
-                        {lang} {lang === "العربية" && <span className="material-symbols-rounded text-xs text-[#F29124]">check</span>}
-                     </div>
-                   ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </div>
       </div>
@@ -135,9 +137,9 @@ export default function Navbar() {
       {/* 2. Main Navigation */}
       <div className={cn(
         "bg-white transition-all duration-700 w-full z-[100]",
-        isScrolled ? "fixed top-0 left-0 right-0 py-3 md:py-4 shadow-lg px-4 md:px-12 glass border-b border-white/50" : "py-6 md:py-10 px-4 md:px-12"
+        isScrolled ? "fixed top-0 left-0 right-0 py-3 md:py-4 shadow-lg glass border-b border-white/50" : "py-6 md:py-10"
       )}>
-        <div className="max-w-[1920px] mx-auto flex items-center justify-between gap-4 md:gap-16">
+        <div className="responsive-container flex items-center justify-between gap-4 md:gap-16">
           <Link href="/" className="flex items-center gap-4 md:gap-8 flex-shrink-0 group">
             <div className="relative w-12 h-12 md:w-24 md:h-24 overflow-hidden rounded-2xl md:rounded-[2rem] bg-white border-2 border-border/5 shadow-xl md:shadow-2xl group-hover:scale-105 transition-all p-2 md:p-3 ring-4 md:ring-[12px] ring-muted/20">
                <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
@@ -238,10 +240,10 @@ export default function Navbar() {
 
       {/* 3. Elite Bottom Tier with Department Mega Menu */}
       <div className={cn(
-        "bg-white border-t border-border/50 py-5 px-12 transition-all duration-700 relative hidden lg:block",
+        "bg-white border-t border-border/50 py-5 transition-all duration-700 relative hidden lg:block",
         isScrolled && "opacity-0 h-0 p-0 overflow-hidden"
       )}>
-        <div className="max-w-[1920px] mx-auto flex items-center justify-between">
+        <div className="responsive-container flex items-center justify-between">
           <div className="hidden lg:flex items-center gap-16 font-black text-[11px] uppercase text-[#021D24]/60">
             <div 
               className="relative group"

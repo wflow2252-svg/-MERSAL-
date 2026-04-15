@@ -5,9 +5,9 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#021D24] text-white pt-20 md:pt-32 pb-12 md:pb-16 px-6 md:px-12 mt-16 md:mt-24">
-      <div className="max-w-[1920px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 mb-24">
+    <footer className="bg-[#021D24] text-white pt-20 md:pt-32 pb-12 md:pb-16 mt-16 md:mt-24 overflow-hidden">
+      <div className="responsive-container">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 md:gap-20 mb-24">
           
           {/* Brand Pillar */}
           <div className="lg:col-span-4 space-y-10 flex flex-col items-center lg:items-end text-center lg:text-right">

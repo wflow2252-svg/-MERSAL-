@@ -41,8 +41,8 @@ const wallItems = [
 
 export default function CategoryWall() {
   return (
-    <section className="px-4 md:px-12 py-16 md:py-32 bg-white">
-      <div className="max-w-[1920px] mx-auto">
+    <section className="py-16 md:py-32 bg-white">
+      <div className="responsive-container">
         {/* Refined Header: Perfect Alignment */}
         <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 border-b border-border/10 pb-12">
            <div className="flex flex-col gap-4 text-right">

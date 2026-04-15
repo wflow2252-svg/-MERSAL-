@@ -31,8 +31,8 @@ export default function ProductTabHub() {
   ];
 
   return (
-    <section className="px-6 md:px-12 py-24 bg-white relative">
-      <div className="max-w-[1920px] mx-auto">
+    <section className="py-24 bg-white relative">
+      <div className="responsive-container">
         <div className="flex flex-col items-center text-center space-y-12 mb-20">
            <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.6em] text-[#1089A4]">
               <span className="w-8 h-8 rounded-full bg-[#F29124] animate-ping opacity-20 absolute" />

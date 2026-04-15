@@ -20,6 +20,9 @@
   /* Brand Gradients (Rich Aesthetics) */
   --gradient-teal: linear-gradient(135deg, #1089A4 0%, #086F85 100%);
   --gradient-orange: linear-gradient(135deg, #F29124 0%, #D47B1E 100%);
+  
+  /* Intelligent Fluid Spacing */
+  --fluid-px: clamp(1rem, 5vw, 3.5rem);
 }
 
 @theme inline {
@@ -41,6 +44,17 @@ body {
   letter-spacing: normal;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.responsive-container {
+  width: 100%;
+  max-width: 1920px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--fluid-px);
+  padding-right: var(--fluid-px);
 }
 
 /* Elite Arabic Reset: Stop letter separation */

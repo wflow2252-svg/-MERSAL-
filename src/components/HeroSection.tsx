@@ -27,8 +27,8 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="bg-white px-4 md:px-12 py-8 md:py-12 pt-32 md:pt-44">
-      <div className="max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <section className="bg-white py-8 md:py-12 pt-24 md:pt-44">
+      <div className="responsive-container flex flex-col lg:grid lg:grid-cols-12 gap-8 md:gap-12">
         
         {/* 1. Category Sidebar - Pixel-Perfect Motta Architecture */}
         <div className="lg:col-span-3 glass rounded-[4rem] border-4 border-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] overflow-hidden hidden lg:flex flex-col h-full min-h-[850px] relative z-20">
@@ -108,15 +108,15 @@ export default function HeroSection() {
                   نحن نجمع لك نخبة الموردين المعتمدين لنقدم لك تجربة تسوق تفوق التوقعات، بضمان حقيقي وجودة عالمية تصلك أينما كنت.
                </p>
                
-               {/* Fixed: CTA Buttons Side-by-Side & Centered */}
-               <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 w-full max-w-4xl">
-                  <Link href="/shop" className="w-full md:flex-1 max-w-[300px] bg-[#1089A4] text-white px-8 md:px-10 py-5 md:py-6 rounded-[2rem] md:rounded-[2.5rem] font-black text-[10px] md:text-xs uppercase tracking-[0.3em] md:tracking-[0.4em] shadow-xl hover:bg-[#F29124] hover:text-[#021D24] transition-all flex items-center justify-center gap-4 md:gap-6 border-b-8 border-black/20 group active:scale-95">
-                     تسوق الآن <span className="material-symbols-rounded group-hover:rotate-[-45deg] transition-all text-xl">trending_flat</span>
-                  </Link>
-                  <Link href="/offers" className="w-full md:flex-1 max-w-[300px] bg-white/5 backdrop-blur-3xl text-white border-2 border-white/20 px-8 md:px-10 py-5 md:py-6 rounded-[2rem] md:rounded-[2.5rem] font-black text-[10px] md:text-xs uppercase tracking-[0.3em] md:tracking-[0.4em] hover:bg-white hover:text-[#021D24] transition-all flex items-center justify-center gap-4 md:gap-6 group hover:border-white shadow-xl active:scale-95">
-                     عروض حصرية <span className="material-symbols-rounded text-[#F29124] group-hover:scale-125 transition-all text-xl">bolt</span>
-                  </Link>
-               </div>
+                {/* Fixed: CTA Buttons Side-by-Side & Centered */}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-8 w-full max-w-4xl px-4 md:px-0">
+                   <Link href="/shop" className="w-full sm:flex-1 max-w-[280px] md:max-w-[300px] bg-[#1089A4] text-white px-6 md:px-10 py-4 md:py-6 rounded-[2rem] md:rounded-[2.5rem] font-black text-[10px] md:text-xs uppercase shadow-xl hover:bg-[#F29124] hover:text-[#021D24] transition-all flex items-center justify-center gap-4 md:gap-6 border-b-8 border-black/20 group active:scale-95">
+                      تسوق الآن <span className="material-symbols-rounded group-hover:rotate-[-45deg] transition-all text-xl">trending_flat</span>
+                   </Link>
+                   <Link href="/offers" className="w-full sm:flex-1 max-w-[280px] md:max-w-[300px] bg-white/5 backdrop-blur-3xl text-white border-2 border-white/20 px-6 md:px-10 py-4 md:py-6 rounded-[2rem] md:rounded-[2.5rem] font-black text-[10px] md:text-xs uppercase hover:bg-white hover:text-[#021D24] transition-all flex items-center justify-center gap-4 md:gap-6 group hover:border-white shadow-xl active:scale-95">
+                      عروض حصرية <span className="material-symbols-rounded text-[#F29124] group-hover:scale-125 transition-all text-xl">bolt</span>
+                   </Link>
+                </div>
             </div>
 
             {/* Slider Controls - Smaller Arrows */}
@@ -137,7 +137,7 @@ export default function HeroSection() {
           </div>
 
           {/* Sub Elite Grid - Harmonized Image Banners */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
              <PremiumBanner 
                 title="أناقتك الفاخرة" 
                 sub="كوليكشن خريف 2024" 

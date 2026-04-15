@@ -24,27 +24,27 @@ export default function CampaignBar() {
       {/* Background Animated Pulse */}
       <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-white/10 animate-shimmer pointer-events-none" />
       
-      <div className="responsive-container flex flex-col md:flex-row items-center justify-center gap-6 md:gap-32 relative z-10">
-        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 text-center sm:text-right">
-           <span className="bg-[#F29124] text-[#021D24] px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-2xl border-4 border-white/10">عروض رمضان</span>
-           <p className="text-sm md:text-lg font-black leading-tight">
-              خصومات كفـرى تصل إلى <span className="text-[#F29124] text-xl md:text-2xl drop-shadow-lg">60%</span> <span className="text-[10px] md:text-sm text-white/60">على كافة الإلكترونيات الفاخرة</span>
+      <div className="responsive-container kill-scroll flex flex-col md:flex-row items-center justify-center gap-4 md:gap-32 relative z-10">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-8 text-center sm:text-right">
+           <span className="bg-[#F29124] text-[#021D24] px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-2xl border-2 border-white/10">عروض رمضان</span>
+           <p className="text-[12px] md:text-lg font-black leading-tight text-center md:text-right">
+              خصومات كفـرى تصل إلى <span className="text-[#F29124] text-lg md:text-2xl drop-shadow-lg">60%</span> <span className="hidden xs:inline text-[9px] md:text-sm text-white/60">على كافة الإلكترونيات الفاخرة</span>
            </p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
-           <div className="flex items-center gap-6 md:gap-8">
-              <span className="text-[10px] font-black text-white/40 uppercase hidden sm:inline">ينتهي خلال:</span>
-              <div className="flex items-center gap-4 md:gap-6 font-heading">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-16">
+           <div className="flex items-center gap-4 md:gap-8">
+              <span className="text-[9px] font-black text-white/40 uppercase hidden sm:inline">ينتهي خلال:</span>
+              <div className="flex items-center gap-3 md:gap-6 font-heading">
                  <TimeUnit value={timeLeft.hours} label="ساعة" />
-                 <span className="text-[#F29124] text-xl font-black animate-pulse">:</span>
+                 <span className="text-[#F29124] text-lg font-black animate-pulse">:</span>
                  <TimeUnit value={timeLeft.minutes} label="دقيقة" />
-                 <span className="text-[#F29124] text-xl font-black animate-pulse">:</span>
+                 <span className="text-[#F29124] text-lg font-black animate-pulse">:</span>
                  <TimeUnit value={timeLeft.seconds} label="ثانية" />
               </div>
            </div>
 
-           <Link href="/shop" className="bg-white text-[#1089A4] px-8 md:px-12 py-3 md:py-4 rounded-full text-[10px] md:text-xs font-black uppercase hover:bg-[#F29124] hover:text-[#021D24] transition-all shadow-2xl hover:scale-105 active:scale-95 border-b-4 border-black/10">
+           <Link href="/shop" className="bg-white text-[#1089A4] px-6 md:px-12 py-2.5 md:py-4 rounded-full text-[9px] md:text-xs font-black uppercase hover:bg-[#F29124] hover:text-[#021D24] transition-all shadow-2xl hover:scale-105 active:scale-95 border-b-2 border-black/10">
               تـسـوق الآن
            </Link>
         </div>

@@ -27,8 +27,8 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="bg-white py-8 md:py-12 pt-24 md:pt-44">
-      <div className="responsive-container flex flex-col lg:grid lg:grid-cols-12 gap-8 md:gap-12">
+    <section className="bg-white py-8 md:py-12 pt-24 md:pt-44 kill-scroll">
+      <div className="responsive-container flex flex-col lg:grid lg:grid-cols-12 gap-6 md:gap-12">
         
         {/* 1. Category Sidebar - Pixel-Perfect Motta Architecture */}
         <div className="lg:col-span-3 glass rounded-[4rem] border-4 border-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] overflow-hidden hidden lg:flex flex-col h-full min-h-[850px] relative z-20">
@@ -90,37 +90,26 @@ export default function HeroSection() {
               </motion.div>
             </AnimatePresence>
             
-            {/* Content Layer - Centered & Balanced */}
-            <div className="absolute inset-0 z-20 flex flex-col justify-center items-center text-center px-16 md:px-32">
-               <motion.div 
-                 initial={{ opacity: 0, y: 30 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 className="inline-flex items-center gap-4 bg-[#F29124] text-[#021D24] px-7 py-3 rounded-full text-[11px] font-black uppercase mb-12 shadow-2xl border-4 border-white/10"
-               >
-                 <span className="material-symbols-rounded text-lg">verified_user</span> رفاهية التسوق بضمان مرسال
-               </motion.div>
-               
-               <h1 className="text-4xl md:text-7xl lg:text-[8rem] font-black text-white leading-tight md:leading-[0.88] max-w-5xl tracking-tighter mb-8 md:mb-12 font-heading drop-shadow-2xl">
-                 اختر <span className="text-[#1089A4]">التميز</span> مع مرسال <span className="text-[#F29124]">.</span>
-               </h1>
-               
-               <p className="text-white/40 text-sm md:text-2xl font-medium max-w-3xl mb-10 md:mb-16 leading-relaxed font-body">
-                  نحن نجمع لك نخبة الموردين المعتمدين لنقدم لك تجربة تسوق تفوق التوقعات، بضمان حقيقي وجودة عالمية تصلك أينما كنت.
-               </p>
-               
-                {/* Fixed: CTA Buttons Side-by-Side & Centered */}
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-8 w-full max-w-4xl px-4 md:px-0">
-                   <Link href="/shop" className="w-full sm:flex-1 max-w-[280px] md:max-w-[300px] bg-[#1089A4] text-white px-6 md:px-10 py-4 md:py-6 rounded-[2rem] md:rounded-[2.5rem] font-black text-[10px] md:text-xs uppercase shadow-xl hover:bg-[#F29124] hover:text-[#021D24] transition-all flex items-center justify-center gap-4 md:gap-6 border-b-8 border-black/20 group active:scale-95">
-                      تسوق الآن <span className="material-symbols-rounded group-hover:rotate-[-45deg] transition-all text-xl">trending_flat</span>
-                   </Link>
-                   <Link href="/offers" className="w-full sm:flex-1 max-w-[280px] md:max-w-[300px] bg-white/5 backdrop-blur-3xl text-white border-2 border-white/20 px-6 md:px-10 py-4 md:py-6 rounded-[2rem] md:rounded-[2.5rem] font-black text-[10px] md:text-xs uppercase hover:bg-white hover:text-[#021D24] transition-all flex items-center justify-center gap-4 md:gap-6 group hover:border-white shadow-xl active:scale-95">
-                      عروض حصرية <span className="material-symbols-rounded text-[#F29124] group-hover:scale-125 transition-all text-xl">bolt</span>
-                   </Link>
-                </div>
+            <div className="absolute inset-0 z-20 flex flex-col justify-center items-center text-center px-4 md:px-32">
+                <p className="text-[#F29124] text-[9px] md:text-xs font-black uppercase tracking-[0.5em] mb-4 md:mb-8 animate-fade-in">Mersal Elite Luxury</p>
+                <h1 className="text-2xl md:text-8xl font-black text-white tracking-tighter mb-4 md:mb-12 leading-[1.1] md:leading-none font-heading max-w-5xl">
+                   اختر التميز مع مرسال
+                </h1>
+                <p className="text-white/40 text-[10px] md:text-lg max-w-2xl mb-6 md:mb-16 leading-relaxed font-black uppercase tracking-widest hidden xs:block">
+                   نحن نجمع لك نخبة الموردين المعتمدين لنقدم لك تجربة تسوق تفوق التوقعات، بضمان حقيقي وجودة عالمية تصلك أينما كنت.
+                </p>
+                
+                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-8 w-full max-w-4xl">
+                    <Link href="/shop" className="w-full sm:flex-1 max-w-[200px] md:max-w-[300px] bg-[#1089A4] text-white px-5 md:px-10 py-3 md:py-6 rounded-[2rem] md:rounded-[2.5rem] font-black text-[9px] md:text-xs uppercase shadow-xl hover:bg-[#F29124] hover:text-[#021D24] transition-all flex items-center justify-center gap-4 md:gap-6 border-b-4 md:border-b-8 border-black/20 group active:scale-95">
+                       تسوق الآن <span className="material-symbols-rounded group-hover:rotate-[-45deg] transition-all text-sm md:text-xl">trending_flat</span>
+                    </Link>
+                    <Link href="/offers" className="w-full sm:flex-1 max-w-[200px] md:max-w-[300px] bg-white/5 backdrop-blur-3xl text-white border-2 border-white/20 px-5 md:px-10 py-3 md:py-6 rounded-[2rem] md:rounded-[2.5rem] font-black text-[9px] md:text-xs uppercase hover:bg-white hover:text-[#021D24] transition-all flex items-center justify-center gap-4 md:gap-6 group hover:border-white shadow-xl active:scale-95">
+                       عروض حصرية <span className="material-symbols-rounded text-[#F29124] group-hover:scale-125 transition-all text-sm md:text-xl">bolt</span>
+                    </Link>
+                 </div>
             </div>
 
-            {/* Slider Controls - Smaller Arrows */}
-            <div className="absolute bottom-12 right-12 z-30 flex gap-4">
+            <div className="absolute bottom-6 md:bottom-12 right-6 md:right-12 z-30 flex gap-2 md:gap-4">
                <button 
                 onClick={() => setActiveSlide((prev) => (prev === 0 ? heroImages.length - 1 : prev - 1))}
                 className="w-14 h-14 rounded-2xl bg-white text-[#021D24] flex items-center justify-center hover:bg-[#1089A4] hover:text-white transition-all shadow-2xl group border-b-4 border-muted"

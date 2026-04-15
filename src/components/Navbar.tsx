@@ -74,13 +74,24 @@ export default function Navbar() {
       setIsScrolled(window.scrollY > 40);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    
+    // Body scroll lock for mobile menu
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <nav className="w-full z-[100] flex flex-col">
       {/* 1. Motta Top Bar */}
-      <div className="bg-[#021D24] text-white/50 py-3 px-12 border-b border-white/5 hidden md:flex justify-between items-center text-[10px] font-black uppercase tracking-[0.25em]">
+      <div className="bg-[#021D24] text-white/50 py-3 px-12 border-b border-white/5 hidden md:flex justify-between items-center text-[10px] font-black uppercase">
         <div className="flex gap-10 items-center">
           <span className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer group">
             <span className="material-symbols-rounded text-sm text-[#1089A4] group-hover:scale-110 transition-transform">call</span> 0900000000
@@ -110,7 +121,7 @@ export default function Navbar() {
                   className="absolute top-full right-0 mt-4 bg-[#021D24] border border-white/10 rounded-2xl p-4 shadow-3xl z-[300] min-w-[150px] overflow-hidden"
                 >
                    {["العربية", "English"].map((lang) => (
-                     <div key={lang} className="p-3 hover:bg-white/5 rounded-xl cursor-pointer text-[10px] font-black tracking-widest text-white/40 hover:text-white transition-all flex items-center justify-between">
+                     <div key={lang} className="p-3 hover:bg-white/5 rounded-xl cursor-pointer text-[10px] font-black text-white/40 hover:text-white transition-all flex items-center justify-between">
                         {lang} {lang === "العربية" && <span className="material-symbols-rounded text-xs text-[#F29124]">check</span>}
                      </div>
                    ))}
@@ -134,7 +145,7 @@ export default function Navbar() {
             {!isScrolled && (
               <div className="flex flex-col gap-1 md:gap-2">
                 <span className="text-xl md:text-4xl font-black tracking-tighter text-[#021D24] uppercase leading-none font-heading">Mersal</span>
-                <span className="text-[8px] md:text-[11px] text-[#F29124] font-black uppercase tracking-[0.3em] md:tracking-[0.5em] leading-none">Marketplace</span>
+                <span className="text-[8px] md:text-[11px] text-[#F29124] font-black uppercase leading-none">Marketplace</span>
               </div>
             )}
           </Link>
@@ -143,7 +154,7 @@ export default function Navbar() {
             "hidden lg:flex flex-grow max-w-[900px] rounded-full border-4 transition-all duration-500",
             isScrolled ? "bg-white border-[#1089A4]/10 shadow-lg" : "bg-muted border-transparent"
           )}>
-            <div className="px-12 py-6 text-[12px] font-black text-[#021D24]/40 uppercase tracking-[0.3em] flex items-center gap-6 border-l-2 border-border/50 cursor-pointer hover:text-[#1089A4] transition-all whitespace-nowrap group relative">
+            <div className="px-12 py-6 text-[12px] font-black text-[#021D24]/40 uppercase flex items-center gap-6 border-l-2 border-border/50 cursor-pointer hover:text-[#1089A4] transition-all whitespace-nowrap group relative">
               الأقسـام <span className="material-symbols-rounded text-2xl group-hover:translate-y-1 transition-transform">keyboard_arrow_down</span>
             </div>
             <input 
@@ -179,7 +190,7 @@ export default function Navbar() {
               ) : (
                 <span className="material-symbols-rounded text-3xl md:text-4xl group-hover:scale-125 transition-all font-light">account_circle</span>
               )}
-              <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.3em]">{session ? "حسابي" : "دخول"}</span>
+              <span className="text-[10px] md:text-[11px] font-black uppercase">{session ? "حسابي" : "دخول"}</span>
             </Link>
             <div className="flex items-center gap-4 md:gap-14 border-l-2 border-border/50 pl-4 md:pl-14">
               <Link href="/cart" className="relative group transition-all">
@@ -231,7 +242,7 @@ export default function Navbar() {
         isScrolled && "opacity-0 h-0 p-0 overflow-hidden"
       )}>
         <div className="max-w-[1920px] mx-auto flex items-center justify-between">
-          <div className="hidden lg:flex items-center gap-16 font-black text-[11px] uppercase tracking-[0.3em] text-[#021D24]/60">
+          <div className="hidden lg:flex items-center gap-16 font-black text-[11px] uppercase text-[#021D24]/60">
             <div 
               className="relative group"
               onMouseLeave={() => setHoveredCategory(null)}
@@ -256,7 +267,7 @@ export default function Navbar() {
                          >
                             <div className="flex items-center gap-5">
                                <span className="material-symbols-rounded text-2xl">{cat.icon}</span>
-                               <span className="text-[13px] font-black uppercase tracking-widest leading-none">{cat.name}</span>
+                               <span className="text-[13px] font-black uppercase leading-none">{cat.name}</span>
                             </div>
                             <span className="material-symbols-rounded text-sm opacity-20">chevron_left</span>
                          </div>
@@ -273,7 +284,7 @@ export default function Navbar() {
                           className="w-[600px] p-16 grid grid-cols-2 gap-12"
                         >
                            <div className="space-y-8">
-                              <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1089A4]">التصنيفات الفرعية</h4>
+                              <h4 className="text-[10px] font-black uppercase text-[#1089A4]">التصنيفات الفرعية</h4>
                               <ul className="space-y-4">
                                  {hoveredCategory.subItems.map((sub: string, i: number) => (
                                    <li key={i} className="text-xl font-black text-[#021D24] hover:text-[#F29124] transition-colors cursor-pointer">{sub}</li>
@@ -284,8 +295,8 @@ export default function Navbar() {
                               <Image src={hoveredCategory.featured.image} alt="Feature" fill className="object-cover opacity-40 group-hover/feat:scale-110 transition-transform duration-1000" />
                               <div className="relative z-10 space-y-3">
                                  <h5 className="text-white text-2xl font-black font-heading">{hoveredCategory.featured.title}</h5>
-                                 <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">{hoveredCategory.featured.desc}</p>
-                                 <button className="text-[#F29124] text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:gap-4 transition-all">تصفح الآن <span className="material-symbols-rounded">trending_flat</span></button>
+                                 <p className="text-white/40 text-[10px] font-black uppercase">{hoveredCategory.featured.desc}</p>
+                                 <button className="text-[#F29124] text-[10px] font-black uppercase flex items-center gap-2 hover:gap-4 transition-all">تصفح الآن <span className="material-symbols-rounded">trending_flat</span></button>
                               </div>
                            </div>
                         </motion.div>
@@ -299,7 +310,7 @@ export default function Navbar() {
             <Link href="/offers" className="text-[#F29124] hover:text-[#1089A4] border-b-4 border-transparent hover:border-[#1089A4] pb-1 transition-all">خصومات اليوم</Link>
             <Link href="/top-vendors" className="hover:text-[#1089A4] border-b-4 border-transparent hover:border-[#F29124] pb-1 transition-all">كبار الموردين</Link>
           </div>
-          <div className="hidden lg:flex items-center gap-4 text-[#1089A4] font-black text-[11px] uppercase tracking-[0.2em] glass px-8 py-3 rounded-full border border-white">
+          <div className="hidden lg:flex items-center gap-4 text-[#1089A4] font-black text-[11px] uppercase glass px-8 py-3 rounded-full border border-white">
             <span className="material-symbols-rounded text-base text-[#F29124] animate-pulse">verified_user</span> ضمان مرسال: رفاهية بلا حدود
           </div>
         </div>
@@ -308,8 +319,8 @@ export default function Navbar() {
       {/* 4. Mobile Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div initial={{ opacity: 0, x: 300 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 300 }} className="fixed inset-0 z-[300] bg-[#021D24]/10 backdrop-blur-3xl flex justify-end lg:hidden">
-            <div className="w-[85%] max-w-[450px] bg-white h-full shadow-[-40px_0_80px_rgba(0,0,0,0.1)] flex flex-col p-12">
+          <motion.div initial={{ opacity: 0, x: "100%" }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: "100%" }} className="fixed inset-0 z-[300] bg-[#021D24]/10 backdrop-blur-3xl flex justify-end lg:hidden overflow-hidden">
+            <div className="w-[85%] max-w-[450px] bg-white h-full shadow-[-40px_0_80px_rgba(0,0,0,0.1)] flex flex-col p-12 overflow-y-auto">
                <div className="flex items-center justify-between mb-16">
                   <span className="text-3xl font-black text-[#1089A4] font-heading uppercase">Menu</span>
                   <button onClick={() => setIsMobileMenuOpen(false)} className="w-14 h-14 bg-muted rounded-2xl flex items-center justify-center text-[#021D24]/30"><span className="material-symbols-rounded">close</span></button>
@@ -333,7 +344,7 @@ function MobileNavItem({ icon, label, href, onClick }: any) {
   return (
     <Link href={href} onClick={onClick} className="flex items-center gap-6 p-6 bg-muted/30 rounded-[2rem] border-2 border-transparent hover:border-[#1089A4]/20 transition-all group">
       <span className="material-symbols-rounded text-2xl text-[#021D24]/20 group-hover:text-[#1089A4]">{icon}</span>
-      <span className="text-[13px] font-black text-[#021D24] uppercase tracking-widest">{label}</span>
+      <span className="text-[13px] font-black text-[#021D24] uppercase">{label}</span>
     </Link>
   );
 }

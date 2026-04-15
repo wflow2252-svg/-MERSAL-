@@ -32,7 +32,7 @@ export default function HeroSection() {
         
         {/* 1. Category Sidebar - Pixel-Perfect Motta Architecture */}
         <div className="lg:col-span-3 glass rounded-[4rem] border-4 border-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] overflow-hidden hidden lg:flex flex-col h-full min-h-[850px] relative z-20">
-          <div className="bg-[#1089A4] text-white px-12 py-9 flex items-center justify-between font-black text-[12px] uppercase tracking-[0.3em] border-b-4 border-black/10">
+          <div className="bg-[#1089A4] text-white px-12 py-9 flex items-center justify-between font-black text-[12px] uppercase border-b-4 border-black/10">
             كـافـة الأقـسـام <span className="material-symbols-rounded text-2xl">segment</span>
           </div>
           <div className="flex flex-col py-6 overflow-y-auto scrollbar-hide">
@@ -46,7 +46,7 @@ export default function HeroSection() {
                   <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all text-[#1089A4] bg-muted/40 border border-white shadow-sm")}>
                     <span className="material-symbols-rounded text-2xl">{cat.icon}</span>
                   </div>
-                  <span className="text-[14px] font-black text-[#021D24]/60 group-hover:text-[#1089A4] transition-colors uppercase tracking-widest">{cat.name}</span>
+                  <span className="text-[14px] font-black text-[#021D24]/60 group-hover:text-[#1089A4] transition-colors uppercase">{cat.name}</span>
                 </div>
                 {/* Chevron Left for RTL */}
                 <span className="material-symbols-rounded text-[#021D24]/10 group-hover:text-[#F29124] group-hover:translate-x-[-8px] transition-all text-sm">chevron_left</span>
@@ -55,7 +55,7 @@ export default function HeroSection() {
             ))}
           </div>
           <div className="mt-auto p-12 bg-muted/20 border-t-2 border-white/50 group cursor-pointer">
-             <Link href="/shop" className="text-[11px] font-black uppercase tracking-[0.3em] text-[#F29124] flex items-center justify-between">
+             <Link href="/shop" className="text-[11px] font-black uppercase text-[#F29124] flex items-center justify-between">
                 استعرض المتجر الشامل <span className="material-symbols-rounded group-hover:translate-x-[-12px] transition-transform">trending_flat</span>
              </Link>
           </div>
@@ -95,7 +95,7 @@ export default function HeroSection() {
                <motion.div 
                  initial={{ opacity: 0, y: 30 }}
                  animate={{ opacity: 1, y: 0 }}
-                 className="inline-flex items-center gap-4 bg-[#F29124] text-[#021D24] px-7 py-3 rounded-full text-[11px] font-black uppercase tracking-[0.5em] mb-12 shadow-2xl border-4 border-white/10"
+                 className="inline-flex items-center gap-4 bg-[#F29124] text-[#021D24] px-7 py-3 rounded-full text-[11px] font-black uppercase mb-12 shadow-2xl border-4 border-white/10"
                >
                  <span className="material-symbols-rounded text-lg">verified_user</span> رفاهية التسوق بضمان مرسال
                </motion.div>
@@ -181,7 +181,7 @@ function PremiumBanner({ title, sub, image, icon, dark, id }: any) {
                   <span className="material-symbols-rounded text-2xl md:text-3xl">{icon}</span>
                </div>
                <h4 className="font-black text-xl md:text-3xl text-white tracking-tighter leading-none font-heading group-hover:text-[#F29124] transition-colors">{title}</h4>
-               <p className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30">{sub}</p>
+               <p className="text-[8px] md:text-[10px] font-black uppercase text-white/30">{sub}</p>
             </div>
          </div>
          <div className="absolute inset-0 border-2 border-white/5 rounded-[3rem] md:rounded-[4rem]" />

@@ -9,8 +9,8 @@
   --muted: #F8F9FA;      /* Motta-style surface gray */
   --border: #F1F5F9;
   
-  --font-heading: "Outfit", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --font-heading: "Cairo", sans-serif;
+  --font-body: "Cairo", sans-serif;
   
   /* Premium Layered Shadows (Motta Strategy) */
   --shadow-sm: 0 2px 4px rgba(2, 29, 36, 0.02), 0 1px 2px rgba(2, 29, 36, 0.04);
@@ -38,13 +38,24 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Elite Arabic Reset: Stop letter separation */
+[dir="rtl"], [lang="ar"], .rtl {
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+}
+
+*[class*="tracking-"] {
+  letter-spacing: inherit;
 }
 
 h1, h2, h3, h4, .font-heading {
   font-family: var(--font-heading);
-  letter-spacing: -0.03em;
+  letter-spacing: normal;
   font-weight: 900;
 }
 

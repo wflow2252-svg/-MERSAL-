@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Suspense } from "react";
 import { Providers } from "@/components/Providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -20,7 +21,9 @@ export default function RootLayout({
       </head>
       <body>
         <Providers>
-          <Navbar />
+          <Suspense fallback={null}>
+            <Navbar />
+          </Suspense>
           <main>
             {children}
           </main>

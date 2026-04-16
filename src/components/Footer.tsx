@@ -5,29 +5,29 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#011116] text-white pt-40 pb-16 mt-32 relative overflow-hidden border-t border-white/5">
-      {/* Sovereign Floating Newsletter */}
-      <div className="responsive-container absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+    <footer className="bg-[#011116] text-white pb-16 mt-48 relative border-t border-white/5">
+      {/* Sovereign Floating Newsletter - Robust Architecture */}
+      <div className="responsive-container relative z-30 -translate-y-1/2">
         <div className="glass-dark p-12 md:p-16 rounded-[4rem] border border-white/10 shadow-midnight flex flex-col lg:flex-row items-center justify-between gap-12 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#1089A4]/10 blur-[100px] rounded-full pointer-events-none" />
           <div className="flex flex-col gap-4 text-center lg:text-right relative z-10">
              <h3 className="text-4xl font-black font-heading tracking-tighter text-white">انضم إلى مجتمع النخبة</h3>
-             <p className="text-white/40 text-sm font-black uppercase tracking-[0.4em]">Get exclusive sovereign access</p>
+             <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.5em]">Global Sovereign Updates</p>
           </div>
           <div className="w-full lg:w-1/2 flex flex-col md:flex-row gap-6 relative z-10">
              <input 
                type="email" 
-               placeholder="أدخل بريدك الإلكتروني للحصول على العروض" 
-               className="flex-grow bg-white/5 border-2 border-white/10 rounded-[2rem] px-10 py-6 text-sm font-black text-white outline-none focus:border-[#F29124] transition-all placeholder:text-white/20"
+               placeholder="أدخل بريدك الإلكتروني للحصول على العروض الفاخرة" 
+               className="flex-grow bg-white/5 border-2 border-white/10 rounded-[2rem] px-10 py-6 text-sm font-black text-white outline-none focus:border-[#F29124] transition-all placeholder:text-white/10"
              />
-             <button className="bg-[#F29124] text-[#021D24] px-12 py-6 rounded-[2rem] font-black text-[12px] uppercase tracking-[0.3em] hover:scale-105 hover:shadow-[0_20px_40px_rgba(242,145,36,0.3)] transition-all flex items-center justify-center gap-4 group/btn shadow-xl border-b-4 border-black/10">
+             <button className="bg-[#F29124] text-[#021D24] px-12 py-6 rounded-[2rem] font-black text-[12px] uppercase tracking-[0.3em] hover:scale-105 hover:shadow-[0_20px_40px_rgba(242,145,36,0.3)] transition-all flex items-center justify-center gap-4 group/btn shadow-xl border-b-8 border-black/20">
                 اشترك الآن <span className="material-symbols-rounded group-hover/btn:translate-x-[-10px] transition-transform">arrow_right_alt</span>
              </button>
           </div>
         </div>
       </div>
 
-      <div className="responsive-container relative z-10 pt-20">
+      <div className="responsive-container relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-24 mb-32">
           
           {/* Pillar 1: Brand Authority */}

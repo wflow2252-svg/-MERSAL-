@@ -23,7 +23,6 @@ export default function Navbar() {
   const [isMaintenance, setIsMaintenance] = useState(false);
 
   const isAdmin = (session?.user as any)?.role === "ADMIN";
-
   const isAuthenticated = status === "authenticated";
 
   useEffect(() => {
@@ -73,11 +72,9 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Central Interactive Search Bar (Neo-Luxury Style) */}
+          {/* Central Interactive Search Bar */}
           <div className="flex-grow max-w-[600px] relative hidden lg:block group/search">
              <div className="flex items-center bg-muted/60 rounded-[2.5rem] p-1.5 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-[0_20px_50px_rgba(3,141,177,0.1)] group-focus-within/search:border-primary/20 transition-all duration-500 relative z-50">
-                
-                {/* Category Dropdown Pill */}
                 <div 
                    className="relative flex-none"
                    onMouseEnter={() => setIsCatOpen(true)}
@@ -86,8 +83,6 @@ export default function Navbar() {
                    <button className="flex items-center gap-2 bg-white text-primary px-6 py-4 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.1em] hover:bg-primary hover:text-white transition-all shadow-sm">
                       <span className="material-symbols-rounded text-lg">apps</span> <span className="hidden xl:block">التصنيفات</span>
                    </button>
-                   
-                   {/* Dazzling Dropdown Menu */}
                    <div className={cn(
                      "absolute top-[120%] right-0 w-[320px] bg-white/95 backdrop-blur-3xl shadow-[0_50px_100px_rgba(3,141,177,0.2)] border border-primary/10 py-6 rounded-[2.5rem] transition-all duration-500 origin-top",
                      isCatOpen ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-4 pointer-events-none"
@@ -103,12 +98,7 @@ export default function Navbar() {
                       ))}
                    </div>
                 </div>
-
-                <input 
-                  type="text" 
-                  placeholder="ابحث عن المنتجات الفاخرة..." 
-                  className="flex-grow px-8 bg-transparent outline-none text-[13px] font-bold text-primary placeholder:text-primary/40 text-right"
-                />
+                <input type="text" placeholder="ابحث عن المنتجات الفاخرة..." className="flex-grow px-8 bg-transparent outline-none text-[13px] font-bold text-primary placeholder:text-primary/40 text-right" />
                 <button className="bg-primary text-white w-12 h-12 md:w-[52px] md:h-[52px] rounded-full flex items-center justify-center hover:bg-secondary hover:scale-110 hover:shadow-xl transition-all mr-2 flex-none">
                    <span className="material-symbols-rounded text-[22px]">search</span>
                 </button>
@@ -118,15 +108,24 @@ export default function Navbar() {
           {/* User & Actions Hub */}
           <div className="flex items-center gap-4 md:gap-8 flex-none">
              {isAuthenticated ? (
-               <Link href="/profile" className="relative group flex items-center justify-center w-12 h-12 md:w-14 md:h-14">
-                 <div className="w-full h-full rounded-full bg-muted text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border-2 border-transparent group-hover:border-secondary shadow-sm flex items-center justify-center">
-                   {session?.user?.image ? (
-                     <Image src={session.user.image} alt="Profile" width={56} height={56} className="object-cover w-full h-full" />
-                   ) : <span className="material-symbols-rounded text-2xl group-hover:scale-110 transition-transform">person_check</span>}
-                 </div>
-                 {/* Floating Label */}
-                 <div className="absolute -bottom-10 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all bg-primary text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-full pointer-events-none shadow-lg z-50">حسابي</div>
-               </Link>
+               <>
+                 <Link href="/profile" className="relative group flex items-center justify-center w-12 h-12 md:w-14 md:h-14">
+                   <div className="w-full h-full rounded-full bg-muted text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border-2 border-transparent group-hover:border-secondary shadow-sm flex items-center justify-center">
+                     {session?.user?.image ? (
+                       <Image src={session.user.image} alt="Profile" width={56} height={56} className="object-cover w-full h-full" />
+                     ) : <span className="material-symbols-rounded text-2xl group-hover:scale-110 transition-transform">person_check</span>}
+                   </div>
+                   <div className="absolute -bottom-10 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all bg-primary text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-full pointer-events-none shadow-lg z-50">حسابي</div>
+                 </Link>
+
+                 {/* Admin Quick Access */}
+                 {isAdmin && (
+                   <Link href="/admin/dashboard" className="hidden sm:flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#1089A4]/10 text-[#1089A4] border border-[#1089A4]/20 hover:bg-[#1089A4] hover:text-white transition-all shadow-xl shadow-[#1089A4]/10 group relative">
+                     <span className="material-symbols-rounded text-2xl group-hover:rotate-12 transition-transform">admin_panel_settings</span>
+                     <div className="absolute -bottom-10 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all bg-[#021D24] text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-full pointer-events-none shadow-lg z-50 whitespace-nowrap">لوحة الإدارة</div>
+                   </Link>
+                 )}
+               </>
              ) : (
                <Link href="/login" className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-muted text-primary/50 hover:bg-primary hover:text-white transition-all border border-primary/5 hover:border-transparent shadow-sm relative group overflow-visible">
                   <span className="material-symbols-rounded text-2xl group-hover:scale-110 transition-transform">login</span>

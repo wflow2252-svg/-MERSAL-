@@ -87,14 +87,14 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-[#F8F9FA] flex overflow-hidden font-sans rtl" dir="rtl">
 
       {/* ── Sidebar ── */}
-      <aside className="hidden lg:flex w-80 bg-[#021D24] text-white flex-col pt-12 shadow-2xl relative z-20">
-        <div className="px-10 mb-16 flex items-center gap-4">
-           <div className="relative w-12 h-12 rounded-2xl bg-white p-2">
-              <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
+      <aside className="hidden lg:flex w-80 bg-[#021D24] text-white flex-col pt-32 shadow-2xl relative z-20">
+        <div className="px-10 mb-20 flex flex-col items-center gap-8 text-center">
+           <div className="relative w-32 h-32 rounded-[2.5rem] bg-white p-4 shadow-4xl ring-12 ring-white/5 border border-white/10 group">
+              <Image src="/logo.jpg" alt="Logo" fill className="object-contain group-hover:scale-110 transition-transform duration-500" />
            </div>
            <div className="flex flex-col">
-              <span className="font-black text-xl text-[#1089A4] font-heading">مـرسـال</span>
-              <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">المقر المركزي</span>
+              <span className="font-black text-3xl text-[#1089A4] font-heading tracking-tighter uppercase leading-none">مـرسـال</span>
+              <span className="text-[11px] font-black text-white/30 uppercase tracking-[0.6em] mt-3">Elite Core</span>
            </div>
         </div>
 

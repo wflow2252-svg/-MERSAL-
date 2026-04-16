@@ -1,35 +1,9 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 
 export default async function proxy(request: NextRequest) {
-  const url = request.nextUrl.clone();
-  
-  // 1. Get Session Token
-  const token = await getToken({ 
-    req: request as any, 
-    secret: process.env.NEXTAUTH_SECRET 
-  });
-
-  const { pathname } = url;
-
-  // 2. Mandatory Onboarding Redirect Logic
-  // If logged in but NOT onboarded, force redirect to /onboarding
-  if (token && !token.isOnboarded) {
-    if (pathname !== '/onboarding' && !pathname.startsWith('/api') && !pathname.startsWith('/_next')) {
-      url.pathname = '/onboarding';
-      return NextResponse.redirect(url);
-    }
-  }
-
-  // 3. Prevent Onboarded users from visiting onboarding again
-  if (token && token.isOnboarded && pathname === '/onboarding') {
-    url.pathname = '/';
-    return NextResponse.redirect(url);
-  }
-
   const response = NextResponse.next();
 
-  // 4. Security Headers (CSP, etc.)
+  // 1. Content Security Policy (CSP) - Production Grade
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googleapis.com;

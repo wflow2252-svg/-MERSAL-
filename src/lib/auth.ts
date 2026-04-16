@@ -73,5 +73,6 @@ export const authOptions: NextAuthOptions = {
     newUser: '/onboarding',
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true, // Force debug to help user in Vercel logs
+  trustHost: true,
+  debug: true,
 };

@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { useCart } from "@/lib/CartContext";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 
 const categories = [
   { name: "الإلكترونيات", icon: "smartphone", id: "electronics" },
@@ -29,73 +28,98 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleSearch = () => {
+    if (searchQuery.trim()) router.push(`/shop?q=${encodeURIComponent(searchQuery)}`);
+  };
+
   return (
     <header className="w-full fixed top-0 left-0 z-[100]">
-      {/* 1. Top Bar */}
-      <div className="bg-[#011216] text-white/50 py-2 hidden md:block">
-        <div className="responsive-container flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-           <span>شحن مجاني للطلبات فوق 50,000 ج.س</span>
-           <div className="flex gap-6">
-              <Link href="/vendor/register" className="text-[#F29124]">بيع في مرسال</Link>
-              <span>العربية (SD)</span>
+      {/* 1. Motta Petrol Top Utility */}
+      <div className="bg-[#0B5364] text-white/60 py-2.5 hidden md:block border-b border-white/5">
+        <div className="responsive-container flex justify-between items-center text-[11px] font-black uppercase tracking-[0.2em]">
+           <div className="flex gap-10">
+              <span className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer">
+                 <span className="material-symbols-rounded text-[14px] text-accent">local_shipping</span> شحن مجاني للطلبات فوق 50 ألف ج.س
+              </span>
+           </div>
+           <div className="flex gap-8 items-center">
+              <Link href="/vendor/register" className="text-secondary hover:brightness-110">بيع معنا في مرسال</Link>
+              <div className="w-px h-3 bg-white/10" />
+              <button className="hover:text-white transition-colors">السودان (SD)</button>
            </div>
         </div>
       </div>
 
-      {/* 2. Main Header */}
+      {/* 2. Main High-End Header */}
       <div className={cn(
-        "bg-white border-b transition-all duration-300",
-        isScrolled ? "py-3 shadow-lg" : "py-5 md:py-7"
+        "bg-white transition-all duration-500",
+        isScrolled ? "py-3 shadow-2xl shadow-primary/5" : "py-5 md:py-8"
       )}>
-        <div className="responsive-container flex items-center justify-between gap-4 md:gap-12">
+        <div className="responsive-container flex items-center gap-8 md:gap-16">
           
-          {/* Logo Section */}
-          <Link href="/" className="flex items-center gap-4 flex-shrink-0">
-             <div className="w-10 h-10 md:w-14 md:h-14 relative bg-white rounded-xl shadow-md border border-black/5 p-1.5 overflow-hidden">
-                <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
-             </div>
-             <div className="hidden sm:block">
-                <h1 className="text-xl md:text-2xl font-black text-[#011216] tracking-tighter leading-none">MERSAL</h1>
-                <p className="text-[9px] text-[#1089A4] font-black uppercase tracking-widest mt-0.5">Luxury Shop</p>
-             </div>
+          {/* Brand Identity */}
+          <Link href="/" className="flex-shrink-0 flex items-center gap-4 group">
+            <div className="relative w-10 h-10 md:w-16 md:h-16 rounded-[1.25rem] md:rounded-[1.5rem] overflow-hidden bg-white shadow-xl shadow-primary/5 border border-border group-hover:scale-105 transition-transform p-1.5 md:p-2.5">
+               <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
+            </div>
+            <div className="hidden sm:flex flex-col">
+               <span className="text-xl md:text-3xl font-black text-[#0B5364] tracking-tighter leading-none font-heading uppercase">Mersal</span>
+               <span className="text-[10px] text-accent font-black uppercase tracking-[0.4em] mt-1.5">Elite Market</span>
+            </div>
           </Link>
 
-          {/* Search Section */}
-          <div className="flex-grow max-w-[700px] relative hidden lg:block">
-             <div className="flex items-center bg-muted rounded-2xl p-1 shadow-inner focus-within:bg-white focus-within:ring-2 focus-within:ring-[#1089A4]/10 transition-all">
+          {/* Motta Centered Search Pattern */}
+          <div className="flex-grow max-w-[800px] relative hidden md:block">
+             <div className="flex items-center bg-muted rounded-[1.5rem] md:rounded-[2rem] p-1.5 ring-2 ring-transparent focus-within:ring-accent/10 focus-within:bg-white transition-all shadow-inner">
                 <input 
                   type="text" 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="ابحث عن أجهزة، أزياء، أو منتجات..." 
-                  className="flex-grow bg-transparent px-6 py-3 text-sm font-bold text-[#011216] outline-none text-right"
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  placeholder="ابحث عن أجهزة، أزياء، أو علامات تجارية..." 
+                  className="flex-grow px-8 bg-transparent outline-none text-sm font-bold text-primary placeholder:text-primary/20 text-right pr-6"
                 />
-                <button className="bg-[#1089A4] text-white w-12 h-12 rounded-xl flex items-center justify-center hover:bg-[#011216] transition-all">
-                   <span className="material-symbols-rounded">search</span>
+                <button 
+                  onClick={handleSearch}
+                  className="bg-[#0B5364] text-white w-12 h-12 md:w-14 md:h-14 rounded-2xl md:rounded-3xl flex items-center justify-center hover:bg-accent hover:shadow-xl transition-all"
+                >
+                   <span className="material-symbols-rounded text-2xl group-hover:scale-110 transition-transform">search</span>
                 </button>
              </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-3 md:gap-8">
-             <Link href={session ? "/profile" : "/login"} className="flex flex-col items-center gap-1 group">
-                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-[#011216]/40 group-hover:bg-[#1089A4] group-hover:text-white transition-all overflow-hidden relative border border-transparent">
+          {/* Action Hub */}
+          <div className="flex items-center gap-4 md:gap-8 flex-shrink-0">
+             <Link href={session ? "/profile" : "/login"} className="hidden md:flex flex-col items-center gap-1 group">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-muted flex items-center justify-center text-primary/40 group-hover:bg-[#0B5364] group-hover:text-white transition-all overflow-hidden border border-transparent shadow-sm">
                   {session?.user?.image ? (
                     <Image src={session.user.image} alt="User" fill className="object-cover" />
                   ) : <span className="material-symbols-rounded text-2xl">person</span>}
                 </div>
-                <span className="text-[9px] font-black uppercase tracking-widest text-[#011216]/30 hidden md:block">حسابي</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-primary/30 group-hover:text-primary transition-colors">حسابي</span>
              </Link>
 
-             <Link href="/cart" className="relative flex flex-col items-center gap-1 group">
-                <div className="w-10 h-10 rounded-xl bg-[#011216] flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition-all">
+             <Link href="/cart" className="relative group flex flex-col items-center gap-1">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-[#0B5364] flex items-center justify-center text-white shadow-2xl shadow-primary/30 group-hover:scale-105 transition-all relative">
                    <span className="material-symbols-rounded text-2xl">shopping_basket</span>
-                   {cartCount > 0 && <span className="absolute -top-2 -right-2 bg-[#F29124] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">{cartCount}</span>}
+                   <span className="absolute -top-2 -right-2 bg-[#F29124] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">{cartCount}</span>
                 </div>
-                <span className="text-[9px] font-black uppercase tracking-widest text-[#011216]/30 hidden md:block">السلة</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-primary/30 group-hover:text-secondary transition-colors hidden md:block">سلة التسوق</span>
              </Link>
           </div>
         </div>
+      </div>
+
+      {/* 3. Sub-Header (Categories) */}
+      <div className="bg-white border-b border-border hidden md:block">
+         <div className="responsive-container flex justify-center gap-12 py-3.5">
+            {categories.map((cat) => (
+               <Link key={cat.id} href={`/category/${cat.id}`} className="flex items-center gap-3 text-xs font-black text-primary/60 hover:text-accent transition-colors uppercase tracking-widest group">
+                  <span className="material-symbols-rounded text-lg text-primary/20 group-hover:text-accent">{cat.icon}</span>
+                  {cat.name}
+               </Link>
+            ))}
+         </div>
       </div>
     </header>
   );

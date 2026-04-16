@@ -5,66 +5,87 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#021D24] text-white pt-20 pb-12 mt-20 border-t border-white/5">
-      <div className="responsive-container">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-20 mb-20">
+    <footer className="bg-primary text-white pt-24 pb-12 mt-24 border-t border-white/5 relative overflow-hidden">
+      <div className="responsive-container relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-24">
           
-          {/* Brand Column */}
-          <div className="lg:col-span-4 space-y-8 text-right">
-             <Link href="/" className="flex items-center gap-4 justify-end">
-                <div className="w-14 h-14 bg-white rounded-2xl p-2 relative">
+          {/* Pillar 1: Brand Context */}
+          <div className="lg:col-span-4 space-y-10 text-right">
+             <Link href="/" className="flex items-center gap-5 justify-end group">
+                <div className="relative w-16 h-16 rounded-[1.5rem] bg-white p-3 shadow-2xl group-hover:rotate-12 transition-all">
                    <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
                 </div>
-                <div>
-                   <h4 className="text-2xl font-black font-heading tracking-tighter">MERSAL</h4>
-                   <span className="text-[10px] text-[#F29124] font-black uppercase tracking-[0.4em]">Elite Market</span>
+                <div className="flex flex-col">
+                   <h2 className="text-3xl font-black tracking-tighter uppercase font-heading">Mersal</h2>
+                   <span className="text-[10px] text-secondary font-black uppercase tracking-[0.6em]">Elite Market</span>
                 </div>
              </Link>
-             <p className="text-white/30 text-[14px] leading-relaxed max-w-sm ml-auto">
-               مرسال النخبة هي المنصة الرائدة للتجارة الإلكترونية في السودان، نربط الموردين بالعملاء عبر تجربة تسوق آمنة وفاخرة.
+             <p className="text-white/30 text-[15px] leading-relaxed max-w-sm ml-auto">
+                مرسال هي الوجهة الأولى للتسوق الفاخر في السودان. نربط بين أفضل الموردين والعملاء لتوفير تجربة تسوق استثنائية وآمنة تماماً.
              </p>
+             <div className="flex gap-6 justify-end">
+                {["facebook", "instagram", "youtube", "twitter"].map((social) => (
+                  <div key={social} className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-accent transition-all cursor-pointer group">
+                     <span className={`brand-icon-${social} text-lg opacity-40 group-hover:opacity-100 transition-opacity`} />
+                  </div>
+                ))}
+             </div>
           </div>
 
-          {/* Nav Columns */}
-          <div className="lg:col-span-2 space-y-6 text-right">
-             <h5 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#1089A4]">استكشف</h5>
-             <ul className="space-y-4 text-[13px] font-bold text-white/40">
+          {/* Pillar 2: Navigation Map */}
+          <div className="lg:col-span-2 space-y-8 text-right">
+             <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-accent">عن المتجر</h4>
+             <ul className="space-y-4 text-white/30 text-xs font-black uppercase tracking-widest">
                 <li><Link href="/shop" className="hover:text-white transition-colors">كافة المنتجات</Link></li>
-                <li><Link href="/offers" className="hover:text-white transition-colors">عروض النخبة</Link></li>
+                <li><Link href="/offers" className="hover:text-white transition-colors">عروض حصرية</Link></li>
                 <li><Link href="/new" className="hover:text-white transition-colors">وصل حديثاً</Link></li>
+                <li><Link href="/about" className="hover:text-white transition-colors">من نحن</Link></li>
              </ul>
           </div>
 
-          <div className="lg:col-span-2 space-y-6 text-right">
-             <h5 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#F29124]">الدعم</h5>
-             <ul className="space-y-4 text-[13px] font-bold text-white/40">
+          <div className="lg:col-span-2 space-y-8 text-right">
+             <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-secondary">الدعم الفني</h4>
+             <ul className="space-y-4 text-white/30 text-xs font-black uppercase tracking-widest">
                 <li><Link href="/contact" className="hover:text-white transition-colors">اتصل بنا</Link></li>
+                <li><Link href="/faq" className="hover:text-white transition-colors">الأسئلة الشائعة</Link></li>
                 <li><Link href="/shipping" className="hover:text-white transition-colors">سياسة الشحن</Link></li>
-                <li><Link href="/returns" className="hover:text-white transition-colors">الاسترجاع</Link></li>
+                <li><Link href="/returns" className="hover:text-white transition-colors">الاستبدال</Link></li>
              </ul>
           </div>
 
-          {/* Newsletter Column */}
+          {/* Pillar 3: Newsletter Pulse */}
           <div className="lg:col-span-4">
-             <div className="bg-white/[0.03] border border-white/10 p-8 rounded-[2.5rem] space-y-6 text-right">
-                <h5 className="text-xl font-black font-heading">النشرة البريدية</h5>
-                <p className="text-[12px] text-white/40 font-bold">اشترك لتصلك أحدث المنتجات والعروض الحصرية.</p>
+             <div className="bg-white/5 border border-white/10 p-10 rounded-[3rem] space-y-8 text-right shadow-2xl">
+                <h4 className="text-2xl font-black font-heading text-white">النشرة البريدية</h4>
+                <p className="text-[12px] text-white/30 font-black uppercase tracking-widest leading-relaxed">كن أول من يعرف بأحدث العروض والقطع الحصرية التي تصلنا.</p>
                 <div className="relative">
-                   <input type="email" placeholder="البريد الإلكتروني" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white outline-none focus:border-[#1089A4]/30" />
-                   <button className="absolute left-1.5 top-1.5 bottom-1.5 bg-[#1089A4] hover:bg-white hover:text-[#011216] text-white px-6 rounded-xl font-black text-[10px] transition-all">انضم</button>
+                   <input 
+                    type="email" 
+                    placeholder="بريدك الإلكتروني" 
+                    className="w-full bg-white/5 border border-white/10 rounded-[1.5rem] px-8 py-5 text-sm font-bold text-white outline-none focus:border-accent/40"
+                   />
+                   <button className="absolute left-2 top-2 bottom-2 bg-accent text-white px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white hover:text-primary transition-all">انضم</button>
                 </div>
              </div>
           </div>
         </div>
 
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 opacity-40">
-           <p className="text-[10px] font-black uppercase tracking-widest">© 2024 MERSAL ELITE. ALL RIGHTS RESERVED.</p>
-           <div className="flex gap-4 grayscale">
-              <div className="w-10 h-6 bg-white/20 rounded" />
-              <div className="w-10 h-6 bg-white/20 rounded" />
+        {/* Bottom Tier */}
+        <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-10 opacity-30">
+           <p className="text-[10px] font-black uppercase tracking-[0.5em]">© 2024 MERSAL ELITE. ALL RIGHTS RESERVED.</p>
+           <div className="flex items-center gap-10 font-black">
+              <span className="text-[10px] uppercase tracking-[0.2em] hidden md:block">WE ACCEPT SECURE PAYMENTS:</span>
+              <div className="flex gap-6 grayscale">
+                 <div className="w-12 h-8 bg-white/20 rounded-md" />
+                 <div className="w-12 h-8 bg-white/20 rounded-md" />
+                 <div className="w-12 h-8 bg-white/20 rounded-md" />
+              </div>
            </div>
         </div>
       </div>
+
+      {/* Background Motta Pattern Decor */}
+      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
     </footer>
   );
 }

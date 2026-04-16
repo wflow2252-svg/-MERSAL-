@@ -44,6 +44,23 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+  pages: {
+    signIn: '/login',
+    newUser: '/onboarding',
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === 'production' ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.NODE_ENV === 'production' ? '.morsall.com' : undefined,
+      },
+    },
+  },
   callbacks: {
     async jwt({ token, user }: any) {
       if (user) {
@@ -61,21 +78,10 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-  },
-  pages: {
-    signIn: '/login',
-    newUser: '/onboarding',
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-  cookies: {
-    sessionToken: {
-      name: process.env.NODE_ENV === 'production' ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-      },
+    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      else if (new URL(url).origin === baseUrl) return url
+      return baseUrl
     },
   },
   debug: process.env.NODE_ENV === "development",

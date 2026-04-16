@@ -3,6 +3,20 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   serverExternalPackages: ["@prisma/client"],
+  async redirects() {
+    return [
+      {
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/product-category/:id*',
+        destination: '/category/:id*',
+        permanent: true,
+      },
+    ]
+  },
   images: {
     remotePatterns: [
       {

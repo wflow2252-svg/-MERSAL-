@@ -11,6 +11,7 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      allowDangerousEmailAccountLinking: true,
       profile(profile) {
         return {
           id: profile.sub,
@@ -42,13 +43,6 @@ export const authOptions: NextAuthOptions = {
   ],
   session: { strategy: "jwt" },
   callbacks: {
-    async signIn({ user, account, profile }: any) {
-      if (account?.provider === "google") {
-        // Here we can enforce additional checks if needed
-        return true;
-      }
-      return true;
-    },
     async jwt({ token, user, trigger, session }: any) {
       if (user) {
         token.id = user.id;
@@ -69,7 +63,6 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // In production, force base domain if needed
       if (url.startsWith("/")) return `${baseUrl}${url}`
       else if (new URL(url).origin === baseUrl) return url
       return baseUrl;
@@ -80,5 +73,5 @@ export const authOptions: NextAuthOptions = {
     newUser: '/onboarding',
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "development",
+  debug: true, // Force debug to help user in Vercel logs
 };

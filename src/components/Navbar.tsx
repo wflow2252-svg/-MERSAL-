@@ -16,10 +16,12 @@ const categories = [
 ];
 
 export default function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { cartCount } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCatOpen, setIsCatOpen] = useState(false);
+
+  const isAuthenticated = status === "authenticated";
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -55,7 +57,6 @@ export default function Navbar() {
       )}>
         <div className="responsive-container flex items-center justify-between gap-6 md:gap-16">
           
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-4 group">
             <div className="relative w-12 h-12 md:w-16 md:h-16 rounded-2xl overflow-hidden bg-white shadow-xl shadow-primary/5 border border-border/5 p-2">
                <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
@@ -66,7 +67,6 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Search Wrapper */}
           <div className="flex-grow max-w-[800px] relative hidden lg:block">
              <div className="flex items-center bg-muted rounded-[2rem] p-1.5 border border-border/10 focus-within:bg-white focus-within:shadow-2xl focus-within:shadow-primary/5 transition-all">
                 <input 
@@ -80,31 +80,35 @@ export default function Navbar() {
              </div>
           </div>
 
-          {/* Action Icons */}
           <div className="flex items-center gap-3 md:gap-8">
-             <Link href={session ? "/profile" : "/login"} className="hidden md:flex flex-col items-center gap-1 group">
-                <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-primary/40 group-hover:bg-primary group-hover:text-white transition-all">
-                  {session?.user?.image ? (
-                    <Image src={session.user.image} alt="User" width={32} height={32} className="rounded-lg object-cover" />
-                  ) : <span className="material-symbols-rounded text-2xl">person</span>}
-                </div>
-             </Link>
+             {isAuthenticated ? (
+               <Link href="/profile" className="flex flex-col items-center gap-1 group">
+                 <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border border-border/5">
+                   {session?.user?.image ? (
+                     <Image src={session.user.image} alt="Profile" width={48} height={48} className="object-cover" />
+                   ) : <span className="material-symbols-rounded text-2xl text-primary">person</span>}
+                 </div>
+               </Link>
+             ) : (
+               <Link href="/login" className="flex items-center gap-3 btn-primary !p-3 !px-5 !rounded-xl !bg-muted !text-primary !shadow-none hover:!bg-primary hover:!text-white border border-border/10">
+                  <span className="material-symbols-rounded text-lg">login</span>
+                  <span className="text-[10px] font-black hidden xs:block">دخول</span>
+               </Link>
+             )}
 
              <Link href="/cart" className="relative group flex flex-col items-center">
                 <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white shadow-xl shadow-primary/20 group-hover:scale-105 transition-all">
                    <span className="material-symbols-rounded text-2xl">shopping_basket</span>
-                   <span className="absolute -top-2 -right-2 bg-secondary text-white text-[9px] font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-lg">{cartCount}</span>
+                   <span className="absolute -top-2 -right-2 bg-secondary text-white text-[9px] font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-lg font-inter">{cartCount}</span>
                 </div>
              </Link>
           </div>
         </div>
       </div>
 
-      {/* 3. Motta NAVIGATION (Mega Menu Tier) */}
       <div className="bg-white/80 backdrop-blur-xl border-b border-border/5 hidden lg:block">
          <div className="responsive-container flex items-center">
             
-            {/* Mega Menu Toggle */}
             <div 
               className="relative"
               onMouseEnter={() => setIsCatOpen(true)}
@@ -114,7 +118,6 @@ export default function Navbar() {
                   <span className="material-symbols-rounded text-lg">grid_view</span> تسوق عبر الفئات
                </button>
                
-               {/* Categories Mega Dropdown */}
                {isCatOpen && (
                  <div className="absolute top-full right-0 w-[300px] bg-white shadow-2xl border border-border/5 py-4 elite-shadow animate-in fade-in slide-in-from-top-2">
                     {categories.map((cat) => (
@@ -130,7 +133,6 @@ export default function Navbar() {
                )}
             </div>
 
-            {/* Sticky Nav Links */}
             <nav className="flex items-center gap-14 px-14 mr-4">
                {["متجر النخبة", "أحدث العروض", "الوصل حديثاً", "العتبات"].map((link, i) => (
                  <Link key={i} href="/shop" className="text-[10px] font-black text-primary/60 hover:text-primary transition-all uppercase tracking-[0.25em] relative py-5 group">

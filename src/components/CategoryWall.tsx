@@ -69,7 +69,7 @@ export default function CategoryWall() {
           >
             <Image src={wallItems[0].image} alt={wallItems[0].name} fill className="object-cover transition-transform duration-[2s] group-hover:scale-110" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end text-right">
+            <div className="absolute inset-0 p-10 md:p-16 flex flex-col justify-end text-right">
                <div className="flex items-center justify-end gap-3 mb-4">
                   <span className="text-white/60 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em]">{wallItems[0].sub}</span>
                   <span className="material-symbols-rounded text-white text-lg">{wallItems[0].icon}</span>
@@ -89,7 +89,7 @@ export default function CategoryWall() {
                 >
                   <Image src={item.image} alt={item.name} fill className="object-cover transition-transform duration-[2s] group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                  <div className="absolute inset-0 p-6 md:p-10 flex flex-col justify-end text-right">
+                  <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end text-right">
                      <div className="flex items-center justify-end gap-3 mb-2">
                         <h3 className="text-xl md:text-2xl font-black text-white font-heading tracking-tight">{item.name}</h3>
                         <span className="material-symbols-rounded text-white/50 text-md">{item.icon}</span>
@@ -105,7 +105,7 @@ export default function CategoryWall() {
               >
                 <Image src={wallItems[3].image} alt={wallItems[3].name} fill className="object-cover transition-transform duration-[2s] group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                <div className="absolute inset-0 p-6 md:p-10 flex flex-col justify-end text-right">
+                <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end text-right">
                    <div className="flex items-center justify-end gap-3">
                       <div className="flex flex-col">
                          <span className="text-secondary text-[10px] font-bold tracking-widest mb-1 uppercase">{wallItems[3].sub}</span>

@@ -85,7 +85,7 @@ export default function HeroSection() {
                   </div>
 
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground via-transparent to-transparent flex flex-col justify-end p-10">
-                     <div className="bg-white/15 backdrop-blur-2xl border border-white/20 p-8 rounded-3xl flex justify-between items-end translate-y-8 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
+                     <div className="bg-white/15 backdrop-blur-2xl border border-white/20 p-10 md:p-12 rounded-3xl flex justify-between items-end translate-y-8 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
                         <div className="text-right">
                            <h3 className="text-white font-black text-xl mb-1">أحدث الإصدارات</h3>
                            <p className="text-white/70 text-[13px] font-medium">متوفرة الآن للطلب المسبق بالتشفير السيادي.</p>

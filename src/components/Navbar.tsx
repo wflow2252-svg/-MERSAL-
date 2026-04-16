@@ -124,9 +124,9 @@ export default function Navbar() {
                    </div>
                  </Link>
 
-                 {/* Admin Quick Access */}
+                 {/* Admin Quick Access - Now Visible on Mobile */}
                  {isAdmin && (
-                   <Link href="/admin/dashboard" className="hidden sm:flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/5 text-primary border border-primary/10 hover:bg-primary hover:text-white transition-all group relative">
+                   <Link href="/admin/dashboard" className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all group relative">
                      <span className="material-symbols-rounded text-xl">admin_panel_settings</span>
                    </Link>
                  )}

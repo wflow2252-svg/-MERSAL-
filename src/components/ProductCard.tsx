@@ -61,7 +61,7 @@ export default function ProductCard({ id, title, price, image, vendor, location,
       </Link>
 
       {/* Content */}
-      <div className="p-6 flex flex-col flex-grow text-right relative">
+      <div className="p-8 flex flex-col flex-grow text-right relative">
          <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
             <span className="text-[12px] font-bold text-primary/60 uppercase tracking-widest">{vendor}</span>

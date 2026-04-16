@@ -1,25 +1,20 @@
 @import "tailwindcss";
 
 :root {
+  --primary: #0B5364;
+  --accent: #1089A4;
+  --secondary: #F29124;
   --background: #ffffff;
-  --foreground: #011216;
-  --primary: #0B5364; /* Deep Petrol Motta */
-  --accent: #1089A4; /* Mersal Teal */
-  --secondary: #F29124; /* Mersal Orange */
-  --muted: #F8F9FA;
-  --border: #ECF0F1;
-  --radius-elite: 2.5rem;
+  --muted: #f8f9fa;
+  --border: #e2e8f0;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-accent: var(--accent);
   --color-secondary: var(--secondary);
   --color-muted: var(--muted);
   --color-border: var(--border);
-  --radius-elite: var(--radius-elite);
 }
 
 * {
@@ -28,69 +23,30 @@
   padding: 0;
 }
 
-html, body {
+body {
   font-family: 'Cairo', sans-serif;
-  color: var(--foreground);
-  background: var(--background);
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
+  background-color: var(--background);
+  color: #1a202c;
+  line-height: 1.5;
 }
 
 .responsive-container {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0 1rem;
 }
 
-@media (min-width: 768px) {
-  .responsive-container { padding: 0 2rem; }
+/* Base Form Styles for stability */
+.input-field {
+  @apply w-full bg-white border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-accent transition-all;
 }
 
-/* --- Motta Design Utilities --- */
-
-.motta-card {
-  background: white;
-  border-radius: var(--radius-elite);
-  border: 1px solid var(--border);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+.btn-primary {
+  @apply bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-accent transition-all flex items-center justify-center gap-2;
 }
 
-.motta-card:hover {
-  box-shadow: 0 40px 80px -20px rgba(11, 83, 100, 0.12);
-  transform: translateY(-8px);
-}
-
-.motta-btn-primary {
-  @apply inline-flex items-center justify-center gap-3 bg-[#0B5364] text-white px-10 py-5 rounded-[2rem] font-black uppercase tracking-widest hover:bg-[#1089A4] hover:shadow-2xl transition-all active:scale-95;
-}
-
-.motta-btn-secondary {
-  @apply inline-flex items-center justify-center gap-3 bg-[#F29124] text-[#011216] px-10 py-5 rounded-[2rem] font-black uppercase tracking-widest hover:brightness-110 shadow-xl shadow-orange-500/20 transition-all active:scale-95;
-}
-
-.motta-btn-ghost {
-  @apply inline-flex items-center justify-center gap-3 bg-muted text-primary px-10 py-5 rounded-[2rem] font-black uppercase tracking-widest hover:bg-white border border-transparent hover:border-border transition-all;
-}
-
-.motta-input {
-  @apply w-full bg-muted border-2 border-transparent rounded-[1.5rem] px-8 py-5 text-sm font-bold text-primary outline-none focus:bg-white focus:border-accent/40 transition-all placeholder:text-primary/20;
-}
-
-.text-gradient {
-  background: linear-gradient(135deg, #0B5364 0%, #1089A4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Material Symbols Adjustments */
+/* Material Symbols fix */
 .material-symbols-rounded {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-  vertical-align: middle;
 }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: var(--muted); }
-::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; border: 3px solid var(--muted); }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }

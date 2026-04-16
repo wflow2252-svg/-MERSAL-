@@ -95,10 +95,8 @@ export default function LoginPage() {
                        )}
                     </div>
 
-                    {/* Massive Beefy Button v2 */}
-                    <button className="w-full bg-[#1089A4] text-white py-8 md:py-12 rounded-3xl md:rounded-[3rem] font-black text-sm md:text-2xl uppercase tracking-[0.5em] shadow-[0_30px_60px_-15px_rgba(16,137,164,0.5)] hover:bg-[#021D24] transition-all active:scale-[0.98] border-b-[12px] border-black/20 group relative overflow-hidden">
-                       <span className="relative z-10">{isLogin ? "دخول فوري" : "إنشاء حساب"}</span>
-                       <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                    <button className="w-full bg-[#1089A4] text-white py-5 md:py-7 rounded-2xl md:rounded-[2rem] font-black text-sm md:text-base uppercase tracking-[0.3em] shadow-[0_20px_50px_-12px_rgba(16,137,164,0.4)] hover:bg-[#021D24] transition-all active:scale-[0.98] border-b-4 border-black/20">
+                       {isLogin ? "دخول للمنصة" : "إنشاء حساب"}
                     </button>
                  </form>
 
@@ -108,10 +106,9 @@ export default function LoginPage() {
                        <span className="relative bg-white px-10 text-[11px] md:text-[12px] font-black uppercase tracking-[0.4em] text-[#021D24]/30">خـيـارات السـرعة</span>
                     </div>
 
-                    {/* Massive Social Button */}
                     <button 
                        onClick={() => signIn('google')}
-                       className="w-full flex items-center justify-center gap-8 bg-[#F8F9FA] py-8 md:py-12 rounded-3xl md:rounded-[3rem] border-4 border-border/10 hover:border-[#1089A4]/20 transition-all text-xs md:text-xl font-black uppercase tracking-[0.3em] group shadow-sm hover:shadow-2xl"
+                       className="w-full flex items-center justify-center gap-4 bg-[#F8F9FA] py-5 md:py-7 rounded-2xl md:rounded-[2rem] border-2 border-border/10 hover:border-[#1089A4]/20 transition-all text-xs md:text-sm font-black uppercase tracking-[0.2em] group shadow-sm hover:shadow-lg"
                     >
                        <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={32} height={32} className="md:w-10 md:h-10" /> الدخول عبر جوجل
                     </button>

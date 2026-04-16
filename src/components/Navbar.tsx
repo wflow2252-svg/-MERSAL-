@@ -154,11 +154,11 @@ export default function Navbar() {
 
           {/* Desktop Search Bar - Balanced Fluid Width */}
           <div className={cn(
-            "hidden lg:flex flex-grow max-w-[clamp(400px,50vw,750px)] rounded-full border-2 transition-all duration-500 overflow-hidden",
-            isScrolled ? "bg-white border-[#1089A4]/15 shadow-[0_8px_30px_rgba(16,137,164,0.12)]" : "bg-muted/80 border-white/20"
+            "hidden lg:flex flex-grow max-w-[clamp(400px,50vw,750px)] rounded-full border-2 transition-all duration-500",
+            isScrolled ? "bg-white border-border/20 shadow-md" : "bg-muted border-transparent"
           )}>
-            <div className="px-6 py-3 text-[11px] font-black text-[#021D24]/50 uppercase flex items-center gap-3 border-l-2 border-border/30 cursor-pointer hover:text-[#1089A4] transition-all whitespace-nowrap group relative">
-              الأقسـام <span className="material-symbols-rounded text-lg group-hover:translate-y-0.5 transition-transform">keyboard_arrow_down</span>
+            <div className="px-8 py-4 text-[11px] font-black text-[#021D24]/40 uppercase flex items-center gap-3 border-l-2 border-border/50 cursor-pointer hover:text-[#1089A4] transition-all whitespace-nowrap group relative">
+              الأقسـام <span className="material-symbols-rounded text-xl group-hover:translate-y-1 transition-transform">keyboard_arrow_down</span>
             </div>
             <input 
               type="text" 
@@ -166,13 +166,12 @@ export default function Navbar() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder="ابحث عن أجهزة، أزياء، أو ما تحلم به..." 
-              className="flex-grow px-6 bg-transparent outline-none text-sm font-bold text-[#021D24] placeholder:text-[#021D24]/25"
+              className="flex-grow px-8 bg-transparent outline-none text-sm font-bold text-[#021D24] placeholder:text-[#021D24]/20"
             />
             <button 
               onClick={handleSearch}
-              className="relative bg-gradient-to-br from-[#1089A4] to-[#0a6b82] text-white px-8 py-3 m-1.5 rounded-full flex items-center justify-center gap-2 hover:shadow-[0_8px_25px_rgba(16,137,164,0.5)] transition-all active:scale-95 group overflow-hidden"
+              className="bg-[#1089A4] text-white px-8 m-2 rounded-full flex items-center justify-center hover:bg-[#021D24] transition-all active:scale-95 group"
             >
-              <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 skew-x-12" />
               <span className="material-symbols-rounded text-xl group-hover:scale-110 transition-transform">search</span>
             </button>
           </div>

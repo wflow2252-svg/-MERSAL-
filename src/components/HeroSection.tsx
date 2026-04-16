@@ -99,22 +99,15 @@ export default function HeroSection() {
                    نحن نجمع لك نخبة الموردين المعتمدين لنقدم لك تجربة تسوق تفوق التوقعات، بضمان حقيقي وجودة عالمية تصلك أينما كنت.
                 </p>
                 
-                 <div className="flex flex-col sm:flex-row items-center justify-center gap-5 md:gap-10 w-full max-w-4xl">
-                    {/* Primary CTA - Gradient Glow */}
-                    <Link href="/shop" className="relative w-full sm:flex-1 max-w-[260px] md:max-w-[340px] group">
-                       <div className="absolute inset-0 bg-[#1089A4] blur-2xl opacity-50 group-hover:opacity-80 transition-opacity rounded-[3rem] scale-90" />
-                       <span className="relative flex items-center justify-center gap-4 md:gap-6 bg-gradient-to-br from-[#1089A4] to-[#0a6b82] text-white px-8 md:px-14 py-5 md:py-9 rounded-[2rem] md:rounded-[2.5rem] font-black text-sm md:text-base uppercase shadow-[0_20px_60px_rgba(16,137,164,0.5)] hover:from-[#F29124] hover:to-[#d4780f] hover:text-[#021D24] transition-all border-b-4 md:border-b-8 border-black/25 active:scale-95 tracking-[0.2em]">
-                          تـسـوق الآن <span className="material-symbols-rounded group-hover:translate-x-[-6px] transition-transform text-xl md:text-3xl">arrow_forward</span>
-                       </span>
+                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-8 w-full max-w-4xl">
+                    <Link href="/shop" className="w-full sm:flex-1 max-w-[240px] md:max-w-[320px] bg-[#1089A4] text-white px-6 md:px-12 py-4 md:py-8 rounded-[2.5rem] md:rounded-[3rem] font-black text-[10px] md:text-sm uppercase shadow-2xl hover:bg-[#F29124] hover:text-[#021D24] transition-all flex items-center justify-center gap-4 md:gap-6 border-b-4 md:border-b-8 border-black/20 group active:scale-95">
+                       تـسـوق الآن <span className="material-symbols-rounded group-hover:rotate-[-45deg] transition-all text-xl md:text-2xl">trending_flat</span>
                     </Link>
-                    {/* Secondary CTA - Glass Morphism */}
-                    <Link href="/offers" className="relative w-full sm:flex-1 max-w-[260px] md:max-w-[340px] group">
-                       <div className="absolute inset-0 bg-[#F29124] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity rounded-[3rem] scale-90" />
-                       <span className="relative flex items-center justify-center gap-4 md:gap-6 bg-white/10 backdrop-blur-2xl text-white border-2 border-white/30 px-8 md:px-14 py-5 md:py-9 rounded-[2rem] md:rounded-[2.5rem] font-black text-sm md:text-base uppercase hover:bg-white hover:text-[#021D24] hover:border-white transition-all shadow-[0_20px_60px_rgba(0,0,0,0.3)] active:scale-95 tracking-[0.2em]">
-                          عروض حصرية <span className="material-symbols-rounded text-[#F29124] group-hover:rotate-12 group-hover:scale-125 transition-all text-2xl md:text-3xl">bolt</span>
-                       </span>
+                    <Link href="/offers" className="w-full sm:flex-1 max-w-[240px] md:max-w-[320px] bg-white/5 backdrop-blur-3xl text-white border-2 border-white/20 px-6 md:px-12 py-4 md:py-8 rounded-[2.5rem] md:rounded-[3rem] font-black text-[10px] md:text-sm uppercase hover:bg-white hover:text-[#021D24] transition-all flex items-center justify-center gap-4 md:gap-6 group hover:border-white shadow-2xl active:scale-95">
+                       عروض حصرية <span className="material-symbols-rounded text-[#F29124] group-hover:scale-125 transition-all text-xl md:text-2xl">bolt</span>
                     </Link>
                  </div>
+
             </div>
 
             <div className="absolute bottom-6 md:bottom-12 right-6 md:right-12 z-30 flex gap-2 md:gap-4">

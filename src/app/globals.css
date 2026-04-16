@@ -1,4 +1,6 @@
-@import "tailwindcss";
+html {
+  background-color: #011116; /* Midnight Elite - Prevent white space below footer */
+}
 
 :root {
   --primary: #0B5364;

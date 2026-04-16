@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#011116] text-white pb-16 mt-48 relative border-t border-white/5">
+    <footer className="bg-[#011116] text-white pb-16 mt-48 relative border-t border-white/5 overflow-hidden">
       {/* Sovereign Floating Newsletter - Robust Architecture */}
       <div className="responsive-container relative z-30 -translate-y-1/2">
         <div className="glass-dark p-12 md:p-16 rounded-[4rem] border border-white/10 shadow-midnight flex flex-col lg:flex-row items-center justify-between gap-12 relative overflow-hidden group">
@@ -106,8 +106,8 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Atmospheric Sovereignty Effects */}
-      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#1089A4]/5 blur-[120px] rounded-full pointer-events-none" />
+      {/* Atmospheric Sovereignty Effects - Optimized to prevent document overflow */}
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#1089A4]/5 blur-[120px] rounded-full pointer-events-none translate-x-1/4 translate-y-1/4" />
       <div className="absolute top-[20%] left-[-10%] w-[400px] h-[400px] bg-[#F29124]/5 blur-[100px] rounded-full pointer-events-none" />
     </footer>
   );

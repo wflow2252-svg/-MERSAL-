@@ -118,26 +118,26 @@ export default function ProfilePage() {
       <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-primary/5 blur-[200px] rounded-full pointer-events-none" />
       <div className="absolute top-[20%] left-[-20%] w-[600px] h-[600px] bg-secondary/5 blur-[150px] rounded-full pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto space-y-10 relative z-10">
+      <div className="w-full max-w-4xl mx-auto space-y-10 relative z-10 flex flex-col items-center justify-center">
         
         {/* Floating Identity Canvas */}
-        <div className="relative bg-white/70 backdrop-blur-3xl rounded-[3rem] p-10 md:p-16 shadow-[0_50px_100px_rgba(3,141,177,0.1)] border border-white/50 text-right overflow-visible">
+        <div className="w-full relative bg-white/70 backdrop-blur-3xl rounded-[3rem] p-10 md:p-16 shadow-[0_50px_100px_rgba(3,141,177,0.1)] border border-white/50 text-center overflow-visible">
            <div className="absolute top-0 right-0 w-full h-[50%] bg-gradient-to-l from-primary/10 to-transparent rounded-t-[3rem] -z-10" />
            
-           <div className="flex flex-col md:flex-row items-center gap-16 relative">
-              <div className="relative group">
-                 <div className="w-48 h-48 md:w-60 md:h-60 rounded-full overflow-hidden border-[12px] border-white shadow-2xl relative z-20 transition-transform duration-500 group-hover:scale-105">
+           <div className="flex flex-col items-center justify-center gap-10 relative w-full">
+              <div className="relative group mx-auto">
+                 <div className="w-48 h-48 md:w-60 md:h-60 rounded-full overflow-hidden border-[12px] border-white shadow-2xl relative z-20 transition-transform duration-500 group-hover:scale-105 mx-auto">
                     <Image src={session.user?.image || "/logo.jpg"} alt="User" fill className="object-cover" />
                  </div>
                  {/* Levitating Badge */}
-                 <div className="absolute -bottom-4 right-8 bg-gradient-to-br from-secondary to-[#d67b14] text-white p-5 rounded-full shadow-[0_20px_40px_rgba(245,149,37,0.4)] z-30 animate-pulse border-4 border-white">
+                 <div className="absolute -bottom-4 right-1/2 translate-x-1/2 bg-gradient-to-br from-secondary to-[#d67b14] text-white p-5 rounded-full shadow-[0_20px_40px_rgba(245,149,37,0.4)] z-30 animate-pulse border-4 border-white">
                     <span className="material-symbols-rounded text-3xl">workspace_premium</span>
                  </div>
                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-[80px] -z-10 group-hover:bg-secondary/40 transition-colors duration-700" />
               </div>
 
-              <div className="flex-grow space-y-8 w-full text-center">
-                 <div className="space-y-4 flex flex-col items-center">
+              <div className="flex flex-col items-center justify-center space-y-8 w-full text-center">
+                 <div className="space-y-4 flex flex-col items-center w-full">
                     <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm px-6 py-2 rounded-full border border-primary/10 shadow-sm">
                        <span className="relative flex h-3 w-3">
                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
@@ -180,10 +180,10 @@ export default function ProfilePage() {
         </div>
 
         {/* The Control Hub (Centered) */}
-        <div className="max-w-4xl mx-auto space-y-10">
+        <div className="w-full max-w-4xl mx-auto space-y-10 flex flex-col items-center justify-center">
            
            {/* Primary Configuration */}
-           <div className="space-y-10">
+           <div className="space-y-10 w-full">
               
               <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] p-10 md:p-14 shadow-xl shadow-primary/5 border border-white space-y-12 text-center relative overflow-hidden">
                  
@@ -298,9 +298,11 @@ export default function ProfilePage() {
               </div>
 
               {/* Central Logout */}
-              <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full max-w-sm mx-auto py-8 rounded-[2.5rem] bg-white border border-primary/10 text-primary/40 font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:border-red-200 hover:text-red-500 hover:shadow-xl transition-all group mt-10">
-                 تسجيل الخروج <span className="material-symbols-rounded text-2xl group-hover:-translate-y-1 transition-transform">logout</span>
-              </button>
+              <div className="w-full flex justify-center mt-10">
+                 <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full max-w-xs py-6 rounded-[2.5rem] bg-white border border-primary/10 text-primary/40 font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:border-red-200 hover:text-red-500 hover:shadow-xl transition-all group">
+                    تسجيل الخروج <span className="material-symbols-rounded text-2xl group-hover:-translate-y-1 transition-transform">logout</span>
+                 </button>
+              </div>
            </div>
         </div>
 

@@ -21,6 +21,11 @@ export const metadata = {
     locale: "ar_SA",
     type: "website",
   },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/logo.jpg",
+  },
 };
 
 export default async function RootLayout({

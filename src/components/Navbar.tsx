@@ -97,12 +97,14 @@ export default function Navbar() {
           {/* User & Actions Hub */}
           <div className="flex items-center gap-4 md:gap-8 flex-none">
              {isAuthenticated ? (
-               <Link href="/profile" className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-muted text-primary/40 hover:bg-primary hover:text-white transition-all overflow-hidden border-2 border-transparent hover:border-secondary shadow-sm relative group overflow-visible">
-                 {session?.user?.image ? (
-                   <Image src={session.user.image} alt="Profile" width={56} height={56} className="object-cover" />
-                 ) : <span className="material-symbols-rounded text-2xl group-hover:scale-110 transition-transform">person_check</span>}
+               <Link href="/profile" className="relative group flex items-center justify-center w-12 h-12 md:w-14 md:h-14">
+                 <div className="w-full h-full rounded-full bg-muted text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border-2 border-transparent group-hover:border-secondary shadow-sm flex items-center justify-center">
+                   {session?.user?.image ? (
+                     <Image src={session.user.image} alt="Profile" width={56} height={56} className="object-cover w-full h-full" />
+                   ) : <span className="material-symbols-rounded text-2xl group-hover:scale-110 transition-transform">person_check</span>}
+                 </div>
                  {/* Floating Label */}
-                 <div className="absolute -bottom-10 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all bg-primary text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-full pointer-events-none shadow-lg">حسابي</div>
+                 <div className="absolute -bottom-10 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all bg-primary text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-full pointer-events-none shadow-lg z-50">حسابي</div>
                </Link>
              ) : (
                <Link href="/login" className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-muted text-primary/50 hover:bg-primary hover:text-white transition-all border border-primary/5 hover:border-transparent shadow-sm relative group overflow-visible">

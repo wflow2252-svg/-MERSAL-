@@ -83,16 +83,19 @@ export default function Navbar() {
           <div className="flex items-center gap-3 md:gap-8">
              {isAuthenticated ? (
                <Link href="/profile" className="flex flex-col items-center gap-1 group">
-                 <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border border-border/5">
+                 <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border-2 border-accent/20">
                    {session?.user?.image ? (
                      <Image src={session.user.image} alt="Profile" width={48} height={48} className="object-cover" />
                    ) : <span className="material-symbols-rounded text-2xl text-primary">person</span>}
                  </div>
+                 <span className="text-[8px] font-black text-primary/40 uppercase tracking-widest hidden md:block">حسابي</span>
                </Link>
              ) : (
-               <Link href="/login" className="flex items-center gap-3 btn-primary !p-3 !px-5 !rounded-xl !bg-muted !text-primary !shadow-none hover:!bg-primary hover:!text-white border border-border/10">
-                  <span className="material-symbols-rounded text-lg">login</span>
-                  <span className="text-[10px] font-black hidden xs:block">دخول</span>
+               <Link href="/login" className="flex flex-col items-center gap-1 group">
+                  <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-primary/30 group-hover:bg-primary group-hover:text-white transition-all border border-border/10">
+                    <span className="material-symbols-rounded text-2xl">person</span>
+                  </div>
+                  <span className="text-[8px] font-black text-primary/40 uppercase tracking-widest hidden md:block">دخول</span>
                </Link>
              )}
 

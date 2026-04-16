@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.email) {
+    if (!(session as any)?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const { name, age, interests, phone, isOnboarded } = body;
 
     const updatedUser = await prisma.user.update({
-      where: { email: session.user.email },
+      where: { email: (session as any).user.email },
       data: {
         name: name !== undefined ? name : undefined,
         age: age !== undefined ? parseInt(age) : undefined,

@@ -50,7 +50,7 @@ export default function ProductCard({ id, title, price, image, vendor, location,
 
         {/* Quick Interaction Overlay */}
         <div className="absolute inset-x-3 bottom-3 translate-y-20 group-hover:translate-y-0 transition-all duration-500 z-10 hidden md:block">
-           <button className="w-full btn-motta-primary py-3.5 rounded-xl text-[10px]">
+           <button className="w-full btn-primary py-3.5 rounded-xl text-[10px]">
               أضف للسلة <span className="material-symbols-rounded text-lg">shopping_basket</span>
            </button>
         </div>

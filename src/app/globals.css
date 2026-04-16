@@ -1,35 +1,14 @@
 @import "tailwindcss";
 
-* {
-  box-sizing: border-box !important;
-  margin: 0;
-  padding: 0;
-}
-
 :root {
   --background: #ffffff;
-  --foreground: #011216; /* Deeper, more elite Petrol Black */
-  --primary: #1089A4;    /* Brand Teal */
-  --secondary: #F29124;  /* Brand Orange */
-  
-  --muted: #F8FBFB;      /* Even cleaner Motta surface */
-  --border: #E5E9EB;     /* Softer, more professional border */
-  
+  --foreground: #011216;
+  --primary: #1089A4;
+  --secondary: #F29124;
+  --muted: #F8FBFB;
+  --border: #E5E9EB;
   --font-heading: "Cairo", sans-serif;
   --font-body: "Cairo", sans-serif;
-  
-  /* Master-grade Layered Shadows (Motta Signature) */
-  --shadow-sm: 0 1px 2px rgba(1, 18, 22, 0.05);
-  --shadow-md: 0 12px 30px -10px rgba(1, 18, 22, 0.08), 0 4px 10px -5px rgba(1, 18, 22, 0.03);
-  --shadow-lg: 0 40px 100px -20px rgba(1, 18, 22, 0.12), 0 20px 50px -15px rgba(1, 18, 22, 0.06);
-  
-  /* Brand Gradients */
-  --gradient-teal: linear-gradient(135deg, #1089A4 0%, #0D6E85 100%);
-  --gradient-orange: linear-gradient(135deg, #F29124 0%, #D97E1B 100%);
-  
-  --radius-xl: 1.5rem;
-  --radius-2xl: 2.5rem;
-  --radius-3xl: 4rem;
 }
 
 @theme inline {
@@ -39,99 +18,63 @@
   --color-secondary: var(--secondary);
   --color-muted: var(--muted);
   --color-border: var(--border);
-  
   --font-heading: var(--font-heading);
   --font-body: var(--font-body);
+}
+
+* {
+  box-sizing: border-box !important;
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
-  letter-spacing: -0.01em; /* Modern tight spacing */
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  position: relative;
   min-height: 100vh;
-  width: 100%;
 }
 
-.kill-scroll {
-  overflow-x: clip !important;
-  max-width: 100% !important;
+[dir="rtl"] {
+  letter-spacing: normal !important;
 }
 
 .responsive-container {
   width: 100%;
-  max-width: 1680px; /* Slightly tighter maximum for high-end focus */
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
 }
 
 @media (min-width: 768px) {
-  .responsive-container {
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
-  }
+  .responsive-container { padding: 0 2.5rem; }
 }
 
-@media (min-width: 1280px) {
-  .responsive-container {
-    padding-left: 4rem;
-    padding-right: 4rem;
-  }
+/* --- New Simplified Design System --- */
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-3 bg-[#1089A4] text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-[#011216] transition-all active:scale-95;
 }
 
-/* Elite Arabic Reset */
-[dir="rtl"], [lang="ar"], .rtl {
-  letter-spacing: normal !important;
-  word-spacing: normal !important;
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-3 bg-[#F29124] text-[#011216] px-8 py-4 rounded-2xl font-black uppercase tracking-widest hover:brightness-110 transition-all active:scale-95;
 }
 
-h1, h2, h3, h4, .font-heading {
-  font-family: var(--font-heading);
-  font-weight: 800; /* Cairo 800 is better than 900 for modern screens */
-  line-height: 1.1;
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-3 bg-muted text-[#011216] px-8 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-white border border-transparent hover:border-border transition-all;
 }
 
-/* --- Motta Elite Design System --- */
-
-/* --- Motta Elite Design System --- */
-
-.motta-btn, .btn-motta-primary, .btn-motta-secondary, .btn-motta-ghost {
-  @apply inline-flex items-center justify-center gap-3 font-extrabold uppercase tracking-widest transition-all duration-400 active:scale-95 cursor-pointer;
+.input-field {
+  @apply w-full bg-muted border-2 border-transparent rounded-2xl px-6 py-4 text-sm font-bold text-[#011216] outline-none focus:bg-white focus:border-[#1089A4]/20 transition-all placeholder:text-[#011216]/20;
 }
 
-.btn-motta-primary {
-  @apply bg-[#1089A4] text-white rounded-2xl hover:bg-[#011216] shadow-xl shadow-[#1089A4]/15 hover:shadow-[#011216]/20;
-}
-
-.btn-motta-secondary {
-  @apply bg-[#F29124] text-[#011216] rounded-2xl hover:bg-[#011216] hover:text-white shadow-xl shadow-[#F29124]/15;
-}
-
-.btn-motta-ghost {
-  @apply bg-muted text-[#011216]/60 rounded-2xl hover:bg-white hover:text-[#1089A4] border border-transparent hover:border-border shadow-sm;
-}
-
-.motta-input {
-  @apply w-full bg-muted border-2 border-transparent rounded-2xl px-6 py-4 text-sm font-bold text-[#011216] outline-none placeholder:text-[#011216]/20 focus:bg-white focus:border-[#1089A4]/20 transition-all duration-400;
-}
-
-.motta-card {
-  @apply bg-white border border-border rounded-[2.5rem] transition-all duration-500 hover:border-transparent hover:shadow-lg;
-}
-
-.motta-glass {
-  @apply bg-white/10 backdrop-blur-3xl border border-white/20;
+.glass-card {
+  @apply bg-white border border-border rounded-[2.5rem] shadow-xl;
 }
 
 .material-symbols-rounded {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-  display: inline-block;
   vertical-align: middle;
 }
-
-

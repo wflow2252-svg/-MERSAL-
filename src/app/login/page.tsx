@@ -4,130 +4,157 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  // Form states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (isLogin) {
+        // Handle Login
+        const result = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (result?.error) {
+          setError("خطأ في البريد الإلكتروني أو كلمة المرور");
+        } else {
+          router.push("/");
+          router.refresh();
+        }
+      } else {
+        // Handle Register
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, name }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.error || "فشل إنشاء الحساب");
+        } else {
+          // Auto login after registration
+          await signIn("credentials", { email, password, callbackUrl: "/" });
+        }
+      }
+    } catch (err) {
+      setError("حدث خطأ غير متوقع. جرب مرة أخرى.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#F8FBFB] flex items-center justify-center p-4 md:p-8 lg:p-12 pt-28 md:pt-32 pb-16">
-      <div className="max-w-[1100px] w-full bg-white rounded-[2.5rem] md:rounded-[4rem] shadow-2xl overflow-hidden flex flex-col lg:grid lg:grid-cols-2 border border-border/50">
-        
-        {/* Visual Brand Side - Stable Grid Child */}
-         <div className="bg-[#021D24] p-10 md:p-16 flex flex-col justify-between relative overflow-hidden min-h-[350px] lg:min-h-full">
-           <div className="relative z-10 space-y-6 md:space-y-8 text-right">
-              <Link href="/" className="inline-block">
-                 <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl p-2.5 shadow-2xl">
-                    <Image src="/logo.jpg" alt="Logo" width={64} height={64} className="object-contain" />
-                 </div>
+    <div className="min-h-screen bg-[#F8FBFB] flex items-center justify-center p-6 md:p-12 pt-32 pb-20 overflow-hidden relative">
+      {/* Abstract Background Blobs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#1089A4]/5 blur-[120px] rounded-full" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#F29124]/5 blur-[150px] rounded-full" />
+
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-[1000px] w-full glass-card overflow-hidden flex flex-col md:grid md:grid-cols-2 min-h-[600px] relative z-20"
+      >
+        {/* Brand Side */}
+        <div className="bg-[#021D24] p-10 md:p-16 flex flex-col justify-between text-right relative">
+           <div className="space-y-6">
+              <Link href="/">
+                <div className="w-16 h-16 bg-white rounded-2xl p-2.5 shadow-xl mb-10">
+                   <Image src="/logo.jpg" alt="Logo" width={64} height={64} className="object-contain" />
+                </div>
               </Link>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-[1.1] font-heading">
-                مـرحـباً بـك <br /> فـي <span className="text-[#1089A4]">مـرسـال</span>
-              </h1>
-              <p className="text-white/50 text-[13px] md:text-base font-medium max-w-[320px] leading-relaxed pr-5 border-r-4 border-[#F29124]">
-                انضم لأكبر منصة تجارية في السودان، وابدأ رحلة تسوق استثنائية اليوم.
-              </p>
+              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight font-heading">مرحباً بك في <br /><span className="text-[#1089A4]">مرسال النخبة</span></h1>
+              <p className="text-white/40 text-[13px] md:text-sm leading-relaxed max-w-[280px] font-medium border-r-4 border-[#F29124] pr-4">انضم لأكبر منصة تجارية في السودان، وابدأ رحلة تسوق استثنائية اليوم.</p>
            </div>
-
-           <div className="relative z-10 flex items-center gap-5 justify-end mt-12 lg:mt-0">
-              <span className="text-white/20 text-[10px] font-black uppercase tracking-widest">+50K مستخدم نشط</span>
-              <div className="flex -space-x-3">
-                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-[#021D24] bg-[#1089A4]/10 overflow-hidden relative">
-                       <Image src={`https://images.unsplash.com/photo-${1500000000000 + i * 100000}?auto=format&fit=crop&q=80&w=100`} alt="User" fill className="object-cover" />
-                    </div>
-                 ))}
-              </div>
+           
+           <div className="mt-12 md:mt-0 flex items-center justify-end gap-3 opacity-30">
+              <span className="text-[10px] font-black uppercase tracking-widest text-white">+50,000 Verified Users</span>
            </div>
-
-           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#1089A4]/15 blur-[120px] rounded-full" />
-           <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-[#F29124]/5 blur-[100px] rounded-full" />
+           
+           <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
         </div>
 
-        {/* Form Side - Stable Grid Child */}
-        <div className="p-8 md:p-16 lg:p-20 flex flex-col justify-center text-right bg-white">
+        {/* Form Side */}
+        <div className="p-8 md:p-16 bg-white flex flex-col justify-center text-right">
            <AnimatePresence mode="wait">
-              <motion.div 
-                key={isLogin ? "login" : "signup"}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-8 md:space-y-12"
-              >
-                 <div className="space-y-2 md:space-y-4">
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#021D24] tracking-tight font-heading">{isLogin ? "تسجيل الدخول" : "إنشاء حساب جديد"}</h2>
-                    <p className="text-[#021D24]/60 text-xs md:text-sm font-medium">أدخل بياناتك للمتابعة في منصة مرسال</p>
-                 </div>
+             <motion.div
+               key={isLogin ? "login" : "sign-up"}
+               initial={{ opacity: 0, x: 20 }}
+               animate={{ opacity: 1, x: 0 }}
+               exit={{ opacity: 0, x: -20 }}
+               transition={{ duration: 0.3 }}
+               className="space-y-8"
+             >
+                <div className="space-y-2">
+                   <h2 className="text-2xl md:text-3xl font-black text-[#021D24] font-heading">{isLogin ? "تسجيل الدخول" : "إنشاء حساب"}</h2>
+                   <p className="text-[#021D24]/40 text-xs font-bold">أدخل بياناتك للمتابعة في منصة مرسال</p>
+                </div>
 
-                 <form className="space-y-6 md:space-y-8" onSubmit={(e) => e.preventDefault()}>
-                    {!isLogin && (
-                      <div className="space-y-2 md:space-y-3 group">
-                         <label className="text-[10px] pr-2 font-black uppercase tracking-[0.2em] text-[#021D24]/60 group-focus-within:text-[#1089A4] transition-colors">الاسم الكامل</label>
-                         <div className="relative">
-                            <span className="material-symbols-rounded absolute right-4 md:right-6 top-1/2 -translate-y-1/2 text-[#021D24]/20 group-focus-within:text-[#1089A4] transition-all">person</span>
-                            <input type="text" placeholder="أدخل اسمك بالكامل" className="w-full bg-[#F8F9FA] pr-12 md:pr-14 pl-4 md:pl-6 py-4 md:py-6 rounded-xl md:rounded-2xl border-2 border-transparent focus:border-[#1089A4]/20 outline-none font-bold text-sm md:text-base placeholder:text-[#021D24]/20 transition-all shadow-sm" />
-                         </div>
-                      </div>
-                    )}
+                {error && (
+                  <div className="p-4 bg-red-50 border-r-4 border-red-500 text-red-600 text-[11px] font-black flex items-center gap-3">
+                     <span className="material-symbols-rounded">error</span> {error}
+                  </div>
+                )}
 
-                    <div className="space-y-2 md:space-y-3 group">
-                       <label className="text-[10px] pr-2 font-black uppercase tracking-[0.2em] text-[#021D24]/60 group-focus-within:text-[#1089A4] transition-colors">البريد الإلكتروني أو الهاتف</label>
-                       <div className="relative">
-                          <span className="material-symbols-rounded absolute right-4 md:right-6 top-1/2 -translate-y-1/2 text-[#021D24]/20 group-focus-within:text-[#1089A4] transition-all">mail</span>
-                          <input type="text" placeholder="example@mersal.com" className="w-full bg-[#F8F9FA] pr-12 md:pr-14 pl-4 md:pl-6 py-4 md:py-6 rounded-xl md:rounded-2xl border-2 border-transparent focus:border-[#1089A4]/20 outline-none font-bold text-sm md:text-base placeholder:text-[#021D24]/20 transition-all shadow-sm" />
-                       </div>
-                    </div>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                   {!isLogin && (
+                     <div className="space-y-2">
+                        <label className="text-[10px] font-black text-[#021D24]/40 uppercase tracking-widest pr-2">الاسم بالكامل</label>
+                        <input value={name} onChange={(e) => setName(e.target.value)} required type="text" placeholder="أدخل اسمك" className="input-field" />
+                     </div>
+                   )}
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-black text-[#021D24]/40 uppercase tracking-widest pr-2">البريد الإلكتروني</label>
+                      <input value={email} onChange={(e) => setEmail(e.target.value)} required type="email" placeholder="email@example.com" className="input-field" />
+                   </div>
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-black text-[#021D24]/40 uppercase tracking-widest pr-2">كلمة المرور</label>
+                      <input value={password} onChange={(e) => setPassword(e.target.value)} required type="password" placeholder="••••••••" className="input-field" />
+                   </div>
 
-                    <div className="space-y-2 md:space-y-3 group">
-                       <label className="text-[10px] pr-2 font-black uppercase tracking-[0.2em] text-[#021D24]/60 group-focus-within:text-[#1089A4] transition-colors">كلمة المرور</label>
-                       <div className="relative">
-                          <span className="material-symbols-rounded absolute right-4 md:right-6 top-1/2 -translate-y-1/2 text-[#021D24]/20 group-focus-within:text-[#1089A4] transition-all">lock</span>
-                          <input type="password" placeholder="••••••••" className="w-full bg-[#F8F9FA] pr-12 md:pr-14 pl-4 md:pl-6 py-4 md:py-6 rounded-xl md:rounded-2xl border-2 border-transparent focus:border-[#1089A4]/20 outline-none font-bold text-sm md:text-base placeholder:text-[#021D24]/20 transition-all shadow-sm" />
-                       </div>
-                       {isLogin && (
-                         <div className="flex justify-start pr-2 pt-1 md:pt-2">
-                            <button className="text-[10px] md:text-xs font-black tracking-widest text-[#1089A4] hover:text-[#021D24] transition-all">نسيت كلمة المرور؟</button>
-                         </div>
-                       )}
-                    </div>
+                   <button disabled={loading} type="submit" className="w-full btn-primary mt-4 disabled:opacity-50">
+                      {loading ? "جاري التحميل..." : (isLogin ? "دخول للمنصة" : "إنشاء الحساب")}
+                   </button>
+                </form>
 
-                    <button className="w-full bg-[#1089A4] text-white py-5 md:py-7 rounded-xl md:rounded-2xl font-black text-xs md:text-sm uppercase tracking-[0.4em] shadow-xl shadow-[#1089A4]/20 hover:bg-[#021D24] hover:-translate-y-1 md:hover:-translate-y-2 transition-all active:scale-95 border-b-4 md:border-b-6 border-black/10 mt-4 md:mt-2">
-                       {isLogin ? "دخول للمنصة" : "إنضم الآن"}
-                    </button>
-                 </form>
+                <div className="relative py-4">
+                   <div className="absolute inset-0 flex items-center"><div className="w-full border-t"></div></div>
+                   <span className="relative bg-white px-4 text-[10px] font-black text-[#021D24]/20 uppercase tracking-widest block mx-auto w-max">أو عبر</span>
+                </div>
 
-                 <div className="space-y-8">
-                    <div className="relative flex items-center justify-center">
-                       <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border/60"></div></div>
-                       <span className="relative bg-white px-6 text-[10px] font-black uppercase tracking-widest text-[#021D24]/20">أو عبر التواصل</span>
-                    </div>
+                <button 
+                  onClick={() => signIn("google", { callbackUrl: "/" })}
+                  className="w-full flex items-center justify-center gap-3 py-4 border-2 border-[#1089A4]/10 rounded-2xl hover:bg-[#F8FBFB] transition-all font-black text-[11px] uppercase tracking-widest"
+                >
+                   <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={20} height={20} /> الدخول عبر جوجل
+                </button>
 
-                    <div className="space-y-4 md:space-y-6">
-                       <button 
-                         onClick={() => signIn('google')}
-                         className="w-full max-w-sm mx-auto flex items-center justify-center gap-3 md:gap-4 bg-[#F8F9FA] py-4 md:py-6 rounded-xl md:rounded-2xl border-2 border-[#1089A4]/10 hover:border-[#1089A4]/30 transition-all text-xs font-black uppercase tracking-[0.2em] hover:bg-white hover:shadow-xl group"
-                       >
-                          <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={20} height={20} className="md:w-[24px] md:h-[24px]" /> الدخول عبر جوجل
-                       </button>
-                    </div>
-
-                    <p className="text-center text-sm font-medium text-[#021D24]/40">
-                       {isLogin ? "ليس لديك حساب؟" : "لديك حساب بالفعل؟"}
-                       <button 
-                         onClick={() => setIsLogin(!isLogin)} 
-                         className="mr-2 text-[#F29124] font-black border-b-2 border-transparent hover:border-[#F29124] tracking-tight"
-                       >
-                          {isLogin ? "أنشئ حسابك الآن" : "تسجيل الدخول"}
-                       </button>
-                    </p>
-                 </div>
-              </motion.div>
+                <p className="text-center text-xs font-bold text-[#021D24]/40">
+                   {isLogin ? "ليس لديك حساب؟" : "لديك حساب بالفعل؟"}
+                   <button onClick={() => setIsLogin(!isLogin)} className="mr-2 text-[#F29124] font-black hover:underline underline-offset-4">{isLogin ? "أنشئ حسابك الآن" : "تسجيل الدخول"}</button>
+                </p>
+             </motion.div>
            </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

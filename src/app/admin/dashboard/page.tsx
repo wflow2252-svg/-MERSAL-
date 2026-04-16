@@ -29,6 +29,7 @@ export default function AdminDashboard() {
   const [allVendors, setAllVendors] = useState<any[]>([]);
   const [sysSettings, setSysSettings] = useState<any>(null);
   const [admins, setAdmins] = useState<any[]>([]);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   // Fetch Core Stats
   const fetchStats = async () => {
@@ -40,6 +41,36 @@ export default function AdminDashboard() {
         setPendingVendors(data.pendingVendors);
       }
     } catch (e) { console.error(e); }
+  };
+
+  const handleVendorAction = async (id: string, status: string) => {
+    setActionLoading(id);
+    try {
+      const res = await fetch(`/api/admin/vendors/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status })
+      });
+      if (res.ok) {
+        setPendingVendors(prev => prev.filter(v => v.id !== id));
+        fetchStats(); // Update stats
+      }
+    } catch (e) { console.error(e); }
+    setActionLoading(null);
+  };
+
+  const handleProductAction = async (id: string, action: string) => {
+    setActionLoading(id);
+    try {
+      const res = await fetch(`/api/admin/products`, {
+        method: 'POST',
+        body: JSON.stringify({ id, action })
+      });
+      if (res.ok) {
+        setPendingProducts(prev => prev.filter(p => p.id !== id));
+        fetchStats(); // Update stats
+      }
+    } catch (e) { console.error(e); }
+    setActionLoading(null);
   };
 
   // Tab Specific Fetching
@@ -216,8 +247,20 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                           <div className="flex gap-2">
-                            <button className="w-10 h-10 bg-green-500 text-white rounded-xl shadow-lg flex items-center justify-center"><span className="material-symbols-rounded">check</span></button>
-                            <button className="w-10 h-10 bg-red-500 text-white rounded-xl shadow-lg flex items-center justify-center"><span className="material-symbols-rounded">close</span></button>
+                            <button 
+                              disabled={actionLoading === v.id}
+                              onClick={() => handleVendorAction(v.id, 'APPROVED')}
+                              className="w-10 h-10 bg-green-500 text-white rounded-xl shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
+                            >
+                              {actionLoading === v.id ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded">check</span>}
+                            </button>
+                            <button 
+                              disabled={actionLoading === v.id}
+                              onClick={() => handleVendorAction(v.id, 'REJECTED')}
+                              className="w-10 h-10 bg-red-500 text-white rounded-xl shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
+                            >
+                              <span className="material-symbols-rounded">close</span>
+                            </button>
                           </div>
                         </div>
                         <Link href={v.docs} target="_blank" className="text-center text-[10px] py-2 bg-white rounded-xl border font-black text-[#1089A4] hover:bg-muted transition-all">تصفح المستندات البنكية والسجل التجاري</Link>
@@ -246,8 +289,20 @@ export default function AdminDashboard() {
                            </div>
                         </div>
                         <div className="flex gap-2">
-                           <button className="btn-icon-sm bg-green-500"><span className="material-symbols-rounded">done_all</span></button>
-                           <button className="btn-icon-sm bg-red-400"><span className="material-symbols-rounded">delete</span></button>
+                           <button 
+                             disabled={actionLoading === p.id}
+                             onClick={() => handleProductAction(p.id, 'APPROVE')}
+                             className="btn-icon-sm bg-green-500 disabled:opacity-50"
+                           >
+                             <span className="material-symbols-rounded">done_all</span>
+                           </button>
+                           <button 
+                             disabled={actionLoading === p.id}
+                             onClick={() => handleProductAction(p.id, 'REJECT')}
+                             className="btn-icon-sm bg-red-400 disabled:opacity-50"
+                           >
+                             <span className="material-symbols-rounded">delete</span>
+                           </button>
                         </div>
                       </div>
                     ))}

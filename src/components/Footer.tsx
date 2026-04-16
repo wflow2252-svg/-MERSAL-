@@ -58,8 +58,6 @@ export default function Footer() {
              <div className="bg-white/5 border border-white/10 p-10 rounded-[3rem] space-y-8 text-right shadow-2xl">
                 <h4 className="text-2xl font-black font-heading text-white">النشرة البريدية</h4>
                 <p className="text-[12px] text-white/50 font-black uppercase tracking-widest leading-relaxed">كن أول من يعرف بأحدث العروض والقطع الحصرية التي تصلنا.</p>
-ite">النشرة البريدية</h4>
-                <p className="text-[12px] text-white/30 font-black uppercase tracking-widest leading-relaxed">كن أول من يعرف بأحدث العروض والقطع الحصرية التي تصلنا.</p>
                 <div className="relative">
                    <input 
                     type="email" 

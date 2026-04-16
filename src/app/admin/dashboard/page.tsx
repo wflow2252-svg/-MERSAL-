@@ -84,10 +84,10 @@ export default function AdminDashboard() {
         <div className="p-8">
           <div className="glass-dark p-6 rounded-[2.5rem] flex items-center gap-4 border-2 border-white/5 shadow-2xl">
             <div className="relative w-12 h-12 rounded-2xl overflow-hidden shadow-elite-lg border-2 border-[#1089A4]">
-               <Image src={session.user?.image || "/logo.jpg"} alt="Admin" fill className="object-cover" />
+               <Image src={session?.user?.image || "/logo.jpg"} alt="Admin" fill className="object-cover" />
             </div>
             <div className="flex flex-col">
-              <span className="text-[11px] font-black uppercase tracking-[0.3em] text-white truncate max-w-[120px]">{session.user?.name}</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.3em] text-white truncate max-w-[120px]">{session?.user?.name || "مدير النظام"}</span>
               <span className="text-[9px] text-[#F29124] italic font-black uppercase tracking-widest">Root Authority</span>
             </div>
           </div>

@@ -88,7 +88,7 @@ export default function Navbar() {
 
   return (
     <nav className="w-full z-[100] flex flex-col kill-scroll">
-      {/* 1. Motta Top Bar (Hidden on Mobile) */}
+      {/* 1. Top Bar (Desktop Only) */}
       <div className="bg-[#021D24] text-white/50 py-3 border-b border-white/5 hidden md:flex justify-between items-center text-[10px] font-black uppercase">
         <div className="responsive-container flex justify-between items-center w-full">
           <div className="flex gap-10 items-center">
@@ -132,69 +132,62 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* 2. Main Navigation (Center-First on Mobile) */}
+      {/* 2. Main Navigation - Restored Premium Balance */}
       <div className={cn(
         "bg-white transition-all duration-700 w-full z-[100] kill-scroll",
-        isScrolled ? "fixed top-0 left-0 right-0 py-2 md:py-4 shadow-lg glass border-b border-white/50" : "py-3 md:py-10"
+        isScrolled ? "fixed top-0 left-0 right-0 py-3 md:py-4 shadow-lg glass border-b border-white/50" : "py-5 md:py-10"
       )}>
-        <div className="responsive-container flex items-center justify-center md:justify-between gap-4 md:gap-16 relative">
+        <div className="responsive-container flex items-center justify-between gap-4 md:gap-16 relative">
           
-          {/* Mobile Menu Icon (Absolute Start) */}
-          <button 
-            onClick={() => setIsMobileMenuOpen(true)} 
-            className="lg:hidden absolute left-4 md:left-8 w-10 h-10 bg-muted rounded-xl flex items-center justify-center hover:bg-[#1089A4] hover:text-white transition-all group"
-          >
-            <span className="material-symbols-rounded text-xl">segment</span>
-          </button>
-
-          {/* Logo (Centered on Mobile) */}
-          <Link href="/" className="flex items-center gap-2 md:gap-8 flex-shrink-0 group">
-            <div className="relative w-10 h-10 md:w-24 md:h-24 overflow-hidden rounded-xl md:rounded-[2rem] bg-white border-2 border-border/5 shadow-xl md:shadow-2xl group-hover:scale-105 transition-all p-1.5 md:p-3 ring-2 md:ring-[12px] ring-muted/20">
+          {/* Logo - Consolidated Responsive Branding */}
+          <Link href="/" className="flex items-center gap-3 md:gap-6 flex-shrink-0 group">
+            <div className="relative w-12 h-12 md:w-20 md:h-20 overflow-hidden rounded-2xl bg-white border-2 border-border/5 shadow-xl group-hover:scale-105 transition-all p-2 ring-4 ring-muted/20">
                <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
             </div>
             {!isScrolled && (
-              <div className="flex flex-col gap-0 md:gap-2">
-                <span className="text-sm md:text-4xl font-black tracking-tighter text-[#021D24] uppercase leading-none font-heading">Mersal</span>
-                <span className="text-[6px] md:text-[11px] text-[#F29124] font-black uppercase leading-none">Marketplace</span>
+              <div className="flex flex-col">
+                <span className="text-xl md:text-3xl font-black tracking-tighter text-[#021D24] uppercase leading-none font-heading">Mersal</span>
+                <span className="text-[9px] md:text-[11px] text-[#F29124] font-black uppercase leading-none hidden sm:block mt-1">Marketplace</span>
               </div>
             )}
           </Link>
 
-          {/* Desktop Search Bar */}
+          {/* Desktop Search Bar - Balanced Fluid Width */}
           <div className={cn(
-            "hidden lg:flex flex-grow max-w-[900px] rounded-full border-4 transition-all duration-500",
-            isScrolled ? "bg-white border-[#1089A4]/10 shadow-lg" : "bg-muted border-transparent"
+            "hidden lg:flex flex-grow max-w-[clamp(400px,50vw,750px)] rounded-full border-2 transition-all duration-500 overflow-hidden",
+            isScrolled ? "bg-white border-[#1089A4]/15 shadow-[0_8px_30px_rgba(16,137,164,0.12)]" : "bg-muted/80 border-white/20"
           )}>
-            <div className="px-12 py-6 text-[12px] font-black text-[#021D24]/40 uppercase flex items-center gap-6 border-l-2 border-border/50 cursor-pointer hover:text-[#1089A4] transition-all whitespace-nowrap group relative">
-              الأقسـام <span className="material-symbols-rounded text-2xl group-hover:translate-y-1 transition-transform">keyboard_arrow_down</span>
+            <div className="px-6 py-3 text-[11px] font-black text-[#021D24]/50 uppercase flex items-center gap-3 border-l-2 border-border/30 cursor-pointer hover:text-[#1089A4] transition-all whitespace-nowrap group relative">
+              الأقسـام <span className="material-symbols-rounded text-lg group-hover:translate-y-0.5 transition-transform">keyboard_arrow_down</span>
             </div>
             <input 
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              placeholder="ابحث عن هاتف، أزياء، أو كل ما تحلم به..." 
-              className="flex-grow px-12 bg-transparent outline-none text-lg font-bold text-[#021D24] placeholder:text-[#021D24]/20"
+              placeholder="ابحث عن أجهزة، أزياء، أو ما تحلم به..." 
+              className="flex-grow px-6 bg-transparent outline-none text-sm font-bold text-[#021D24] placeholder:text-[#021D24]/25"
             />
             <button 
               onClick={handleSearch}
-              className="bg-[#1089A4] text-white px-16 m-2 rounded-full flex items-center justify-center hover:bg-[#021D24] hover:shadow-[0_20px_60px_rgba(16,137,164,0.4)] transition-all active:scale-95 group"
+              className="relative bg-gradient-to-br from-[#1089A4] to-[#0a6b82] text-white px-8 py-3 m-1.5 rounded-full flex items-center justify-center gap-2 hover:shadow-[0_8px_25px_rgba(16,137,164,0.5)] transition-all active:scale-95 group overflow-hidden"
             >
-              <span className="material-symbols-rounded text-3xl group-hover:scale-125 transition-transform">search</span>
+              <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 skew-x-12" />
+              <span className="material-symbols-rounded text-xl group-hover:scale-110 transition-transform">search</span>
             </button>
           </div>
 
-          {/* Desktop/Mobile Right Controls */}
-          <div className="flex items-center gap-3 md:gap-14 absolute right-4 md:right-auto md:relative">
+          {/* Controls */}
+          <div className="flex items-center gap-4 md:gap-14">
             {/* Mobile Search Toggle */}
             <button 
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-muted text-[#1089A4] hover:bg-[#1089A4] hover:text-white transition-all shadow-sm"
+              className="lg:hidden w-12 h-12 flex items-center justify-center rounded-2xl bg-muted text-[#1089A4] hover:bg-[#1089A4] hover:text-white transition-all"
             >
-              <span className="material-symbols-rounded text-xl">{isSearchOpen ? 'close' : 'search'}</span>
+              <span className="material-symbols-rounded text-2xl">{isSearchOpen ? 'close' : 'search'}</span>
             </button>
 
-            {/* Profile (Desktop Only) */}
+            {/* Profile */}
             <Link href={session ? "/profile" : "/login"} className="hidden md:flex flex-col items-center gap-3 text-[#021D24]/40 hover:text-[#1089A4] transition-all group">
               {session?.user?.image ? (
                 <div className="relative w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border-2 border-border/20 group-hover:border-[#1089A4] transition-all">
@@ -206,17 +199,22 @@ export default function Navbar() {
               <span className="text-[10px] md:text-[11px] font-black uppercase">{session ? "حسابي" : "دخول"}</span>
             </Link>
 
-            {/* Cart Link (Desktop Only - Mobile uses Floating Nav) */}
-            <div className="hidden sm:flex items-center gap-4 md:gap-14 border-l-2 border-border/50 pl-4 md:pl-14">
+            {/* Cart */}
+            <div className="flex items-center gap-4 md:gap-14 border-l-2 border-border/50 pl-4 md:pl-14">
               <Link href="/cart" className="relative group transition-all">
                 <span className="material-symbols-rounded text-3xl md:text-4xl text-[#1089A4] group-hover:scale-125 transition-all">shopping_cart</span>
                 <span className="absolute -top-2 -right-2 md:-top-4 md:-right-4 bg-[#F29124] text-[#021D24] text-[8px] md:text-[12px] font-black w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center border-4 md:border-[6px] border-white shadow-2xl">{cartCount}</span>
               </Link>
             </div>
+
+            {/* Mobile Menu Toggle (Edge Position Restored) */}
+            <button onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden w-12 h-12 bg-muted rounded-2xl flex items-center justify-center hover:bg-[#1089A4] group transition-all">
+              <span className="material-symbols-rounded text-3xl group-hover:text-white">segment</span>
+            </button>
           </div>
         </div>
 
-        {/* Mobile Search Bar Expansion */}
+        {/* Mobile Search Expandable */}
         <AnimatePresence>
           {isSearchOpen && (
             <motion.div 
@@ -225,21 +223,21 @@ export default function Navbar() {
               exit={{ height: 0, opacity: 0 }}
               className="lg:hidden overflow-hidden bg-white border-t border-border/5 kill-scroll"
             >
-              <div className="p-4 py-6">
-                <div className="relative flex items-center bg-muted rounded-[2rem] p-2 border-2 border-[#1089A4]/10 focus-within:border-[#1089A4] transition-all">
+              <div className="p-6 py-8">
+                <div className="relative flex items-center bg-muted rounded-[2.5rem] p-3 border-2 border-transparent focus-within:border-[#1089A4]/20 transition-all">
                    <input 
                     type="text" 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                     placeholder="ابحث عن أجهزة، عطور، أو ملابس..." 
-                    className="flex-grow px-6 bg-transparent outline-none text-sm font-bold text-[#021D24] placeholder:text-[#021D24]/20"
+                    className="flex-grow px-8 bg-transparent outline-none text-base font-bold text-[#021D24] placeholder:text-[#021D24]/20 text-right"
                    />
                    <button 
                     onClick={handleSearch}
-                    className="bg-[#1089A4] text-white w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg active:scale-95"
+                    className="bg-[#1089A4] text-white w-14 h-14 rounded-3xl flex items-center justify-center shadow-lg active:scale-95"
                    >
-                     <span className="material-symbols-rounded text-lg">search</span>
+                     <span className="material-symbols-rounded text-2xl">search</span>
                    </button>
                 </div>
               </div>

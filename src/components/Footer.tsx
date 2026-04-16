@@ -55,9 +55,9 @@ export default function Footer() {
 
           {/* Newsletter / App Tier */}
           <div className="lg:col-span-4 space-y-10">
-             <div className="bg-white/5 border border-white/10 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] space-y-6 md:space-y-8 text-center lg:text-right">
-                <h4 className="text-xl font-black font-heading">اشترك في النشرة البريدية</h4>
-                <p className="text-[11px] text-white/30 font-black uppercase tracking-widest">كن أول من يعرف بأحدث العروض والمنتجات الحصرية.</p>
+             <div className="bg-white/5 border border-white/20 p-8 md:p-12 rounded-[2.5rem] md:rounded-[4rem] space-y-6 md:space-y-10 text-center lg:text-right shadow-2xl">
+                <h4 className="text-2xl font-black font-heading text-white">اشترك في النشرة البريدية</h4>
+                <p className="text-[12px] text-white/50 font-medium leading-relaxed">كن أول من يعرف بأحدث العروض والمنتجات الحصرية والخصومات السنوية.</p>
                 <div className="relative">
                    <input 
                     type="email" 

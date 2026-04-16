@@ -69,9 +69,9 @@ export default function Navbar() {
                <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
             </div>
             {!isScrolled && (
-              <div className="hidden lg:flex flex-col">
-                <span className="text-xl md:text-2xl font-extrabold text-[#011216] tracking-tight font-heading leading-none">Mersal</span>
-                <span className="text-[10px] text-[#1089A4] font-bold uppercase tracking-widest mt-1">Elite Market</span>
+              <div className="hidden lg:flex flex-col border-r-2 border-border/50 pr-4">
+                <span className="text-xl md:text-2xl font-black text-[#011216] tracking-tighter font-heading leading-none">Mersal Elite</span>
+                <span className="text-[9px] text-[#1089A4] font-black uppercase tracking-[0.3em] mt-1">Luxury Marketplace</span>
               </div>
             )}
           </Link>

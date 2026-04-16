@@ -12,43 +12,42 @@ export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center p-4 md:p-6 pt-32 pb-20">
-      <div className="max-w-[1200px] w-full bg-white rounded-[2rem] md:rounded-[4rem] shadow-[0_50px_100px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col lg:flex-row border border-border/5">
+    <div className="min-h-screen bg-[#F8FBFB] flex items-center justify-center p-4 md:p-8 lg:p-12 pt-28 md:pt-32 pb-16">
+      <div className="max-w-[1100px] w-full bg-white rounded-[2.5rem] md:rounded-[4rem] shadow-2xl overflow-hidden flex flex-col lg:grid lg:grid-cols-2 border border-border/50">
         
-        {/* Visual Brand Side */}
-        <div className="lg:w-1/2 bg-[#021D24] p-8 md:p-16 lg:p-24 relative overflow-hidden flex flex-col justify-between min-h-[300px] md:min-h-[500px]">
+        {/* Visual Brand Side - Stable Grid Child */}
+         <div className="bg-[#021D24] p-10 md:p-16 flex flex-col justify-between relative overflow-hidden min-h-[350px] lg:min-h-full">
            <div className="relative z-10 space-y-6 md:space-y-8 text-right">
               <Link href="/" className="inline-block">
-                 <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl md:rounded-3xl p-2 md:p-3 shadow-2xl">
-                    <Image src="/logo.jpg" alt="Logo" width={80} height={80} className="object-contain" />
+                 <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl p-2.5 shadow-2xl">
+                    <Image src="/logo.jpg" alt="Logo" width={64} height={64} className="object-contain" />
                  </div>
               </Link>
-              <h1 className="text-3xl md:text-5xl lg:text-7xl font-black text-white tracking-tighter leading-tight font-heading">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-[1.1] font-heading">
                 مـرحـباً بـك <br /> فـي <span className="text-[#1089A4]">مـرسـال</span>
               </h1>
-              <p className="text-white/60 text-sm md:text-lg font-medium max-w-[280px] md:max-w-sm leading-relaxed pr-4 md:pr-6 border-r-4 border-[#F29124]">
+              <p className="text-white/50 text-[13px] md:text-base font-medium max-w-[320px] leading-relaxed pr-5 border-r-4 border-[#F29124]">
                 انضم لأكبر منصة تجارية في السودان، وابدأ رحلة تسوق استثنائية اليوم.
               </p>
            </div>
 
-           <div className="relative z-10 flex items-center gap-6 justify-end">
-              <span className="text-white/20 text-xs font-black uppercase tracking-widest">+50K مستخدم نشط</span>
-              <div className="flex -space-x-4">
+           <div className="relative z-10 flex items-center gap-5 justify-end mt-12 lg:mt-0">
+              <span className="text-white/20 text-[10px] font-black uppercase tracking-widest">+50K مستخدم نشط</span>
+              <div className="flex -space-x-3">
                  {[1, 2, 3].map((i) => (
-                   <div key={i} className="w-12 h-12 rounded-full border-4 border-[#021D24] bg-muted overflow-hidden relative">
-                      <Image src={`https://images.unsplash.com/photo-${1500000000000 + i * 100000}?auto=format&fit=crop&q=80&w=100`} alt="User" fill className="object-cover" />
-                   </div>
+                    <div key={i} className="w-10 h-10 rounded-full border-2 border-[#021D24] bg-[#1089A4]/10 overflow-hidden relative">
+                       <Image src={`https://images.unsplash.com/photo-${1500000000000 + i * 100000}?auto=format&fit=crop&q=80&w=100`} alt="User" fill className="object-cover" />
+                    </div>
                  ))}
               </div>
            </div>
 
-           {/* Decorative Background */}
-           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#1089A4]/10 blur-[150px] rounded-full" />
-           <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-[#F29124]/5 blur-[120px] rounded-full" />
+           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#1089A4]/15 blur-[120px] rounded-full" />
+           <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-[#F29124]/5 blur-[100px] rounded-full" />
         </div>
 
-        {/* Form Side */}
-        <div className="lg:w-1/2 p-8 md:p-16 lg:p-24 flex flex-col justify-center text-right">
+        {/* Form Side - Stable Grid Child */}
+        <div className="p-8 md:p-16 lg:p-20 flex flex-col justify-center text-right bg-white">
            <AnimatePresence mode="wait">
               <motion.div 
                 key={isLogin ? "login" : "signup"}

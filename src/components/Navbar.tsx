@@ -33,7 +33,7 @@ export default function Navbar() {
       {/* 1. Motta TOPBAR (Utility) */}
       <div className="bg-primary text-white/50 py-3 hidden lg:block border-b border-white/5">
         <div className="responsive-container flex justify-between items-center text-[9px] font-black uppercase tracking-[0.25em]">
-           <div className="flex gap-10">
+           <div className="flex gap-10 font-inter">
               <span className="flex items-center gap-2">
                  <span className="material-symbols-rounded text-secondary text-[14px]">verified</span> سوق مرسال النخبة المعتمد
               </span>

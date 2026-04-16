@@ -112,7 +112,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-background pt-28 pb-10 px-4 md:px-8 relative overflow-hidden flex flex-col items-center justify-center">
+    <div className="w-full min-h-screen bg-background pt-32 md:pt-48 pb-24 px-4 md:px-8 relative overflow-hidden flex flex-col items-center">
       
       {/* Neo-Luxury Ambience */}
       <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-primary/5 blur-[200px] rounded-full pointer-events-none" />

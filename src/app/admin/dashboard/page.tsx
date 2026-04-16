@@ -386,14 +386,110 @@ export default function AdminDashboard() {
               </motion.div>
             )}
 
-            {/* 4. SETTINGS (MAINTENANCE) */}
+            {/* 4. VENDORS (STORES) */}
+            {activeTab === "vendors" && (
+                <motion.div key="vendors" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+                   <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                      <div className="text-right w-full">
+                         <h2 className="text-2xl md:text-3xl font-black text-[#021D24] tracking-tighter">دليل الموردين المعتمدين</h2>
+                         <p className="text-xs text-muted-foreground mt-1">إدارة واعتماد المتاجر النشطة في المنصة</p>
+                      </div>
+                      <div className="flex gap-4 w-full justify-end">
+                         <button className="bg-[#1089A4] text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl">دعوة مورد +</button>
+                      </div>
+                   </div>
+
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      {[
+                        { name: "متجر الفخامة للهواتف", owner: "أحمد علي", sales: "145", status: "نشط" },
+                        { name: "رسيل للتقنية", owner: "محمد عثمان", sales: "89", status: "نشط" },
+                        { name: "ميديل ديزاين", owner: "سارة النور", sales: "12", status: "قيد المراجعة" },
+                        { name: "واحة العطور", owner: "خالد إبراهيم", sales: "56", status: "نشط" }
+                      ].map((store, i) => (
+                        <div key={i} className="bg-white p-6 md:p-8 rounded-[2.5rem] md:rounded-[3rem] shadow-xl border border-primary/5 group hover:-translate-y-2 transition-all duration-500">
+                           <div className="flex justify-between items-start mb-8">
+                              <div className="w-16 h-16 rounded-2xl bg-[#021D24] text-white flex items-center justify-center font-black text-xl">{store.name[0]}</div>
+                              <span className={cn(
+                                "text-[9px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest",
+                                store.status === "نشط" ? "bg-green-50 text-green-500" : "bg-orange-50 text-orange-500"
+                              )}>{store.status}</span>
+                           </div>
+                           <h3 className="text-xl font-black text-[#021D24] mb-2">{store.name}</h3>
+                           <p className="text-xs text-muted-foreground font-bold mb-6">المالك: {store.owner}</p>
+                           
+                           <div className="grid grid-cols-2 gap-4 border-t border-muted pt-6">
+                              <div>
+                                 <span className="text-[10px] font-black uppercase text-muted-foreground block">المبيعات</span>
+                                 <span className="text-lg font-black text-primary">{store.sales} منتج</span>
+                              </div>
+                           </div>
+                           
+                           <div className="mt-8 flex gap-3">
+                              <button className="flex-1 bg-muted p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-50 hover:text-red-500 transition-colors">إيقاف</button>
+                              <button className="flex-1 bg-[#021D24] text-white p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">عرض التقارير</button>
+                           </div>
+                        </div>
+                      ))}
+                   </div>
+                </motion.div>
+             )}
+
+            {/* 5. FINANCE (MONEY) */}
+            {activeTab === "finance" && (
+              <motion.div key="finance" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+                {/* Financial Overview Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                   {[
+                     { label: "إجمالي المبيعات", value: "1,240,500", trend: "+12%", color: "primary" },
+                     { label: "صافي الأرباح", value: "850,200", trend: "+8.5%", color: "secondary" },
+                     { label: "عمولات المنصة", value: "124,050", trend: "+10%", color: "accent" }
+                   ].map((stat, i) => (
+                     <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-primary/5 flex flex-col items-center text-center">
+                        <span className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] mb-4">{stat.label}</span>
+                        <span className="text-3xl font-black text-primary mb-2">{stat.value} <span className="text-xs">ج.س</span></span>
+                        <span className="text-[10px] font-bold text-green-500 bg-green-50 px-3 py-1 rounded-full">{stat.trend} زيادة هذا الشهر</span>
+                     </div>
+                   ))}
+                </div>
+
+                {/* Payout Requests */}
+                <div className="bg-[#021D24] text-white rounded-[3rem] p-6 md:p-10 shadow-2xl overflow-hidden relative">
+                   <div className="relative z-10 flex flex-col md:flex-row items-center justify-between mb-10 gap-6">
+                      <h3 className="text-xl md:text-2xl font-black font-heading tracking-tight italic">طلبات سحب الأرباح المعلقة</h3>
+                      <button className="bg-[#F29124] text-white px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl">تسوية الطلبات</button>
+                   </div>
+                   
+                   <div className="space-y-4">
+                      {[
+                        { vendor: "متجر الفخامة", amount: "45,000", date: "منذ ساعتين", method: "بنك الخرطوم" },
+                        { vendor: "رسيل للتقنية", amount: "12,400", date: "منذ 5 ساعات", method: "كاش كارد" }
+                      ].map((req, i) => (
+                        <div key={i} className="bg-white/5 border border-white/10 p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between hover:bg-white/10 transition-all gap-4">
+                           <div className="flex items-center gap-5 w-full">
+                              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center font-black">V</div>
+                              <div>
+                                 <p className="font-black text-sm">{req.vendor}</p>
+                                 <p className="text-[10px] text-white/40">{req.method} • {req.date}</p>
+                              </div>
+                           </div>
+                           <div className="text-right w-full sm:w-auto">
+                              <p className="font-black text-md text-[#F29124]">{req.amount} ج.س</p>
+                           </div>
+                        </div>
+                      ))}
+                   </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* 6. SETTINGS (MAINTENANCE) */}
             {activeTab === "settings" && (
               <motion.div key="settings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto space-y-12">
                 
                 {/* Sovereignty Stats */}
-                <div className="bg-[#021D24] text-white rounded-[3rem] p-12 border-[8px] border-white shadow-2xl relative overflow-hidden">
-                   <div className="z-10 relative space-y-8">
-                      <h3 className="text-4xl font-black font-heading leading-tight italic text-[#F29124]">وضـع الـسـيـادة الـكـامـلـة</h3>
+                <div className="bg-[#021D24] text-white rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 border-[4px] md:border-[8px] border-white shadow-2xl relative overflow-hidden">
+                   <div className="z-10 relative space-y-6 md:space-y-8">
+                      <h3 className="text-2xl md:text-3xl lg:text-4xl font-black font-heading leading-tight italic text-[#F29124]">وضـع الـسـيـادة الـكـامـلـة</h3>
                       <div className="flex flex-col gap-6">
                          <div className="flex items-center justify-between p-6 bg-white/5 rounded-3xl border border-white/10">
                             <div>

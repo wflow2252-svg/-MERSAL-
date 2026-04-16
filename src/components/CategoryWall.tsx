@@ -75,7 +75,9 @@ export default function CategoryWall() {
                   <span className="material-symbols-rounded text-white text-lg">{wallItems[0].icon}</span>
                </div>
                <h3 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight mb-8 md:mb-12 font-heading leading-tight">{wallItems[0].name}</h3>
-               <button className="bg-white/10 backdrop-blur-md text-white px-12 py-5 rounded-xl w-fit mr-auto border border-white/20 font-bold text-[12px] uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all shadow-2xl">استكشف</button>
+               <button className="bg-white/10 backdrop-blur-md text-white h-14 px-12 rounded-xl w-fit mr-auto border border-white/20 font-black text-sm uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all shadow-2xl flex items-center justify-center">
+                 استكشف
+               </button>
             </div>
           </Link>
 

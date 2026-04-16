@@ -197,31 +197,31 @@ export default function ProfilePage() {
                     </div>
                  </div>
 
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-4">
-                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block">العمر المعتمد</label>
+                 <div className="flex flex-col items-center gap-8 w-full">
+                    <div className="space-y-4 w-full">
+                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block text-center">العمر المعتمد</label>
                        {isEditing ? (
                          <input type="number" value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} className="w-full max-w-sm mx-auto bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-center transition-all block" placeholder="أدخل عمرك..." />
                        ) : (
-                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm max-w-sm mx-auto">
+                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm max-w-sm mx-auto w-full max-w-sm">
                            <p className="text-xl font-black text-primary">{formData.age ? `${formData.age} عاماً` : "غير مسجل"}</p>
                          </div>
                        )}
                     </div>
-                    <div className="space-y-4">
-                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block">رقم الاتصال</label>
+                    <div className="space-y-4 w-full">
+                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block text-center">رقم الاتصال</label>
                        {isEditing ? (
                          <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full max-w-sm mx-auto bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-center transition-all block" placeholder="أدخل رقم الهاتف..." />
                        ) : (
-                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm max-w-sm mx-auto">
+                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm max-w-sm mx-auto w-full max-w-sm">
                            <p className="text-xl font-black text-primary" dir="ltr">{formData.phone || "غير مسجل"}</p>
                          </div>
                        )}
                     </div>
                  </div>
 
-                 <div className="pt-8">
-                    <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block mb-6">النطاق التفضيلي</label>
+                 <div className="pt-12">
+                    <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block text-center mb-8">النطاق التفضيلي</label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
                        {CATEGORIES.map((cat) => (
                          <button 
@@ -251,32 +251,33 @@ export default function ProfilePage() {
                     </div>
                  </div>
 
-                 <div className="pt-12 flex flex-col md:flex-row gap-6 border-t border-primary/5">
+                 <div className="pt-16 flex flex-col gap-6 border-t border-primary/5 w-full max-w-xs mx-auto">
                     {isEditing ? (
                       <>
-                        <button onClick={handleSave} disabled={isSaving} className="flex-1 bg-secondary text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(245,149,37,0.3)] hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
-                           {isSaving ? "جاري التشفير..." : "اعتماد الهوية السيادية"} <span className="material-symbols-rounded text-xl">done_all</span>
+                        <button onClick={handleSave} disabled={isSaving} className="w-full bg-secondary text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(245,149,37,0.3)] hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
+                           {isSaving ? "جاري التشفير..." : "اعتماد الهوية"} <span className="material-symbols-rounded text-xl">done_all</span>
                         </button>
-                        <button onClick={() => setIsEditing(false)} className="px-12 py-6 rounded-[2rem] bg-white border-2 border-primary/10 text-primary font-black text-sm uppercase tracking-[0.2em] hover:bg-muted transition-colors">إلغاء</button>
+                        <button onClick={() => setIsEditing(false)} className="w-full px-12 py-6 rounded-[2rem] bg-white border-2 border-primary/10 text-primary font-black text-sm uppercase tracking-[0.2em] hover:bg-muted transition-colors">إلغاء</button>
                       </>
                     ) : (
                       <button onClick={() => setIsEditing(true)} className="w-full bg-primary text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(3,141,177,0.3)] hover:scale-[1.02] transition-transform flex items-center justify-center gap-3 group">
-                         تحديث الرمز السيادي <span className="material-symbols-rounded text-xl group-hover:rotate-45 transition-transform">edit_square</span>
+                         تحديث الرمز <span className="material-symbols-rounded text-xl group-hover:rotate-45 transition-transform">edit_square</span>
                       </button>
                     )}
                  </div>
               </div>
 
               {/* Danger Zone */}
-              <div className="bg-red-50/50 rounded-[3rem] p-10 border border-red-100 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden group">
-                 <div className="absolute right-0 top-0 w-2 h-full bg-red-400 group-hover:w-full group-hover:opacity-5 transition-all duration-700" />
-                 <div className="text-center md:text-right flex flex-col md:flex-row items-center gap-8 relative z-10 w-full justify-center">
-                    <div className="w-16 h-16 rounded-[1.5rem] bg-red-100 flex items-center justify-center text-red-500 shadow-inner flex-none">
-                       <span className="material-symbols-rounded text-3xl">warning</span>
+              <div className="bg-red-50/50 rounded-[3rem] p-10 border border-red-100 flex flex-col items-center justify-center gap-8 relative overflow-hidden group text-center mx-auto max-w-2xl text-center">
+                 <div className="absolute top-0 left-0 w-full h-2 bg-red-400 group-hover:h-full group-hover:opacity-5 transition-all duration-700" />
+                 
+                 <div className="flex flex-col items-center gap-4 relative z-10 w-full justify-center">
+                    <div className="w-20 h-20 rounded-[2rem] bg-red-100 flex items-center justify-center text-red-500 shadow-inner flex-none mb-2">
+                       <span className="material-symbols-rounded text-4xl">warning</span>
                     </div>
                     <div>
-                       <h3 className="text-xl font-black text-red-600 mb-1">بروتوكول التدمير</h3>
-                       <p className="text-xs font-bold text-red-400/80">إلغاء الحساب يمحو كل الرموز والامتيازات بشكل نهائي ولا رجعة فيه.</p>
+                       <h3 className="text-2xl font-black text-red-600 mb-2">بروتوكول التدمير</h3>
+                       <p className="text-sm font-bold text-red-400/80">إلغاء الحساب يمحو كل الرموز والامتيازات بشكل نهائي ولا رجعة فيه.</p>
                     </div>
                  </div>
                  

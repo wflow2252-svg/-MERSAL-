@@ -62,9 +62,9 @@ export default function Footer() {
                    <input 
                     type="email" 
                     placeholder="بريدك الإلكتروني" 
-                    className="w-full bg-[#021D24] border-2 border-white/5 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#1089A4] transition-all"
+                    className="motta-input !bg-white/5 !border-white/10 focus:!border-[#1089A4]/40"
                    />
-                   <button className="absolute left-2 top-2 bottom-2 bg-[#1089A4] text-white px-8 rounded-xl font-black text-[10px] uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">انضم</button>
+                   <button className="absolute left-2 top-2 bottom-2 btn-motta-primary px-8 rounded-xl text-[10px]">انضم</button>
                 </div>
              </div>
           </div>

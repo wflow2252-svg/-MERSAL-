@@ -57,7 +57,7 @@ export default async function ShopPage(props: {
                     <span>/</span>
                     <span className="text-[#021D24]">المتجر</span>
                 </nav>
-                <div className="glass px-6 md:px-10 py-3 md:py-4 rounded-3xl border-2 border-white shadow-xl flex items-center gap-4 w-full md:w-auto justify-center">
+                <div className="btn-motta-ghost px-6 md:px-10 py-3 md:py-4 border-2 border-white/50 shadow-xl w-full md:w-auto">
                     <span className="material-symbols-rounded text-[#1089A4]">sort</span>
                     <span className="text-[10px] md:text-sm font-black uppercase tracking-widest text-[#021D24]/60">{products.length} منتجات متوفرة حالياً</span>
                 </div>
@@ -85,15 +85,15 @@ export default async function ShopPage(props: {
                     <h2 className="text-5xl font-black text-[#021D24] tracking-tighter font-heading">لم نجد أي نتائج</h2>
                     <p className="text-xl font-medium text-[#021D24]/30">جرب البحث بكلمات مختلفة أو تصفح الأقسام العامة</p>
                  </div>
-                 <Link href="/shop" className="inline-block bg-[#1089A4] text-white px-20 py-7 rounded-[2.5rem] font-black text-sm uppercase tracking-[0.4em] shadow-2xl hover:scale-110 transition-all">عرض كافة المنتجات</Link>
+                 <Link href="/shop" className="btn-motta-primary px-20 py-7 rounded-[2.5rem] tracking-[0.4em]">عرض كافة المنتجات</Link>
               </div>
             )}
 
             <div className="flex items-center justify-center gap-4 pt-20">
-               <button className="w-14 h-14 glass rounded-2xl flex items-center justify-center text-[#1089A4] border-2 border-white shadow-xl opacity-40 cursor-not-allowed"><span className="material-symbols-rounded">chevron_right</span></button>
-               <button className="w-14 h-14 bg-[#1089A4] text-white rounded-2xl flex items-center justify-center font-black text-sm shadow-2xl shadow-[#1089A4]/30 border-b-4 border-black/10">1</button>
-               <button className="w-14 h-14 glass rounded-2xl flex items-center justify-center text-[#021D24]/40 hover:bg-white hover:text-[#1089A4] border-2 border-white shadow-xl transition-all font-black text-sm">2</button>
-               <button className="w-14 h-14 glass rounded-2xl flex items-center justify-center text-[#1089A4] hover:bg-white border-2 border-white shadow-xl transition-all hover:scale-110 active:scale-95"><span className="material-symbols-rounded">chevron_left</span></button>
+               <button className="w-14 h-14 btn-motta-ghost opacity-40 cursor-not-allowed"><span className="material-symbols-rounded">chevron_right</span></button>
+               <button className="w-14 h-14 btn-motta-primary shadow-2xl shadow-[#1089A4]/30 border-b-4 border-black/10">1</button>
+               <button className="w-14 h-14 btn-motta-ghost hover:text-[#1089A4]">2</button>
+               <button className="w-14 h-14 btn-motta-ghost hover:scale-110 active:scale-95 text-[#1089A4]"><span className="material-symbols-rounded">chevron_left</span></button>
             </div>
         </main>
       </div>

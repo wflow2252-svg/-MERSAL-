@@ -54,8 +54,8 @@ export default function CategoryWall() {
               </h2>
            </div>
            
-           <Link href="/categories" className="group flex items-center gap-4 md:gap-6 bg-muted px-8 md:px-10 py-4 md:py-5 rounded-[2rem] hover:bg-[#1089A4] transition-all duration-500">
-              <span className="text-[10px] md:text-xs font-black text-[#021D24] group-hover:text-white uppercase tracking-widest">عرض الكل</span>
+           <Link href="/categories" className="group flex items-center gap-4 md:gap-6 btn-motta-ghost px-8 md:px-10 py-4 md:py-5 border-none shadow-none">
+              <span className="text-[10px] md:text-xs font-black text-[#021D24] group-hover:text-[#1089A4] uppercase tracking-widest">عرض الكل</span>
               <span className="material-symbols-rounded bg-white text-[#1089A4] p-2 md:p-2.5 rounded-full group-hover:rotate-[-45deg] transition-all shadow-lg">trending_flat</span>
            </Link>
         </div>

@@ -3,6 +3,10 @@ import { Suspense } from "react";
 import { Providers } from "@/components/Providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { prisma } from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Mersal Elite | Luxury Marketplace & Vendor Hub",
@@ -19,11 +23,14 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // ── Maintenance Mode Check is handled via Navbar check ──
+
+
   return (
     <html lang="ar" dir="rtl">
       <head>

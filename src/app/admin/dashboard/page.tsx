@@ -10,309 +10,414 @@ import Link from "next/link";
 const NAV_ITEMS = [
   { id: "overview",  icon: "dashboard_customize", label: "التحكم" },
   { id: "approvals", icon: "verified",             label: "الموافقات" },
-  { id: "vendors",   icon: "group",                label: "الموردين" },
+  { id: "users",     icon: "person_search",        label: "المستخدمين" },
+  { id: "vendors",   icon: "storefront",           label: "الموردين" },
   { id: "finance",   icon: "account_balance",      label: "المالية" },
-  { id: "settings",  icon: "admin_panel_settings", label: "الإعدادات" },
+  { id: "settings",  icon: "security",             label: "السيادة" },
 ];
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const [activeTab, setActiveTab] = useState("overview");
-  const [stats, setStats] = useState<any[]>([]);
-  const [pendingVendors, setPendingVendors] = useState<any[]>([]);
-  const [exchangeRate, setExchangeRate] = useState(600);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchStats() {
-      try {
-        const res = await fetch("/api/admin/stats");
-        if (res.ok) {
-          const data = await res.json();
-          setStats(data.stats);
-          setPendingVendors(data.pendingVendors);
-          setExchangeRate(data.exchangeRate);
-        }
-      } catch (error) {
-        console.error("Failed to fetch admin stats", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    if (session?.user && (session.user as any).role === "ADMIN") {
-      fetchStats();
-    }
-  }, [session]);
+  // Data States
+  const [stats, setStats] = useState<any[]>([]);
+  const [pendingVendors, setPendingVendors] = useState<any[]>([]);
+  const [pendingProducts, setPendingProducts] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [allVendors, setAllVendors] = useState<any[]>([]);
+  const [sysSettings, setSysSettings] = useState<any>(null);
+  const [admins, setAdmins] = useState<any[]>([]);
 
-  if (status === "loading" || loading) {
+  // Fetch Core Stats
+  const fetchStats = async () => {
+    try {
+      const res = await fetch("/api/admin/stats");
+      if (res.ok) {
+        const data = await res.json();
+        setStats(data.stats);
+        setPendingVendors(data.pendingVendors);
+      }
+    } catch (e) { console.error(e); }
+  };
+
+  // Tab Specific Fetching
+  useEffect(() => {
+    if (!session) return;
+    
+    const fetchData = async () => {
+      setLoading(true);
+      if (activeTab === "overview") await fetchStats();
+      if (activeTab === "approvals") {
+        await fetchStats();
+        const pRes = await fetch("/api/admin/products");
+        if (pRes.ok) setPendingProducts(await pRes.json());
+      }
+      if (activeTab === "users") {
+        const uRes = await fetch("/api/admin/users");
+        if (uRes.ok) setUsers(await uRes.json());
+      }
+      if (activeTab === "settings") {
+        const sRes = await fetch("/api/admin/settings");
+        if (sRes.ok) {
+          const data = await sRes.json();
+          setSysSettings(data.settings);
+          setAdmins(data.admins);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [activeTab, session]);
+
+  if (status === "loading" || (loading && stats.length === 0)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#021D24]">
         <div className="flex flex-col items-center gap-6">
           <div className="w-16 h-16 border-4 border-[#1089A4] border-t-transparent rounded-full animate-spin" />
-          <p className="text-white/40 font-black uppercase tracking-[0.5em] text-[10px]">Verifying Administrative Authority</p>
+          <p className="text-white/40 font-black uppercase tracking-[0.5em] text-[10px]">Verifying Authority...</p>
         </div>
-      </div>
-    );
-  }
-
-  if ((session?.user as any).role !== "ADMIN") {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-8 bg-[#021D24]">
-        <span className="material-symbols-rounded text-red-500 text-8xl">lock_open</span>
-        <h1 className="text-white text-3xl font-black">غير مصرح لك بدخول هذه المنطقة</h1>
-        <Link href="/" className="btn-primary">العودة للرئيسية</Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-muted/40 flex overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#F8F9FA] flex overflow-hidden font-sans rtl" dir="rtl">
 
-      {/* ── Desktop Sidebar ── */}
-      <aside className="hidden lg:flex w-80 bg-[#021D24] text-white flex-col pt-12 shadow-[40px_0_80px_rgba(2,29,36,0.3)] border-l border-white/5 relative z-20">
+      {/* ── Sidebar ── */}
+      <aside className="hidden lg:flex w-80 bg-[#021D24] text-white flex-col pt-12 shadow-2xl relative z-20">
         <div className="px-10 mb-16 flex items-center gap-4">
-          <div className="relative w-12 h-12 overflow-hidden rounded-2xl bg-white p-2 shadow-2xl ring-4 ring-white/10">
-            <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-black text-xl tracking-tighter uppercase leading-none text-[#1089A4] font-heading">Morsall</span>
-            <span className="text-[10px] font-black tracking-[0.3em] uppercase text-white/40 mt-1.5">Admin Core</span>
-          </div>
+           <div className="relative w-12 h-12 rounded-2xl bg-white p-2">
+              <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
+           </div>
+           <div className="flex flex-col">
+              <span className="font-black text-xl text-[#1089A4] font-heading">مـرسـال</span>
+              <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">المقر المركزي</span>
+           </div>
         </div>
 
-        <nav className="flex-grow px-6 space-y-3">
-          {NAV_ITEMS.map((item) => (
-            <AdminEliteNavItem
+        <nav className="flex-grow px-6 space-y-2">
+          {NAV_ITEMS.map(item => (
+            <button
               key={item.id}
-              active={activeTab === item.id}
               onClick={() => setActiveTab(item.id)}
-              icon={item.icon}
-              label={item.id === "settings" ? "الإعدادات السيادية" : item.label}
-            />
+              className={cn(
+                "w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all",
+                activeTab === item.id ? "bg-[#1089A4] text-white shadow-xl" : "text-white/30 hover:bg-white/5 hover:text-white"
+              )}
+            >
+              <span className="material-symbols-rounded">{item.icon}</span>
+              {item.label}
+            </button>
           ))}
         </nav>
 
         <div className="p-8">
-          <div className="glass-dark p-6 rounded-[2.5rem] flex items-center gap-4 border-2 border-white/5 shadow-2xl">
-            <div className="relative w-12 h-12 rounded-2xl overflow-hidden shadow-elite-lg border-2 border-[#1089A4]">
-              <Image src={session?.user?.image || "/logo.jpg"} alt="Admin" fill className="object-cover" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[11px] font-black uppercase tracking-[0.3em] text-white truncate max-w-[120px]">
-                {session?.user?.name || "مدير النظام"}
-              </span>
-              <span className="text-[9px] text-[#F29124] italic font-black uppercase tracking-widest">Root Authority</span>
-            </div>
-          </div>
+           <div className="bg-white/5 p-4 rounded-2xl flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#1089A4] flex items-center justify-center font-bold">{session?.user?.name?.[0]}</div>
+              <div className="flex flex-col">
+                 <span className="text-[10px] font-black">{session?.user?.name}</span>
+                 <span className="text-[8px] text-[#F29124] uppercase font-black">Super Admin</span>
+              </div>
+           </div>
         </div>
       </aside>
 
-      {/* ── Main Content ── */}
-      <main className="flex-grow flex flex-col overflow-y-auto relative z-10 pb-24 lg:pb-0">
-
+      {/* ── Main ── */}
+      <main className="flex-grow flex flex-col overflow-y-auto relative bg-[#F8F9FA] pb-32 lg:pb-0">
+        
         {/* Header */}
-        <header className="h-20 lg:h-28 bg-white/70 backdrop-blur-2xl border-b border-border/50 flex items-center justify-between px-6 lg:px-16 flex-shrink-0 sticky top-0 z-50">
-          <h2 className="text-lg lg:text-2xl font-black uppercase tracking-tighter text-[#1089A4] font-heading">
-            أنظمة التحكم المركزية
-          </h2>
-          <div className="flex items-center gap-4 lg:gap-10">
-            <div className="flex items-center gap-3 glass px-4 lg:px-8 py-3 rounded-2xl border-2 border-white shadow-xl">
-              <span className="hidden lg:block text-[10px] font-black text-[#021D24]/30 uppercase tracking-[0.4em]">Exchange (USD):</span>
-              <span className="text-lg font-black text-[#1089A4] tracking-tighter leading-none">
-                {exchangeRate}.00 <span className="text-[10px]">ج.س</span>
-              </span>
-            </div>
-            <button className="w-12 h-12 glass text-[#021D24]/30 rounded-[1.25rem] relative hover:text-red-500 transition-all border-2 border-white shadow-xl flex items-center justify-center">
-              <span className="material-symbols-rounded text-2xl font-light">notifications_active</span>
-              <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-4 border-white shadow-xl" />
-            </button>
-          </div>
+        <header className="h-20 lg:h-24 bg-white border-b flex items-center justify-between px-8 lg:px-12 sticky top-0 z-40">
+           <h2 className="text-xl font-black text-[#021D24] font-heading">
+              {NAV_ITEMS.find(i => i.id === activeTab)?.label}
+           </h2>
+           <div className="flex items-center gap-6">
+              {activeTab === "finance" && (
+                <button 
+                  onClick={() => window.open('/api/admin/reports/excel')}
+                  className="bg-[#1089A4] text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg hover:bg-[#F29124] transition-all"
+                >
+                  <span className="material-symbols-rounded text-sm">download</span>
+                  تقرير إكسل الشهري
+                </button>
+              )}
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-[#021D24]/30 hover:text-[#1089A4] cursor-pointer transition-colors">
+                 <span className="material-symbols-rounded">notifications</span>
+              </div>
+           </div>
         </header>
 
-        {/* Content */}
-        <div className="p-6 lg:p-16 space-y-10 lg:space-y-20 max-w-[1920px] mx-auto w-full">
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-14">
-            {stats.map((stat, i) => (
-              <div key={i} className="bg-white p-8 lg:p-14 rounded-[3rem] lg:rounded-[4.5rem] border-[8px] lg:border-[12px] border-white shadow-[0_45px_100px_-20px_rgba(0,0,0,0.08)] flex items-center gap-8 lg:gap-10 hover:shadow-[0_60px_120px_-20px_rgba(0,0,0,0.12)] transition-all group relative overflow-hidden">
-                <div className={cn("w-16 h-16 lg:w-24 lg:h-24 rounded-[1.5rem] lg:rounded-[2rem] text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform relative z-10 border-b-8 border-black/10", stat.color)}>
-                  <span className="material-symbols-rounded text-2xl lg:text-4xl">{stat.icon}</span>
-                </div>
-                <div className="flex flex-col gap-1 relative z-10">
-                  <span className="text-[#021D24]/20 text-[10px] font-black uppercase tracking-[0.5em] mb-1">{stat.label}</span>
-                  <span className="text-3xl lg:text-5xl font-black tracking-tighter text-[#021D24] font-heading leading-none">{stat.value}</span>
-                </div>
-                <div className="absolute top-[-30px] right-[-30px] w-64 h-64 bg-muted/30 rounded-full blur-[80px] pointer-events-none" />
-              </div>
-            ))}
-          </div>
-
-          {/* Dynamic Views */}
+        {/* Dynamic Content Area */}
+        <div className="p-6 lg:p-12 space-y-10">
+          
           <AnimatePresence mode="wait">
+            
+            {/* 1. OVERVIEW */}
             {activeTab === "overview" && (
-              <motion.div
-                key="overview"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14"
-              >
-                {/* Pending Vendors */}
-                <div className="bg-white rounded-[3rem] lg:rounded-[5rem] border-[8px] lg:border-[16px] border-white shadow-[0_50px_120px_-30px_rgba(0,0,0,0.1)] overflow-hidden">
-                  <div className="px-8 lg:px-16 py-10 border-b border-border/50 flex items-center justify-between">
-                    <div className="flex flex-col gap-2">
-                      <h3 className="font-black text-2xl lg:text-4xl tracking-tighter text-[#021D24] font-heading">طلبات الانضمام</h3>
-                      <p className="text-[#021D24]/20 text-[9px] font-black uppercase tracking-[0.4em]">Live Queue Management</p>
+              <motion.div key="overview" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-10">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {stats.map((s, i) => (
+                    <div key={i} className="bg-white p-10 rounded-[2.5rem] border-4 border-white shadow-xl flex items-center gap-8">
+                      <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg", s.color)}>
+                        <span className="material-symbols-rounded text-3xl">{s.icon}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest leading-none mb-1">{s.label}</span>
+                        <span className="text-4xl font-black text-[#021D24] tracking-tighter">{s.value}</span>
+                      </div>
                     </div>
-                    <span className="bg-[#F29124] text-[#021D24] px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl border-4 border-white animate-bounce">
-                      {pendingVendors.length} معلقة
-                    </span>
-                  </div>
-                  <div className="p-6 lg:p-12 space-y-6">
-                    {pendingVendors.length > 0 ? pendingVendors.map((v) => (
-                      <div key={v.id} className="p-5 lg:p-8 bg-muted/20 border-2 border-border/50 rounded-[2rem] flex items-center justify-between hover:border-[#1089A4]/30 hover:bg-white transition-all group shadow-sm hover:shadow-2xl">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 lg:w-16 lg:h-16 bg-white rounded-2xl flex items-center justify-center shadow-xl font-black text-[#1089A4] text-lg border-4 border-border/20 group-hover:scale-110 transition-transform">
-                            {v.store[0]}
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <span className="font-black text-base lg:text-lg text-[#021D24] tracking-tight">{v.store}</span>
-                            <span className="text-[10px] text-[#021D24]/30 font-black uppercase tracking-[0.2em] flex items-center gap-2">
-                              <span className="material-symbols-rounded text-sm">location_city</span> {v.city} • {v.name}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button className="w-10 h-10 glass rounded-xl border border-white text-[#1089A4] shadow-xl hover:bg-[#1089A4] hover:text-white transition-all flex items-center justify-center"><span className="material-symbols-rounded text-lg">visibility</span></button>
-                          <button className="w-10 h-10 bg-green-500 text-white rounded-xl shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center border-b-4 border-black/10"><span className="material-symbols-rounded text-lg">check</span></button>
-                          <button className="w-10 h-10 bg-red-500 text-white rounded-xl shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center border-b-4 border-black/10"><span className="material-symbols-rounded text-lg">block</span></button>
-                        </div>
-                      </div>
-                    )) : (
-                      <div className="py-20 text-center space-y-4">
-                        <span className="material-symbols-rounded text-6xl text-muted/30">task_alt</span>
-                        <p className="font-black text-muted/40 uppercase tracking-widest text-xs">لا توجد طلبات معلقة حالياً</p>
-                      </div>
-                    )}
-                  </div>
+                  ))}
                 </div>
-
-                {/* Financial Governance */}
-                <div className="bg-[#021D24] text-white rounded-[3rem] lg:rounded-[5rem] p-10 lg:p-16 flex flex-col justify-between relative overflow-hidden shadow-[0_60px_120px_-30px_rgba(2,29,36,0.35)] border-[8px] lg:border-[16px] border-white group">
-                  <div className="z-10 relative">
-                    <div className="text-[#1089A4] font-black text-[11px] uppercase tracking-[0.5em] mb-8">FINANCIAL GOVERNANCE</div>
-                    <h3 className="font-black text-3xl lg:text-5xl mb-4 tracking-tighter leading-tight font-heading">
-                      حوكمة الأنظمة <br /> <span className="text-[#F29124]">والعمولات</span>
-                    </h3>
-                    <p className="text-white/30 text-base lg:text-lg font-medium mb-10 lg:mb-16 leading-relaxed">
-                      تحكم مركزي وشامل بكافة الرسوم والسياسات المالية للمنصة بضغطة واحدة.
-                    </p>
-                    <div className="grid grid-cols-2 gap-6 lg:gap-8">
-                      <div className="bg-white/5 backdrop-blur-3xl p-6 lg:p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all cursor-pointer group/card shadow-2xl">
-                        <span className="text-[9px] font-black uppercase tracking-[0.4em] mb-4 block text-[#1089A4]">Market Fees</span>
-                        <span className="text-4xl lg:text-5xl font-black tracking-tighter font-heading group-hover/card:scale-110 transition-transform inline-block">10%</span>
+                {/* Recent Activity Mini Log */}
+                <div className="bg-white rounded-[3rem] p-10 shadow-xl border-4 border-white">
+                  <h3 className="text-xl font-black text-[#021D24] mb-8 flex items-center gap-3">
+                    <span className="w-3 h-8 bg-[#1089A4] rounded-full" />
+                    النشاط الأخير للموردين
+                  </h3>
+                  <div className="space-y-4">
+                    {[1,2,3].map(i => (
+                      <div key={i} className="flex items-center justify-between p-5 bg-muted/20 rounded-2xl border border-transparent hover:border-[#1089A4]/20 transition-all">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-[#1089A4]/10 text-[#1089A4] flex items-center justify-center"><span className="material-symbols-rounded">shopping_bag</span></div>
+                          <div>
+                            <p className="text-sm font-black text-[#021D24]">طلب جديد لمورد: <span className="text-[#1089A4]">تكنو زون</span></p>
+                            <p className="text-[10px] text-muted-foreground font-bold">منذ 5 دقائق • قيمة الطلب: 15,000 ج.س</p>
+                          </div>
+                        </div>
+                        <span className="text-[9px] font-black bg-white px-3 py-1.5 rounded-lg border">تفاصيل</span>
                       </div>
-                      <div className="bg-white/5 backdrop-blur-3xl p-6 lg:p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all cursor-pointer group/card shadow-2xl">
-                        <span className="text-[9px] font-black uppercase tracking-[0.4em] mb-4 block text-[#F29124]">Withdrawal</span>
-                        <span className="text-4xl lg:text-5xl font-black tracking-tighter font-heading group-hover/card:scale-110 transition-transform inline-block">2.5%</span>
-                      </div>
-                    </div>
-                    <button className="w-full mt-10 lg:mt-16 bg-[#1089A4] text-white py-6 lg:py-8 rounded-[3rem] font-black text-sm uppercase tracking-[0.4em] hover:shadow-[0_20px_60px_rgba(16,137,164,0.4)] hover:scale-[1.03] transition-all shadow-2xl border-b-8 border-black/20">
-                      تحديث إطار العمل المالي
-                    </button>
+                    ))}
                   </div>
-                  <span className="material-symbols-rounded absolute bottom-[-80px] left-[-80px] text-[20rem] lg:text-[30rem] text-white/5 -rotate-12 transition-all group-hover:rotate-0 group-hover:scale-110 pointer-events-none">shield_person</span>
                 </div>
               </motion.div>
             )}
+
+            {/* 2. APPROVALS */}
+            {activeTab === "approvals" && (
+              <motion.div key="approvals" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                
+                {/* Pending Vendors */}
+                <div className="bg-white rounded-[3rem] p-10 shadow-xl border-4 border-white space-y-8">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-2xl font-black text-[#021D24]">مسايرة الموردين</h3>
+                    <span className="bg-[#F29124] text-white px-4 py-1.5 rounded-full text-[10px] font-black">{pendingVendors.length} طلب</span>
+                  </div>
+                  <div className="space-y-4">
+                    {pendingVendors.map(v => (
+                      <div key={v.id} className="p-6 bg-muted/10 rounded-3xl flex flex-col gap-4 border border-border/10">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-2xl bg-[#1089A4] text-white flex items-center justify-center font-black text-xl">{v.store[0]}</div>
+                            <div>
+                              <p className="font-black text-[#021D24]">{v.store}</p>
+                              <p className="text-[10px] font-bold text-muted-foreground uppercase">{v.city} • {v.name}</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <button className="w-10 h-10 bg-green-500 text-white rounded-xl shadow-lg flex items-center justify-center"><span className="material-symbols-rounded">check</span></button>
+                            <button className="w-10 h-10 bg-red-500 text-white rounded-xl shadow-lg flex items-center justify-center"><span className="material-symbols-rounded">close</span></button>
+                          </div>
+                        </div>
+                        <Link href={v.docs} target="_blank" className="text-center text-[10px] py-2 bg-white rounded-xl border font-black text-[#1089A4] hover:bg-muted transition-all">تصفح المستندات البنكية والسجل التجاري</Link>
+                      </div>
+                    ))}
+                    {pendingVendors.length === 0 && <p className="text-center py-10 text-muted-foreground font-bold">كل شيء نظيف! لا توجد طلبات معلقة.</p>}
+                  </div>
+                </div>
+
+                {/* Pending Products */}
+                <div className="bg-white rounded-[3rem] p-10 shadow-xl border-4 border-white space-y-8">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-2xl font-black text-[#021D24]">مراجعة المنتجات</h3>
+                    <span className="bg-[#1089A4] text-white px-4 py-1.5 rounded-full text-[10px] font-black">{pendingProducts.length} جديد</span>
+                  </div>
+                  <div className="space-y-4">
+                    {pendingProducts.map(p => (
+                      <div key={p.id} className="p-4 bg-muted/10 rounded-2xl flex items-center justify-between border">
+                        <div className="flex items-center gap-4">
+                           <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-white border">
+                              <Image src={p.images?.split(',')[0]} alt={p.title} fill className="object-cover" />
+                           </div>
+                           <div>
+                              <p className="text-xs font-black text-[#021D24] leading-tight">{p.title}</p>
+                              <p className="text-[10px] font-bold text-[#1089A4] mt-1">{p.price.toLocaleString()} ج.س • {p.vendor.storeName}</p>
+                           </div>
+                        </div>
+                        <div className="flex gap-2">
+                           <button className="btn-icon-sm bg-green-500"><span className="material-symbols-rounded">done_all</span></button>
+                           <button className="btn-icon-sm bg-red-400"><span className="material-symbols-rounded">delete</span></button>
+                        </div>
+                      </div>
+                    ))}
+                    {pendingProducts.length === 0 && <p className="text-center py-10 text-muted-foreground font-bold">لا توجد منتجات بانتظار المراجعة.</p>}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* 3. USERS */}
+            {activeTab === "users" && (
+              <motion.div key="users" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-[3rem] shadow-xl border-4 border-white overflow-hidden">
+                <div className="p-8 border-b flex justify-between items-center bg-muted/10">
+                   <h3 className="text-2xl font-black text-[#021D24]">قاعدة بيانات الـمـواطـنـيـن (المستخدمين)</h3>
+                   <div className="flex gap-4">
+                      <input type="text" placeholder="ابحث بالاسم أو الهاتف..." className="px-6 py-2 rounded-xl bg-white border text-sm outline-none w-64 focus:border-[#1089A4]" />
+                   </div>
+                </div>
+                <div className="overflow-x-auto">
+                   <table className="w-full text-right">
+                      <thead className="bg-[#021D24] text-white/50 text-[10px] font-black uppercase tracking-widest">
+                         <tr>
+                            <th className="px-8 py-6">الاسم والبريد</th>
+                            <th className="px-8 py-6">رقم الهاتف</th>
+                            <th className="px-8 py-6">عنوان الـ IP الحقيقي</th>
+                            <th className="px-8 py-6">تاريخ التسجيل</th>
+                            <th className="px-8 py-6">الإجراء</th>
+                         </tr>
+                      </thead>
+                      <tbody className="divide-y text-sm">
+                         {users.map(u => (
+                            <tr key={u.id} className="hover:bg-muted/30 transition-all font-bold group">
+                               <td className="px-8 py-6">
+                                  <p className="text-[#021D24]">{u.name || 'بدون اسم'}</p>
+                                  <p className="text-[10px] text-muted-foreground">{u.email}</p>
+                               </td>
+                               <td className="px-8 py-6">{u.phone || '—'}</td>
+                               <td className="px-8 py-6">
+                                  <div className="flex items-center gap-2">
+                                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                     <span className="font-mono text-[11px] text-[#1089A4]">{u.lastIp || '127.0.0.1'}</span>
+                                  </div>
+                               </td>
+                               <td className="px-8 py-6 text-[10px] opacity-40">{new Date(u.createdAt).toLocaleDateString('ar-EG')}</td>
+                               <td className="px-8 py-6">
+                                  <button className="text-red-500 hover:scale-110 transition-all"><span className="material-symbols-rounded">block</span></button>
+                               </td>
+                            </tr>
+                         ))}
+                      </tbody>
+                   </table>
+                </div>
+              </motion.div>
+            )}
+
+            {/* 4. SETTINGS (MAINTENANCE) */}
+            {activeTab === "settings" && (
+              <motion.div key="settings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto space-y-12">
+                
+                {/* Sovereignty Stats */}
+                <div className="bg-[#021D24] text-white rounded-[3rem] p-12 border-[8px] border-white shadow-2xl relative overflow-hidden">
+                   <div className="z-10 relative space-y-8">
+                      <h3 className="text-4xl font-black font-heading leading-tight italic text-[#F29124]">وضـع الـسـيـادة الـكـامـلـة</h3>
+                      <div className="flex flex-col gap-6">
+                         <div className="flex items-center justify-between p-6 bg-white/5 rounded-3xl border border-white/10">
+                            <div>
+                               <p className="font-black text-lg">وضـع الـصـيـانـة (توقف الموقع)</p>
+                               <p className="text-[10px] text-white/30 font-black uppercase tracking-widest mt-1">عند التفعيل سيتم قفل الموقع عن كافة المستخدمين</p>
+                            </div>
+                            <button 
+                              onClick={async () => {
+                                const newVal = !sysSettings?.maintenanceMode;
+                                await fetch('/api/admin/settings', {
+                                  method: 'PATCH',
+                                  body: JSON.stringify({ maintenanceMode: newVal })
+                                });
+                                setSysSettings({...sysSettings, maintenanceMode: newVal});
+                              }}
+                              className={cn(
+                                "w-16 h-8 rounded-full relative transition-all",
+                                sysSettings?.maintenanceMode ? "bg-[#F29124]" : "bg-white/20"
+                              )}
+                            >
+                               <div className={cn("absolute top-1 w-6 h-6 bg-white rounded-full transition-all", sysSettings?.maintenanceMode ? "left-1" : "left-9")} />
+                            </button>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+
+                {/* Admins List */}
+                <div className="bg-white rounded-[3rem] p-10 shadow-xl border-4 border-white space-y-8">
+                   <div className="flex justify-between items-center">
+                      <h3 className="text-2xl font-black text-[#021D24]">هيئة المدراء (Admins)</h3>
+                      <button className="bg-[#1089A4] text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">إضافة مدير جديد +</button>
+                   </div>
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      {admins.map(admin => (
+                        <div key={admin.id} className="flex items-center gap-4 p-5 bg-muted/10 rounded-2xl border">
+                           <div className="w-12 h-12 rounded-xl bg-[#021D24] text-white flex items-center justify-center font-black">{admin.name?.[0]}</div>
+                           <div className="flex flex-col">
+                              <span className="font-black text-sm text-[#021D24]">{admin.name}</span>
+                              <span className="text-[10px] text-muted-foreground uppercase">{admin.email}</span>
+                           </div>
+                        </div>
+                      ))}
+                   </div>
+                </div>
+
+              </motion.div>
+            )}
+
           </AnimatePresence>
+
         </div>
+
+        {/* CSS for custom components */}
+        <style jsx>{`
+          .btn-icon-sm {
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-center: center;
+            border-radius: 0.75rem;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+          }
+          .btn-icon-sm:hover {
+            transform: scale(1.1);
+            filter: brightness(1.1);
+          }
+          .glass {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+          }
+          .rtl { direction: rtl; }
+        `}</style>
+
       </main>
 
-      {/* ── Mobile Bottom Navigation Bar ── */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[200] bg-[#021D24]/95 backdrop-blur-3xl border-t border-white/10 shadow-[0_-20px_60px_rgba(2,29,36,0.6)]">
+      {/* ── Mobile Nav (Same logic) ── */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[200] bg-[#021D24]/95 backdrop-blur-3xl border-t border-white/10">
         <div className="flex items-stretch">
           {NAV_ITEMS.map((item) => {
             const isActive = activeTab === item.id;
-            const badge = item.id === "approvals" ? pendingVendors.length : 0;
             return (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className="flex-1 flex flex-col items-center justify-center gap-1 pt-3 pb-4 relative group transition-all"
+                className="flex-1 flex flex-col items-center justify-center gap-1 pt-3 pb-4"
               >
-                {/* Active indicator line */}
-                {isActive && (
-                  <motion.span
-                    layoutId="bottom-nav-indicator"
-                    className="absolute top-0 left-1 right-1 h-[2px] rounded-full bg-[#1089A4] shadow-[0_0_12px_rgba(16,137,164,0.9)]"
-                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                  />
-                )}
-
-                {/* Icon pill */}
                 <div className={cn(
-                  "relative w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-300",
-                  isActive
-                    ? "bg-[#1089A4] shadow-[0_6px_20px_rgba(16,137,164,0.5)] scale-110"
-                    : "bg-transparent group-active:bg-white/10"
+                  "relative w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
+                  isActive ? "bg-[#1089A4] shadow-lg" : "text-white/30"
                 )}>
-                  {badge > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#F29124] text-[#021D24] text-[9px] font-black rounded-full flex items-center justify-center border-2 border-[#021D24] animate-pulse">
-                      {badge}
-                    </span>
-                  )}
-                  <span className={cn(
-                    "material-symbols-rounded text-[20px] transition-all",
-                    isActive ? "text-white" : "text-white/30"
-                  )}>
+                  <span className="material-symbols-rounded text-xl">
                     {item.icon}
                   </span>
                 </div>
-
-                {/* Label */}
-                <span className={cn(
-                  "text-[8px] font-black tracking-[0.1em] leading-none transition-all",
-                  isActive ? "text-[#1089A4]" : "text-white/25"
-                )}>
+                <span className={cn("text-[8px] font-black", isActive ? "text-[#1089A4]" : "text-white/20")}>
                   {item.label}
                 </span>
               </button>
             );
           })}
         </div>
-        {/* iOS safe area */}
-        <div style={{ height: "env(safe-area-inset-bottom, 0px)" }} />
       </nav>
 
     </div>
-  );
-}
-
-function AdminEliteNavItem({ icon, label, active, onClick }: {
-  icon: string;
-  label: string;
-  active?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "w-full flex items-center gap-5 px-8 py-5 rounded-[2rem] font-black text-[12px] uppercase tracking-[0.25em] transition-all group border-2 border-transparent",
-        active
-          ? "bg-[#1089A4] text-white shadow-[0_25px_50px_rgba(16,137,164,0.4)] ring-8 ring-[#1089A4]/5"
-          : "text-white/20 hover:bg-white/5 hover:text-white"
-      )}
-    >
-      <span className={cn(
-        "material-symbols-rounded text-2xl transition-all group-hover:scale-125",
-        active ? "text-[#021D24] opacity-100" : "opacity-20 group-hover:opacity-100"
-      )}>
-        {icon}
-      </span>
-      {label}
-    </button>
   );
 }

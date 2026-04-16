@@ -20,14 +20,35 @@ export default function Navbar() {
   const { cartCount } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCatOpen, setIsCatOpen] = useState(false);
+  const [isMaintenance, setIsMaintenance] = useState(false);
+
+  const isAdmin = (session?.user as any)?.role === "ADMIN";
 
   const isAuthenticated = status === "authenticated";
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 30);
     window.addEventListener("scroll", handleScroll);
+
+    // Maintenance Check
+    const checkMaintenance = async () => {
+      try {
+        const res = await fetch("/api/admin/settings");
+        if (res.ok) {
+           const data = await res.json();
+           if (data.settings?.maintenanceMode && !isAdmin) {
+              const isExceptionPage = window.location.pathname === "/login" || window.location.pathname === "/maintenance";
+              if (!isExceptionPage) {
+                 window.location.href = "/maintenance";
+              }
+           }
+        }
+      } catch (e) { console.error(e); }
+    };
+    checkMaintenance();
+
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isAdmin]);
 
   return (
     <header className="w-full fixed top-0 left-0 z-[100] font-sans flex justify-center mt-6 transition-all duration-700 pointer-events-none">

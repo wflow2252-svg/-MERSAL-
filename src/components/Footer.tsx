@@ -109,6 +109,9 @@ export default function Footer() {
       {/* Atmospheric Sovereignty Effects - Optimized to prevent document overflow */}
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#1089A4]/5 blur-[120px] rounded-full pointer-events-none translate-x-1/4 translate-y-1/4" />
       <div className="absolute top-[20%] left-[-10%] w-[400px] h-[400px] bg-[#F29124]/5 blur-[100px] rounded-full pointer-events-none" />
+      
+      {/* Infinite Bottom Stretch - Fixes the white gap without affecting global HTML */}
+      <div className="absolute bottom-[-100vh] left-0 w-full h-[100vh] bg-[#011116] pointer-events-none" />
     </footer>
   );
 }

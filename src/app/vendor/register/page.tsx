@@ -1,171 +1,205 @@
 "use client"
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Upload, CheckCircle2, Building2, User, Landmark, ArrowRight, ArrowLeft } from "lucide-react";
+import { CheckCircle2, User, Building2, Landmark, ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function VendorRegister() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     storeName: "",
-    storeCity: "",
-    bankStatement: null as File | null,
-    commercialReg: null as File | null,
+    storeCity: "الخرطوم",
+    bankStatementUrl: "placeholder_url",
+    commercialRegUrl: "",
   });
 
-  const nextStep = () => setStep((s) => s + 1);
+  const nextStep = () => {
+    if (step === 1 && (!formData.name || !formData.email || !formData.phone)) return;
+    if (step === 2 && !formData.storeName) return;
+    setStep((s) => s + 1);
+  };
+  
   const prevStep = () => setStep((s) => s - 1);
 
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/vendor/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        router.push("/vendor/dashboard?status=pending");
+      } else {
+        const data = await res.json();
+        setError(data.error || "فشل تسجيل البائع");
+      }
+    } catch (err) {
+      setError("حدث خطأ تقني. حاول مرة أخرى.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#F8F9FA] pt-44 pb-32 px-6">
-      <div className="max-w-xl mx-auto">
-        {/* Progress Header - Elite UI */}
-        <div className="flex items-center justify-between mb-20 relative">
-          <div className="absolute top-1/2 left-0 right-0 h-1 bg-muted -z-10 -translate-y-1/2" />
-          {[1, 2, 3].map((s) => (
-            <div 
-              key={s}
-              className={cn(
-                "w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xs transition-all duration-700 border-4",
-                step === s ? "bg-[#1089A4] text-white border-[#1089A4] scale-125 shadow-2xl shadow-[#1089A4]/30" : 
-                step > s ? "bg-[#F29124] text-white border-[#F29124]" : "bg-white border-muted text-[#021D24]/20"
-              )}
-            >
-              {step > s ? <CheckCircle2 className="w-6 h-6" /> : s}
+    <div className="min-h-screen bg-muted py-12 px-6 flex items-center justify-center">
+      <div className="max-w-xl w-full">
+        
+        {/* Progress System */}
+        <div className="flex items-center justify-between mb-12 px-4">
+           {[1, 2, 3].map((s) => (
+             <div key={s} className="flex flex-col items-center gap-2">
+                <div className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all border-2",
+                  step === s ? "bg-primary text-white border-primary" : 
+                  step > s ? "bg-accent text-white border-accent" : "bg-white border-border text-primary/20"
+                )}>
+                  {step > s ? <CheckCircle2 className="w-5 h-5" /> : s}
+                </div>
+                <span className="text-[10px] font-bold text-primary/40 uppercase tracking-widest leading-none">
+                  {s === 1 ? "الحساب" : s === 2 ? "المتجر" : "التوثيق"}
+                </span>
+             </div>
+           ))}
+        </div>
+
+        <div className="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-border">
+          
+          {error && (
+            <div className="bg-red-50 text-red-600 p-4 rounded-xl text-xs font-bold mb-8 border border-red-100">
+               {error}
             </div>
-          ))}
-        </div>
+          )}
 
-        <div className="bg-white rounded-[4rem] p-12 md:p-16 shadow-[0_50px_100px_rgba(0,0,0,0.06)] border border-border/5 relative overflow-hidden">
-          <AnimatePresence mode="wait">
-            {step === 1 && (
-              <motion.div 
-                key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-10 text-right"
+          {step === 1 && (
+            <div className="space-y-6 text-right">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-primary">معلومات الحساب الشخصي</h2>
+                <p className="text-sm text-primary/40 mt-1">ابدأ بإنشاء حسابك الأساسي كمورد</p>
+              </div>
+              <div className="space-y-4">
+                <div>
+                   <label className="block text-xs font-bold text-primary/60 mb-2 mr-1">الاسم الكامل</label>
+                   <input 
+                     value={formData.name}
+                     onChange={(e) => setFormData({...formData, name: e.target.value})}
+                     type="text" placeholder="أدخل اسمك" className="input-field" 
+                   />
+                </div>
+                <div>
+                   <label className="block text-xs font-bold text-primary/60 mb-2 mr-1">البريد الإلكتروني</label>
+                   <input 
+                     value={formData.email}
+                     onChange={(e) => setFormData({...formData, email: e.target.value})}
+                     type="email" placeholder="example@email.com" className="input-field" 
+                   />
+                </div>
+                <div>
+                   <label className="block text-xs font-bold text-primary/60 mb-2 mr-1">رقم الواتساب</label>
+                   <input 
+                     value={formData.phone}
+                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                     type="tel" placeholder="0912345678" className="input-field" 
+                   />
+                </div>
+              </div>
+              <button 
+                onClick={nextStep}
+                disabled={!formData.name || !formData.email || !formData.phone}
+                className="w-full btn-primary py-5 mt-4 disabled:opacity-50"
               >
-                <div className="text-center mb-12 space-y-4">
-                  <div className="w-20 h-20 bg-[#1089A4]/10 text-[#1089A4] rounded-3xl flex items-center justify-center mx-auto mb-6">
-                    <User className="w-10 h-10" />
-                  </div>
-                  <h2 className="text-4xl font-black text-[#021D24] font-heading tracking-tight">معلومات الحساب الشخصي</h2>
-                  <p className="text-[#021D24]/40 text-sm font-medium">ابدأ بإنشاء حسابك الأساسي كمورد في نظام مرسال</p>
-                </div>
+                المتابعة لبيانات المتجر <ArrowLeft className="w-5 h-5" />
+              </button>
+            </div>
+          )}
 
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#021D24]/40 pr-4">الاسم الكامل</label>
-                    <input type="text" placeholder="أدخل اسمك بالكامل" className="w-full bg-[#F8F9FA] border-2 border-transparent focus:border-[#1089A4]/20 rounded-2xl px-6 py-5 outline-none transition-all font-bold placeholder:text-[#021D24]/10" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#021D24]/40 pr-4">البريد الإلكتروني</label>
-                    <input type="email" placeholder="example@mersal.com" className="w-full bg-[#F8F9FA] border-2 border-transparent focus:border-[#1089A4]/20 rounded-2xl px-6 py-5 outline-none transition-all font-bold placeholder:text-[#021D24]/10" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#021D24]/40 pr-4">رقم التواصل (واتساب)</label>
-                    <input type="tel" placeholder="0900000000" className="w-full bg-[#F8F9FA] border-2 border-transparent focus:border-[#1089A4]/20 rounded-2xl px-6 py-5 outline-none transition-all font-bold placeholder:text-[#021D24]/10" />
-                  </div>
+          {step === 2 && (
+            <div className="space-y-6 text-right">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-primary">تفاصيل المتجر</h2>
+                <p className="text-sm text-primary/40 mt-1">أخبر العملاء عن هوية متجرك</p>
+              </div>
+              <div className="space-y-4">
+                <div>
+                   <label className="block text-xs font-bold text-primary/60 mb-2 mr-1">اسم المتجر</label>
+                   <input 
+                     value={formData.storeName}
+                     onChange={(e) => setFormData({...formData, storeName: e.target.value})}
+                     type="text" placeholder="مثلاً: متجر مرسال بريميوم" className="input-field" 
+                   />
                 </div>
-
-                <button onClick={nextStep} className="w-full bg-[#1089A4] text-white py-7 rounded-2xl font-black text-xs uppercase tracking-[0.4em] flex items-center justify-center gap-6 hover:bg-[#021D24] transition-all shadow-xl shadow-[#1089A4]/20 hover:-translate-y-2 active:scale-95 border-b-6 border-black/10">
-                  المتابعة لبيانات المتجر <ArrowLeft className="w-6 h-6" />
+                <div>
+                   <label className="block text-xs font-bold text-primary/60 mb-2 mr-1">المدينة</label>
+                   <select 
+                    value={formData.storeCity}
+                    onChange={(e) => setFormData({...formData, storeCity: e.target.value})}
+                    className="input-field cursor-pointer"
+                   >
+                     <option>الخرطوم</option>
+                     <option>أمدرمان</option>
+                     <option>بورتسودان</option>
+                   </select>
+                </div>
+              </div>
+              <div className="flex gap-4 mt-6">
+                <button onClick={prevStep} className="flex-1 py-4 text-xs font-bold text-primary/40 hover:text-primary transition-colors">السابق</button>
+                <button 
+                  onClick={nextStep}
+                  disabled={!formData.storeName}
+                  className="flex-[2] btn-primary py-5 disabled:opacity-50"
+                >
+                  التالي <ArrowLeft className="w-5 h-5" />
                 </button>
-              </motion.div>
-            )}
+              </div>
+            </div>
+          )}
 
-            {step === 2 && (
-              <motion.div 
-                key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-10 text-right"
-              >
-                <div className="text-center mb-12 space-y-4">
-                  <div className="w-20 h-20 bg-[#F29124]/10 text-[#F29124] rounded-3xl flex items-center justify-center mx-auto mb-6">
-                    <Building2 className="w-10 h-10" />
-                  </div>
-                  <h2 className="text-4xl font-black text-[#021D24] font-heading tracking-tight">تفاصيل المتجر</h2>
-                  <p className="text-[#021D24]/40 text-sm font-medium">أخبر العملاء عن هوية متجرك وموقعه</p>
-                </div>
+          {step === 3 && (
+            <div className="space-y-6 text-right">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-primary">التحقق والمستندات</h2>
+                <p className="text-sm text-primary/40 mt-1">توثيق الحساب الرسمي للمورد</p>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                 <div className="p-8 border-2 border-dashed border-border rounded-2xl text-center bg-muted/40 hover:border-accent transition-all cursor-pointer">
+                    <span className="material-symbols-rounded text-primary/20 text-3xl mb-2">upload_file</span>
+                    <h4 className="text-xs font-bold text-primary">كشف حساب بنكي</h4>
+                    <p className="text-[10px] text-primary/30 mt-1">آخر 3 أشهر (إلزامي)</p>
+                 </div>
+                 <div className="p-8 border-2 border-dashed border-border rounded-2xl text-center bg-muted/40 hover:border-secondary transition-all cursor-pointer">
+                    <span className="material-symbols-rounded text-primary/20 text-3xl mb-2">verified_user</span>
+                    <h4 className="text-xs font-bold text-primary">السجل التجاري (اختياري)</h4>
+                 </div>
+              </div>
+              <div className="flex gap-4 mt-8">
+                <button onClick={prevStep} className="flex-1 py-4 text-xs font-bold text-primary/40 hover:text-primary transition-colors">السابق</button>
+                <button 
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="flex-[2] btn-primary bg-secondary hover:bg-secondary/90 py-5"
+                >
+                  {isSubmitting ? "جاري الإرسال..." : "إرسال طلب الانضمام"} <CheckCircle2 className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          )}
 
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#021D24]/40 pr-4">اسم المتجر</label>
-                    <input type="text" placeholder="مثلاً: تكنو زون للنظم" className="w-full bg-[#F8F9FA] border-2 border-transparent focus:border-[#1089A4]/20 rounded-2xl px-6 py-5 outline-none transition-all font-bold placeholder:text-[#021D24]/10" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#021D24]/40 pr-4">المدينة</label>
-                    <select className="w-full bg-[#F8F9FA] border-2 border-transparent focus:border-[#1089A4]/20 rounded-2xl px-6 py-5 outline-none transition-all font-bold appearance-none cursor-pointer">
-                      <option>الخرطوم</option>
-                      <option>أمدرمان</option>
-                      <option>بحري</option>
-                      <option>بورتسودان</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex gap-6">
-                  <button onClick={prevStep} className="flex-1 bg-muted px-8 py-7 rounded-2xl font-black text-xs uppercase tracking-widest text-[#021D24]/40 hover:bg-[#021D24] hover:text-white transition-all">السابق</button>
-                  <button onClick={nextStep} className="flex-[2] bg-[#1089A4] text-white py-7 rounded-2xl font-black text-xs uppercase tracking-[0.4em] flex items-center justify-center gap-6 hover:bg-[#021D24] transition-all shadow-xl shadow-[#1089A4]/20 hover:-translate-y-2 active:scale-95 border-b-6 border-black/10">
-                    رفع المستندات <ArrowLeft className="w-6 h-6" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {step === 3 && (
-              <motion.div 
-                key="step3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-10 text-right"
-              >
-                <div className="text-center mb-12 space-y-4">
-                  <div className="w-20 h-20 bg-[#1089A4]/10 text-[#1089A4] rounded-3xl flex items-center justify-center mx-auto mb-6">
-                    <Landmark className="w-10 h-10" />
-                  </div>
-                  <h2 className="text-4xl font-black text-[#021D24] font-heading tracking-tight">التحقق والمستندات</h2>
-                  <p className="text-[#021D24]/40 text-sm font-medium">تأمين مبيعاتك يبدأ بتوثيق الحساب الرسمي</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <div className="p-10 border-4 border-dashed border-muted rounded-[2rem] text-center hover:border-[#1089A4] transition-all cursor-pointer bg-[#F8F9FA] group">
-                      <Upload className="w-10 h-10 mx-auto mb-4 text-[#021D24]/10 group-hover:text-[#1089A4] transition-colors" />
-                      <h4 className="font-black text-xs uppercase tracking-widest text-[#021D24]">كشف حساب بنكي</h4>
-                      <p className="text-[10px] font-medium text-[#021D24]/30 mt-2">آخر 3 أشهر (إلزامي)</p>
-                   </div>
-                   <div className="p-10 border-4 border-dashed border-muted rounded-[2rem] text-center hover:border-[#F29124] transition-all cursor-pointer bg-[#F8F9FA] group">
-                      <Upload className="w-10 h-10 mx-auto mb-4 text-[#021D24]/10 group-hover:text-[#F29124] transition-colors" />
-                      <h4 className="font-black text-xs uppercase tracking-widest text-[#021D24]">السجل التجاري</h4>
-                      <p className="text-[10px] font-medium text-[#021D24]/30 mt-2">إذا وجد (اختياري)</p>
-                   </div>
-                </div>
-
-                <div className="flex gap-6 pt-6">
-                  <button onClick={prevStep} className="flex-1 bg-muted px-8 py-7 rounded-2xl font-black text-xs uppercase tracking-widest text-[#021D24]/40 hover:bg-[#021D24] hover:text-white transition-all">السابق</button>
-                  <button className="flex-[2] bg-[#F29124] text-[#021D24] py-7 rounded-2xl font-black text-xs uppercase tracking-[0.4em] flex items-center justify-center gap-6 hover:bg-[#021D24] hover:text-white transition-all shadow-xl shadow-[#F29124]/20 hover:-translate-y-2 active:scale-95 border-b-6 border-black/10">
-                    إرسال الطلب الآن <CheckCircle2 className="w-6 h-6" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Background visuals */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#1089A4]/5 blur-[200px] rounded-full pointer-events-none" />
         </div>
 
-        <p className="text-center mt-12 text-sm font-medium text-[#021D24]/40">
-          هل لديك حساب بالفعل؟ <Link href="/login" className="text-[#1089A4] font-black hover:underline mr-2">تسجيل الدخول</Link>
+        <p className="text-center mt-10 text-xs text-primary/40 font-bold">
+           هل لديك حساب مورد؟ <Link href="/login" className="text-accent underline mr-1">تسجيل الدخول</Link>
         </p>
       </div>
     </div>

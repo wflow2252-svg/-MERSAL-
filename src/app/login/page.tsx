@@ -31,17 +31,13 @@ export default function LoginPage() {
               </p>
            </div>
 
-           {/* Restored Verified Avatars */}
+           {/* Restored Local Avatars */}
            <div className="relative z-10 flex items-center gap-8 justify-end pt-16 md:pt-24 lg:pt-32">
               <span className="text-white/30 text-[11px] font-black uppercase tracking-[0.3em]">نخبة الموردين والعملاء</span>
               <div className="flex -space-x-4 h-12 md:h-16">
-                 {[
-                   "7YVZYZeITc8", // Verified Man
-                   "QXevDflbl8A", // Verified Woman
-                   "_tcJW4nqVtw"  // Verified Man 2
-                 ].map((id, i) => (
-                   <div key={i} className="w-12 h-12 md:w-16 md:h-16 rounded-full border-4 border-[#021D24] bg-muted overflow-hidden relative shadow-2xl hover:scale-110 transition-transform">
-                      <Image src={`https://images.unsplash.com/photo-${id}?w=200&h=200&fit=crop&q=80`} alt="Active Member" fill className="object-cover" />
+                 {["/avatar1.png", "/avatar2.png", "/avatar3.png"].map((src, i) => (
+                   <div key={i} className="w-12 h-12 md:w-16 md:h-16 rounded-full border-4 border-[#021D24] bg-muted overflow-hidden relative shadow-2xl hover:scale-110 transition-transform hover:z-10">
+                      <Image src={src} alt="عضو نشط" fill className="object-cover" />
                    </div>
                  ))}
               </div>

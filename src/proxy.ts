@@ -1,9 +1,48 @@
 import { NextResponse, NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
 export default async function proxy(request: NextRequest) {
+  const url = request.nextUrl.clone();
+  
+  // 1. Get Session Token
+  const token = await getToken({ 
+    req: request as any, 
+    secret: process.env.NEXTAUTH_SECRET 
+  });
+
+  const { pathname } = url;
+
+  // 2. Security Guard: Admin & Vendor Dashboard Protection
+  if (pathname.startsWith('/admin') || pathname.startsWith('/vendor/dashboard')) {
+    if (!token) {
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+    
+    // Admin check for admin routes
+    if (pathname.startsWith('/admin') && token.role !== 'ADMIN') {
+      url.pathname = '/';
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // 3. Mandatory Onboarding Logic (Smarter Check)
+  // Only redirect if they are logged in, NOT onboarded, and trying to access main app pages
+  // (Exclude static files, API, and the onboarding page itself)
+  const isProtectedPath = !pathname.startsWith('/onboarding') && 
+                          !pathname.startsWith('/api') && 
+                          !pathname.startsWith('/_next') && 
+                          pathname !== '/favicon.ico' &&
+                          pathname !== '/login';
+
+  if (token && !token.isOnboarded && isProtectedPath) {
+    url.pathname = '/onboarding';
+    return NextResponse.redirect(url);
+  }
+
   const response = NextResponse.next();
 
-  // 1. Content Security Policy (CSP) - Production Grade
+  // 4. Content Security Policy (CSP) & Sovereign Headers
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googleapis.com;

@@ -73,6 +73,5 @@ export const authOptions: NextAuthOptions = {
     newUser: '/onboarding',
   },
   secret: process.env.NEXTAUTH_SECRET,
-  trustHost: true,
   debug: true,
 };

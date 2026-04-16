@@ -5,8 +5,18 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "Mersal Elite | Luxury Marketplace",
-  description: "The premium marketplace for elite products and vendors.",
+  title: "Mersal Elite | Luxury Marketplace & Vendor Hub",
+  description: "Experience the world-class marketplace for elite products, luxury vendors, and a seamless shopping journey in Sudan and beyond.",
+  keywords: ["Mersal", "Elite", "Luxury Marketplace", "Sudan Shopping", "Premium Vendors", "Bento Design"],
+  authors: [{ name: "Mersal Team" }],
+  openGraph: {
+    title: "Mersal Elite | The Gold Standard of Shopping",
+    description: "Discover curated luxury products from top-tier vendors in an elite, high-fidelity digital marketplace.",
+    url: "https://morsall.com",
+    siteName: "Mersal Elite",
+    locale: "ar_SA",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

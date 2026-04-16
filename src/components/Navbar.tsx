@@ -72,7 +72,7 @@ export default function Navbar() {
                 <input 
                   type="text" 
                   placeholder="ما الذي تبحث عنه اليوم؟" 
-                  className="flex-grow px-8 bg-transparent outline-none text-xs font-bold text-primary placeholder:text-primary/20 text-right pr-6"
+                  className="flex-grow px-8 bg-transparent outline-none text-[13px] font-bold text-primary placeholder:text-primary/50 text-right pr-6"
                 />
                 <button className="bg-primary text-white w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center hover:bg-black hover:shadow-xl transition-all">
                    <span className="material-symbols-rounded text-2xl">search</span>
@@ -80,30 +80,31 @@ export default function Navbar() {
              </div>
           </div>
 
-          <div className="flex items-center gap-3 md:gap-8">
+          <div className="flex items-center gap-4 md:gap-10">
              {isAuthenticated ? (
                <Link href="/profile" className="flex flex-col items-center gap-1 group">
-                 <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border-2 border-accent/20">
+                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-muted flex items-center justify-center text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border-2 border-accent/20 shadow-sm">
                    {session?.user?.image ? (
-                     <Image src={session.user.image} alt="Profile" width={48} height={48} className="object-cover" />
-                   ) : <span className="material-symbols-rounded text-2xl text-primary">person</span>}
+                     <Image src={session.user.image} alt="Profile" width={56} height={56} className="object-cover" />
+                   ) : <span className="material-symbols-rounded text-2xl">person_check</span>}
                  </div>
-                 <span className="text-[8px] font-black text-primary/40 uppercase tracking-widest hidden md:block">حسابي</span>
+                 <span className="text-[9px] font-black text-primary/60 uppercase tracking-widest hidden md:block">حسابي</span>
                </Link>
              ) : (
                <Link href="/login" className="flex flex-col items-center gap-1 group">
-                  <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-primary/30 group-hover:bg-primary group-hover:text-white transition-all border border-border/10">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-muted flex items-center justify-center text-primary/30 group-hover:bg-primary group-hover:text-white transition-all border border-border/10 shadow-sm">
                     <span className="material-symbols-rounded text-2xl">person</span>
                   </div>
-                  <span className="text-[8px] font-black text-primary/40 uppercase tracking-widest hidden md:block">دخول</span>
+                  <span className="text-[9px] font-black text-primary/60 uppercase tracking-widest hidden md:block">دخول</span>
                </Link>
              )}
 
              <Link href="/cart" className="relative group flex flex-col items-center">
-                <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white shadow-xl shadow-primary/20 group-hover:scale-105 transition-all">
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary flex items-center justify-center text-white shadow-xl shadow-primary/20 group-hover:scale-105 transition-all">
                    <span className="material-symbols-rounded text-2xl">shopping_basket</span>
                    <span className="absolute -top-2 -right-2 bg-secondary text-white text-[9px] font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-lg font-inter">{cartCount}</span>
                 </div>
+                <span className="text-[9px] font-black text-primary/60 uppercase tracking-widest hidden md:block mt-1">السلة</span>
              </Link>
           </div>
         </div>
@@ -117,17 +118,17 @@ export default function Navbar() {
               onMouseEnter={() => setIsCatOpen(true)}
               onMouseLeave={() => setIsCatOpen(false)}
             >
-               <button className="flex items-center gap-4 px-12 py-5 bg-primary text-white font-black text-xs uppercase tracking-widest hover:bg-black transition-colors">
+               <button className="flex items-center gap-4 px-12 py-6 bg-primary text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-black transition-colors rounded-tl-[1.5rem]">
                   <span className="material-symbols-rounded text-lg">grid_view</span> تسوق عبر الفئات
                </button>
                
                {isCatOpen && (
-                 <div className="absolute top-full right-0 w-[300px] bg-white shadow-2xl border border-border/5 py-4 elite-shadow animate-in fade-in slide-in-from-top-2">
+                 <div className="absolute top-full right-0 w-[300px] bg-white shadow-2xl border border-border/5 py-6 elite-shadow animate-in fade-in slide-in-from-top-4 z-[100] rounded-b-[2rem]">
                     {categories.map((cat) => (
-                      <Link key={cat.id} href={`/category/${cat.id}`} className="flex items-center justify-between px-10 py-4 hover:bg-muted text-primary/60 hover:text-primary transition-all group">
-                         <div className="flex items-center gap-4">
-                            <span className="material-symbols-rounded text-lg text-primary/10 group-hover:text-accent">{cat.icon}</span>
-                            <span className="text-sm font-bold">{cat.name}</span>
+                      <Link key={cat.id} href={`/category/${cat.id}`} className="flex items-center justify-between px-10 py-5 hover:bg-muted text-primary/60 hover:text-primary transition-all group">
+                         <div className="flex items-center gap-5">
+                            <span className="material-symbols-rounded text-lg text-primary/10 group-hover:text-accent group-hover:scale-125 transition-transform">{cat.icon}</span>
+                            <span className="text-sm font-black tracking-tight">{cat.name}</span>
                          </div>
                          <span className="material-symbols-rounded text-sm opacity-20">chevron_left</span>
                       </Link>
@@ -136,9 +137,9 @@ export default function Navbar() {
                )}
             </div>
 
-            <nav className="flex items-center gap-14 px-14 mr-4">
-               {["متجر النخبة", "أحدث العروض", "الوصل حديثاً", "العتبات"].map((link, i) => (
-                 <Link key={i} href="/shop" className="text-[10px] font-black text-primary/60 hover:text-primary transition-all uppercase tracking-[0.25em] relative py-5 group">
+            <nav className="flex items-center gap-14 px-16">
+               {["متجر النخبة", "أحدث العروض", "الوصل حديثاً", "الموردين"].map((link, i) => (
+                 <Link key={i} href="/shop" className="text-[10px] font-black text-primary/40 hover:text-primary transition-all uppercase tracking-[0.25em] relative py-6 group">
                     {link}
                     <span className="absolute bottom-0 inset-x-0 h-1 bg-secondary scale-x-0 group-hover:scale-x-100 transition-transform origin-right" />
                  </Link>

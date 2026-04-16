@@ -1,24 +1,62 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import ReportView from "@/components/ReportView";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function AdminDashboard() {
+  const { data: session, status } = useSession();
   const [activeTab, setActiveTab] = useState("overview");
+  const [stats, setStats] = useState<any[]>([]);
+  const [pendingVendors, setPendingVendors] = useState<any[]>([]);
+  const [exchangeRate, setExchangeRate] = useState(600);
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    { label: "إجمالي الموردين", value: "124", icon: "groups", color: "bg-gradient-to-br from-purple-600 to-purple-800" },
-    { label: "مبيعات المنصة", value: "5.4M ج.س", icon: "payments", color: "bg-gradient-to-br from-[#1089A4] to-[#086F85]" },
-    { label: "طلبات معلقة", value: "38", icon: "pending_actions", color: "bg-gradient-to-br from-[#F29124] to-[#D47B1E]" },
-  ];
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const res = await fetch("/api/admin/stats");
+        if (res.ok) {
+          const data = await res.json();
+          setStats(data.stats);
+          setPendingVendors(data.pendingVendors);
+          setExchangeRate(data.exchangeRate);
+        }
+      } catch (error) {
+        console.error("Failed to fetch admin stats", error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  const pendingVendors = [
-    { id: "1", name: "أحمد علي", store: "المنصور للكهرباء", city: "الخرطوم", docs: "Document.pdf" },
-    { id: "2", name: "ليلى حسن", store: "موضة الخرطوم", city: "أمدرمان", docs: "Docs_v2.jpg" },
-  ];
+    if (session?.user && (session.user as any).role === "ADMIN") {
+      fetchStats();
+    }
+  }, [session]);
+
+  if (status === "loading" || loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#021D24]">
+        <div className="flex flex-col items-center gap-6">
+           <div className="w-16 h-16 border-4 border-[#1089A4] border-t-transparent rounded-full animate-spin shadow-elite-xl"></div>
+           <p className="text-white/40 font-black uppercase tracking-[0.5em] text-[10px]">Verifying Administrative Authority</p>
+        </div>
+      </div>
+    );
+  }
+
+  if ((session?.user as any).role !== "ADMIN") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-8 bg-[#021D24]">
+         <span className="material-symbols-rounded text-red-500 text-8xl">lock_open</span>
+         <h1 className="text-white text-3xl font-black">غير مصرح لك بدخول هذه المنطقة</h1>
+         <Link href="/" className="btn-primary">العودة للرئيسية</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-muted/40 flex overflow-hidden font-sans">
@@ -45,10 +83,12 @@ export default function AdminDashboard() {
 
         <div className="p-8">
           <div className="glass-dark p-6 rounded-[2.5rem] flex items-center gap-4 border-2 border-white/5 shadow-2xl">
-            <div className="w-12 h-12 bg-[#1089A4] rounded-2xl flex items-center justify-center font-black text-lg border-2 border-white/10">AD</div>
+            <div className="relative w-12 h-12 rounded-2xl overflow-hidden shadow-elite-lg border-2 border-[#1089A4]">
+               <Image src={session.user?.image || "/logo.jpg"} alt="Admin" fill className="object-cover" />
+            </div>
             <div className="flex flex-col">
-              <span className="text-[11px] font-black uppercase tracking-[0.3em] text-white">المدير العام</span>
-              <span className="text-[9px] text-[#F29124] italic font-black uppercase">Root Access</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.3em] text-white truncate max-w-[120px]">{session.user?.name}</span>
+              <span className="text-[9px] text-[#F29124] italic font-black uppercase tracking-widest">Root Authority</span>
             </div>
           </div>
         </div>
@@ -63,7 +103,7 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-10">
             <div className="flex items-center gap-4 glass px-8 py-3 rounded-2xl border-2 border-white shadow-xl">
               <span className="text-[10px] font-black text-[#021D24]/30 uppercase tracking-[0.4em]">Exchange (USD):</span>
-              <span className="text-lg font-black text-[#1089A4] tracking-tighter leading-none">600.00 <span className="text-[10px]">ج.س</span></span>
+              <span className="text-lg font-black text-[#1089A4] tracking-tighter leading-none">{exchangeRate}.00 <span className="text-[10px]">ج.س</span></span>
             </div>
             <button className="w-14 h-14 glass text-[#021D24]/30 rounded-[1.25rem] relative hover:text-red-500 transition-all border-2 border-white shadow-xl flex items-center justify-center">
               <span className="material-symbols-rounded text-2xl font-light">notifications_active</span>
@@ -104,12 +144,14 @@ export default function AdminDashboard() {
                   <div className="px-16 py-12 border-b border-border/50 flex items-center justify-between relative">
                     <div className="flex flex-col gap-2">
                        <h3 className="font-black text-4xl tracking-tighter text-[#021D24] font-heading">طلبات الانضمام</h3>
-                       <p className="text-[#021D24]/20 text-[10px] font-black uppercase tracking-[0.4em]">Queue Management System</p>
+                       <p className="text-[#021D24]/20 text-[10px] font-black uppercase tracking-[0.4em]">Live Queue Management</p>
                     </div>
-                    <span className="bg-[#F29124] text-[#021D24] px-6 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-[#F29124]/20 border-4 border-white animate-bounce">2 معلقة</span>
+                    <span className="bg-[#F29124] text-[#021D24] px-6 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-[#F29124]/20 border-4 border-white animate-bounce">
+                      {pendingVendors.length} معلقة
+                    </span>
                   </div>
                   <div className="p-12 space-y-8">
-                    {pendingVendors.map((v) => (
+                    {pendingVendors.length > 0 ? pendingVendors.map((v) => (
                       <div key={v.id} className="p-8 bg-muted/20 border-2 border-border/50 rounded-[2.5rem] flex items-center justify-between hover:border-[#1089A4]/30 hover:bg-white transition-all group shadow-sm hover:shadow-2xl">
                         <div className="flex items-center gap-6">
                           <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-xl font-black text-[#1089A4] text-xl border-4 border-border/20 group-hover:scale-110 transition-transform">
@@ -128,7 +170,12 @@ export default function AdminDashboard() {
                            <button className="w-12 h-12 bg-red-500 text-white rounded-xl shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center border-b-4 border-black/10"><span className="material-symbols-rounded">block</span></button>
                         </div>
                       </div>
-                    ))}
+                    )) : (
+                      <div className="py-20 text-center space-y-4">
+                        <span className="material-symbols-rounded text-6xl text-muted/30">task_alt</span>
+                        <p className="font-black text-muted/40 uppercase tracking-widest text-xs">لا توجد طلبات معلقة حالياً</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -142,7 +189,7 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-2 gap-8">
                       <div className="bg-white/5 backdrop-blur-3xl p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all cursor-pointer group/card shadow-2xl">
                         <span className="text-[10px] font-black uppercase tracking-[0.4em] mb-6 block text-[#1089A4]">Market Fees</span>
-                        <span className="text-5xl font-black tracking-tighter font-heading group-hover/card:scale-110 transition-transform inline-block">15%</span>
+                        <span className="text-5xl font-black tracking-tighter font-heading group-hover/card:scale-110 transition-transform inline-block">10%</span>
                       </div>
                       <div className="bg-white/5 backdrop-blur-3xl p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all cursor-pointer group/card shadow-2xl">
                         <span className="text-[10px] font-black uppercase tracking-[0.4em] mb-6 block text-[#F29124]">Withdrawal</span>

@@ -52,30 +52,30 @@ export default function LoginPage() {
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 rounded-[3.5rem] overflow-hidden elite-shadow bg-white relative z-10"
+        className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden elite-shadow bg-white relative z-10 mx-auto"
       >
         
         {/* Elite Sidebar Branding */}
-        <div className="bg-primary p-16 hidden lg:flex flex-col justify-between relative overflow-hidden">
-           <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-transparent" />
+        <div className="bg-[#021D24] p-12 md:p-16 hidden lg:flex flex-col justify-between relative overflow-hidden">
+           <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-transparent to-transparent z-0" />
            
            <div className="relative z-10">
               <Link href="/" className="inline-flex items-center gap-4 group">
-                <div className="w-16 h-16 bg-white rounded-2xl p-2 flex items-center justify-center shadow-2xl">
+                <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl p-2 flex items-center justify-center shadow-2xl">
                    <Image src="/logo.jpg" alt="Logo" width={50} height={50} className="object-contain" />
                 </div>
                 <div className="flex flex-col">
-                   <span className="text-2xl font-black text-white uppercase tracking-tighter">Mersal</span>
-                   <span className="text-[9px] text-secondary font-black uppercase tracking-[0.4em]">Elite Marketplace</span>
+                   <span className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter">Mersal</span>
+                   <span className="text-[9px] text-[#F29124] font-black uppercase tracking-[0.4em]">Elite Marketplace</span>
                 </div>
               </Link>
            </div>
 
            <div className="relative z-10 space-y-8">
-              <h2 className="text-[ clamp(2rem,4vw,3.5rem) ] font-black text-white leading-[1.1] tracking-tighter font-heading">
-                مرحباً بك في <br /> عالم <span className="text-secondary text-gradient">النخبة</span>
+              <h2 className="text-4xl md:text-5xl font-black text-white leading-[1.1] tracking-tighter font-heading">
+                مرحباً بك في <br /> عالم <span className="text-[#F29124]">النخبة</span>
               </h2>
-              <p className="text-white/40 text-sm font-bold max-w-sm leading-relaxed">
+              <p className="text-white/40 text-[13px] font-bold max-w-[280px] leading-relaxed">
                  استمتع بتجربة تسوق لا مثيل لها مع أرقى الماركات العالمية والمحلية في السودان.
               </p>
            </div>
@@ -86,7 +86,7 @@ export default function LoginPage() {
         </div>
 
         {/* Auth Content Area */}
-        <div className="p-12 md:p-20 flex flex-col justify-center">
+        <div className="p-10 md:p-20 flex flex-col justify-center bg-white min-h-[600px]">
             <div className="mb-12 text-right">
                <h1 className="text-4xl font-black text-primary font-heading tracking-tighter">{isLogin ? "تسجيل الدخول" : "إنشاء حساب"}</h1>
                <p className="text-primary/40 text-sm font-bold mt-2 uppercase tracking-widest">{isLogin ? "سجل دخولك للمتابعة في المنصة" : "ابدأ رحلتك معنا كمستخدم نخبة"}</p>

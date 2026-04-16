@@ -16,40 +16,40 @@ export default function Footer() {
                    <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
                 </div>
                 <div className="flex flex-col">
-                   <h2 className="text-3xl font-black tracking-tighter uppercase font-heading">Mersal</h2>
-                   <span className="text-[10px] text-secondary font-black uppercase tracking-[0.6em]">Elite Market</span>
+                   <h2 className="text-3xl font-black tracking-tighter uppercase font-heading text-white">Mersal</h2>
+                   <span className="text-[10px] text-[#F29124] font-black uppercase tracking-[0.6em]">Elite Market</span>
                 </div>
              </Link>
-             <p className="text-white/30 text-[15px] leading-relaxed max-w-sm ml-auto">
+             <p className="text-white/50 text-[15px] leading-relaxed max-w-sm ml-auto font-medium">
                 مرسال هي الوجهة الأولى للتسوق الفاخر في السودان. نربط بين أفضل الموردين والعملاء لتوفير تجربة تسوق استثنائية وآمنة تماماً.
              </p>
              <div className="flex gap-6 justify-end">
                 {["facebook", "instagram", "youtube", "twitter"].map((social) => (
-                  <div key={social} className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-accent transition-all cursor-pointer group">
-                     <span className={`brand-icon-${social} text-lg opacity-40 group-hover:opacity-100 transition-opacity`} />
-                  </div>
+                   <div key={social} className="w-12 h-12 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center hover:bg-[#1089A4] hover:border-[#1089A4] transition-all cursor-pointer group shadow-xl">
+                      <span className={`brand-icon-${social} text-lg opacity-80 group-hover:opacity-100 transition-opacity text-white`} />
+                   </div>
                 ))}
              </div>
           </div>
 
           {/* Pillar 2: Navigation Map */}
           <div className="lg:col-span-2 space-y-8 text-right">
-             <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-accent">عن المتجر</h4>
-             <ul className="space-y-4 text-white/30 text-xs font-black uppercase tracking-widest">
-                <li><Link href="/shop" className="hover:text-white transition-colors">كافة المنتجات</Link></li>
-                <li><Link href="/offers" className="hover:text-white transition-colors">عروض حصرية</Link></li>
-                <li><Link href="/new" className="hover:text-white transition-colors">وصل حديثاً</Link></li>
-                <li><Link href="/about" className="hover:text-white transition-colors">من نحن</Link></li>
+             <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#1089A4]">عن المتجر</h4>
+             <ul className="space-y-4 text-white/50 text-xs font-black uppercase tracking-widest">
+                <li><Link href="/shop" className="hover:text-[#F29124] transition-colors">كافة المنتجات</Link></li>
+                <li><Link href="/offers" className="hover:text-[#F29124] transition-colors">عروض حصرية</Link></li>
+                <li><Link href="/new" className="hover:text-[#F29124] transition-colors">وصل حديثاً</Link></li>
+                <li><Link href="/about" className="hover:text-[#F29124] transition-colors">من نحن</Link></li>
              </ul>
           </div>
 
           <div className="lg:col-span-2 space-y-8 text-right">
-             <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-secondary">الدعم الفني</h4>
-             <ul className="space-y-4 text-white/30 text-xs font-black uppercase tracking-widest">
-                <li><Link href="/contact" className="hover:text-white transition-colors">اتصل بنا</Link></li>
-                <li><Link href="/faq" className="hover:text-white transition-colors">الأسئلة الشائعة</Link></li>
-                <li><Link href="/shipping" className="hover:text-white transition-colors">سياسة الشحن</Link></li>
-                <li><Link href="/returns" className="hover:text-white transition-colors">الاستبدال</Link></li>
+             <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#F29124]">الدعم الفني</h4>
+             <ul className="space-y-4 text-white/50 text-xs font-black uppercase tracking-widest">
+                <li><Link href="/contact" className="hover:text-[#1089A4] transition-colors">اتصل بنا</Link></li>
+                <li><Link href="/faq" className="hover:text-[#1089A4] transition-colors">الأسئلة الشائعة</Link></li>
+                <li><Link href="/shipping" className="hover:text-[#1089A4] transition-colors">سياسة الشحن</Link></li>
+                <li><Link href="/returns" className="hover:text-[#1089A4] transition-colors">الاستبدال</Link></li>
              </ul>
           </div>
 
@@ -57,6 +57,8 @@ export default function Footer() {
           <div className="lg:col-span-4">
              <div className="bg-white/5 border border-white/10 p-10 rounded-[3rem] space-y-8 text-right shadow-2xl">
                 <h4 className="text-2xl font-black font-heading text-white">النشرة البريدية</h4>
+                <p className="text-[12px] text-white/50 font-black uppercase tracking-widest leading-relaxed">كن أول من يعرف بأحدث العروض والقطع الحصرية التي تصلنا.</p>
+ite">النشرة البريدية</h4>
                 <p className="text-[12px] text-white/30 font-black uppercase tracking-widest leading-relaxed">كن أول من يعرف بأحدث العروض والقطع الحصرية التي تصلنا.</p>
                 <div className="relative">
                    <input 

@@ -20,69 +20,72 @@ export default function ProductCard({ id, title, price, image, vendor, location,
   return (
     <div className="motta-card group flex flex-col h-full bg-white p-4">
       
-      {/* Product Image Area */}
-      <Link href={`/product/${id}`} className="relative aspect-square rounded-[2rem] overflow-hidden bg-muted block bg-[#F8F9FA] mb-6">
+      {/* 1. Motta Product Visual Container */}
+      <Link href={`/product/${id}`} className="relative aspect-square rounded-[2rem] overflow-hidden bg-[#F8F9FA] block mb-8">
         <Image 
           src={image} 
           alt={title} 
           fill 
-          className="object-cover transition-transform duration-1000 group-hover:scale-110"
+          className="object-contain p-4 transition-transform duration-1000 group-hover:scale-110"
         />
         
-        {/* Elite Badges */}
+        {/* Elite Overlay Badges */}
         <div className="absolute top-5 right-5 flex flex-col gap-2.5 z-10">
           {discount && (
-            <span className="bg-secondary text-primary px-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl">
+            <span className="bg-[#F29124] text-white px-3.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-2xl">
               -{discount}%
             </span>
           )}
           {badge && (
-            <span className="bg-accent text-white px-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl">
+            <span className="bg-[#1089A4] text-white px-3.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-2xl">
               {badge}
             </span>
           )}
         </div>
 
-        {/* Hover Interaction Overlay */}
-        <div className="absolute inset-x-4 bottom-4 translate-y-24 group-hover:translate-y-0 transition-all duration-500 z-10 hidden md:block">
-           <button className="w-full motta-btn-primary py-4 rounded-2xl text-[10px]">
+        {/* Motta Hover Floating Action */}
+        <div className="absolute inset-x-6 bottom-6 translate-y-24 group-hover:translate-y-0 transition-all duration-700 ease-out z-10 hidden md:block">
+           <button className="w-full motta-btn-primary py-4.5 rounded-[1.5rem] text-[10px] shadow-2xl shadow-primary/40">
               أضف للسلة <span className="material-symbols-rounded text-lg">shopping_basket</span>
            </button>
         </div>
       </Link>
 
-      {/* Product Metadata */}
+      {/* 2. Motta Content Hierarchy */}
       <div className="flex flex-col flex-grow px-2 space-y-4 text-right">
-         {/* Vendor Context */}
+         
+         {/* Top-aligned Category Label */}
          <div className="flex items-center justify-between">
-            <Link href={`/vendor/${vendor}`} className="text-[10px] font-black text-accent hover:text-primary transition-colors flex items-center gap-2 uppercase tracking-widest">
-               <div className="w-6 h-6 rounded-lg bg-muted flex items-center justify-center text-[9px] font-black text-accent/40 border border-border">V</div>
-               {vendor}
-            </Link>
-            <span className="text-[10px] font-black text-primary/20 uppercase tracking-widest">{location}</span>
+            <span className="text-[10px] font-black text-accent uppercase tracking-widest">إلكترونيات / هواتف</span>
+            <div className="flex gap-0.5">
+               {[1, 2, 3, 4, 5].map((i) => (
+                 <span key={i} className="material-symbols-rounded text-[10px] text-secondary">star</span>
+               ))}
+            </div>
          </div>
          
-         {/* Title & Price Hub */}
-         <div className="space-y-2">
+         {/* Title & Vendor */}
+         <div className="space-y-1.5">
             <Link href={`/product/${id}`}>
-               <h3 className="text-base font-black text-primary leading-tight line-clamp-2 h-[2.5em] group-hover:text-accent transition-colors font-heading tracking-tight">{title}</h3>
+               <h3 className="text-base font-black text-primary leading-snug line-clamp-2 h-[2.5em] group-hover:text-accent transition-colors font-heading tracking-tight">{title}</h3>
             </Link>
-            <div className="flex items-baseline gap-2 justify-end">
-               <span className="text-2xl font-black text-primary tracking-tighter">{price.toLocaleString()}</span>
-               <span className="text-[10px] font-black text-primary/30 uppercase tracking-widest">ج.س</span>
-            </div>
+            <Link href={`/vendor/${vendor}`} className="text-[10px] font-bold text-primary/30 uppercase tracking-[0.2em] block hover:text-accent transition-colors">
+               بواسطة: {vendor}
+            </Link>
          </div>
 
-         {/* Sales Velocity Meta */}
-         <div className="pt-2 mt-auto border-t border-border">
-            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-primary/30">
-               <span>تم بيع: <span className="text-primary">{sold}</span></span>
-               <div className="flex gap-0.5">
-                  <span className="material-symbols-rounded text-xs text-secondary">star</span>
-                  <span className="material-symbols-rounded text-xs text-secondary">star</span>
-                  <span className="material-symbols-rounded text-xs text-secondary">star</span>
-               </div>
-            </div>
+         {/* Price Section */}
+         <div className="pt-2 flex items-baseline gap-2 justify-end mt-auto border-t border-border/10">
+            <span className="text-2xl font-black text-primary tracking-tighter">{price.toLocaleString()}</span>
+            <span className="text-[10px] font-black text-primary/30 uppercase tracking-widest">ج.س</span>
+         </div>
+
+         {/* Sales Scarcity Meta */}
+         <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-[0.3em] text-primary/20">
+            <span className="flex items-center gap-1.5">
+               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> متوفر في المخزن
+            </span>
+            <span>تم بيع {sold}+</span>
          </div>
       </div>
     </div>

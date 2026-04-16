@@ -33,31 +33,31 @@ export default function ProductTabHub() {
   return (
     <section className="py-24 bg-white relative">
       <div className="responsive-container">
-        <div className="flex flex-col items-center text-center space-y-12 mb-20">
-           <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.6em] text-[#1089A4]">
-              <span className="w-8 h-8 rounded-full bg-[#F29124] animate-ping opacity-20 absolute" />
-              <span className="relative">DISCOVER ELITE PRODUCTS</span>
+        <div className="flex flex-col items-center text-center space-y-10 mb-20">
+           <div className="flex items-center gap-4 text-[12px] font-bold uppercase tracking-[0.4em] text-primary">
+              <span className="w-8 h-8 rounded-full bg-secondary animate-pulse opacity-10 absolute" />
+              <span className="relative">اكتشف منتجات النخبة</span>
            </div>
-           <h2 className="text-6xl md:text-8xl font-black text-[#021D24] tracking-tighter leading-none font-heading">
-              اختر مـا يناسب <br /> <span className="text-[#F29124]">أسـلوب حيـاتك</span>
+           <h2 className="text-5xl md:text-7xl font-black text-foreground tracking-tight leading-tight font-heading">
+              اختر مـا يناسب <br /> <span className="text-secondary">أسـلوب حيـاتك</span>
            </h2>
 
-           {/* Elite Tab Controller */}
-           <div className="bg-muted p-3 rounded-[3rem] border-4 border-white shadow-2xl flex gap-4 w-fit mx-auto relative overflow-hidden group">
+           {/* Tab Controller */}
+           <div className="bg-muted p-2 rounded-3xl border-2 border-border shadow-sm flex gap-3 w-fit mx-auto relative overflow-hidden">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "px-10 py-4 rounded-[2.5rem] font-black text-xs uppercase tracking-widest transition-all duration-500 relative z-10",
-                    activeTab === tab.id ? "text-white" : "text-[#021D24]/30 hover:text-[#1089A4]"
+                    "px-8 py-3 rounded-2xl font-bold text-sm transition-all duration-300 relative z-10",
+                    activeTab === tab.id ? "text-white" : "text-foreground/40 hover:text-primary"
                   )}
                 >
                   {tab.label}
                   {activeTab === tab.id && (
                     <motion.div 
                       layoutId="activeTab" 
-                      className="absolute inset-0 bg-[#1089A4] rounded-[2.5rem] -z-10 shadow-xl shadow-[#1089A4]/30" 
+                      className="absolute inset-0 bg-primary rounded-2xl -z-10 shadow-lg shadow-primary/20" 
                     />
                   )}
                 </button>
@@ -68,11 +68,11 @@ export default function ProductTabHub() {
         <AnimatePresence mode="wait">
           <motion.div 
             key={activeTab}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12"
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10"
           >
             {tabProducts[activeTab].map((p: any) => (
               <ProductCard key={p.id} {...p} />
@@ -81,11 +81,12 @@ export default function ProductTabHub() {
         </AnimatePresence>
         
         <div className="flex justify-center mt-20">
-           <button className="bg-white border-4 border-muted text-[#021D24] px-16 py-7 rounded-[3rem] font-black text-xs uppercase tracking-[0.4em] shadow-xl hover:bg-[#F29124] hover:text-white hover:border-[#F29124] transition-all group">
-              استكشف كافة الكتالوج <span className="material-symbols-rounded group-hover:rotate-[-45deg] transition-all ml-4">trending_flat</span>
+           <button className="bg-white border-2 border-border text-foreground px-12 py-5 rounded-2xl font-bold text-sm uppercase tracking-widest shadow-lg hover:bg-secondary hover:text-white hover:border-secondary transition-all group flex items-center gap-4">
+              استكشف كافة الكتالوج <span className="material-symbols-rounded group-hover:translate-x-[-10px] transition-all">east</span>
            </button>
         </div>
       </div>
     </section>
   );
 }
+

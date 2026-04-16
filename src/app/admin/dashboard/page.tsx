@@ -160,8 +160,8 @@ export default function AdminDashboard() {
       <main className="flex-grow flex flex-col overflow-y-auto relative bg-[#F8F9FA] pb-32 lg:pb-0">
         
         {/* Header */}
-        <header className="h-20 lg:h-24 bg-white border-b flex items-center justify-between px-8 lg:px-12 sticky top-0 z-40">
-           <h2 className="text-xl font-black text-[#021D24] font-heading">
+        <header className="h-16 lg:h-24 bg-white border-b flex items-center justify-between px-4 lg:px-12 sticky top-0 z-40">
+           <h2 className="text-lg lg:text-xl font-black text-[#021D24] font-heading">
               {NAV_ITEMS.find(i => i.id === activeTab)?.label}
            </h2>
            <div className="flex items-center gap-6">
@@ -181,7 +181,7 @@ export default function AdminDashboard() {
         </header>
 
         {/* Dynamic Content Area */}
-        <div className="p-6 lg:p-12 space-y-10">
+        <div className="p-4 lg:p-12 space-y-6 lg:space-y-10">
           
           <AnimatePresence mode="wait">
             
@@ -314,20 +314,22 @@ export default function AdminDashboard() {
 
             {/* 3. USERS */}
             {activeTab === "users" && (
-              <motion.div key="users" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-[3rem] shadow-xl border-4 border-white overflow-hidden">
-                <div className="p-8 border-b flex justify-between items-center bg-muted/10">
-                   <h3 className="text-2xl font-black text-[#021D24]">قاعدة بيانات الـمـواطـنـيـن (المستخدمين)</h3>
-                   <div className="flex gap-4">
-                      <input type="text" placeholder="ابحث بالاسم أو الهاتف..." className="px-6 py-2 rounded-xl bg-white border text-sm outline-none w-64 focus:border-[#1089A4]" />
+              <motion.div key="users" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-[2rem] md:rounded-[3rem] shadow-xl border-4 border-white overflow-hidden">
+                <div className="p-6 md:p-8 border-b flex flex-col md:flex-row justify-between items-center gap-4 bg-muted/10">
+                   <h3 className="text-xl md:text-2xl font-black text-[#021D24]">قاعدة بيانات المستخدمين</h3>
+                   <div className="w-full md:w-auto">
+                      <input type="text" placeholder="بحث بالاسم أو الهاتف..." className="w-full px-6 py-3 rounded-xl bg-white border text-sm outline-none w-full md:w-64 focus:border-[#1089A4]" />
                    </div>
                 </div>
-                <div className="overflow-x-auto">
+
+                {/* Desktop view */}
+                <div className="hidden sm:block overflow-x-auto">
                    <table className="w-full text-right">
                       <thead className="bg-[#021D24] text-white/50 text-[10px] font-black uppercase tracking-widest">
                          <tr>
                             <th className="px-8 py-6">الاسم والبريد</th>
                             <th className="px-8 py-6">رقم الهاتف</th>
-                            <th className="px-8 py-6">عنوان الـ IP الحقيقي</th>
+                            <th className="px-8 py-6">عنوان IP</th>
                             <th className="px-8 py-6">تاريخ التسجيل</th>
                             <th className="px-8 py-6">الإجراء</th>
                          </tr>
@@ -341,10 +343,7 @@ export default function AdminDashboard() {
                                </td>
                                <td className="px-8 py-6">{u.phone || '—'}</td>
                                <td className="px-8 py-6">
-                                  <div className="flex items-center gap-2">
-                                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                     <span className="font-mono text-[11px] text-[#1089A4]">{u.lastIp || '127.0.0.1'}</span>
-                                  </div>
+                                  <span className="font-mono text-[11px] text-[#1089A4]">{u.lastIp || '—'}</span>
                                </td>
                                <td className="px-8 py-6 text-[10px] opacity-40">{new Date(u.createdAt).toLocaleDateString('ar-EG')}</td>
                                <td className="px-8 py-6">
@@ -354,6 +353,35 @@ export default function AdminDashboard() {
                          ))}
                       </tbody>
                    </table>
+                </div>
+
+                {/* Mobile view */}
+                <div className="sm:hidden divide-y divide-border/50">
+                   {users.map(u => (
+                      <div key={u.id} className="p-6 flex flex-col gap-4">
+                         <div className="flex justify-between items-start">
+                            <div>
+                               <p className="font-black text-lg text-[#021D24]">{u.name || 'بدون اسم'}</p>
+                               <p className="text-xs text-muted-foreground">{u.email}</p>
+                            </div>
+                            <button className="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center"><span className="material-symbols-rounded text-lg">block</span></button>
+                         </div>
+                         <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-muted/30 p-3 rounded-xl">
+                               <span className="text-[8px] font-black uppercase text-muted-foreground block mb-1">الهاتف</span>
+                               <span className="text-xs font-bold">{u.phone || '—'}</span>
+                            </div>
+                            <div className="bg-muted/30 p-3 rounded-xl">
+                               <span className="text-[8px] font-black uppercase text-muted-foreground block mb-1">تاريخ التسجيل</span>
+                               <span className="text-xs font-bold">{new Date(u.createdAt).toLocaleDateString('ar-EG')}</span>
+                            </div>
+                         </div>
+                         <div className="bg-[#1089A4]/5 p-3 rounded-xl flex items-center justify-between">
+                            <span className="text-[8px] font-black uppercase text-[#1089A4]">العنوان الرقمي IP</span>
+                            <span className="text-[10px] font-mono font-bold text-[#1089A4]">{u.lastIp || '—'}</span>
+                         </div>
+                      </div>
+                   ))}
                 </div>
               </motion.div>
             )}
@@ -446,27 +474,29 @@ export default function AdminDashboard() {
       </main>
 
       {/* ── Mobile Nav (Same logic) ── */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[200] bg-[#021D24]/95 backdrop-blur-3xl border-t border-white/10">
-        <div className="flex items-stretch">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[200] bg-[#021D24]/90 backdrop-blur-3xl border-t border-white/5 pb-safe">
+        <div className="flex items-center justify-around h-20 px-4">
           {NAV_ITEMS.map((item) => {
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className="flex-1 flex flex-col items-center justify-center gap-1 pt-3 pb-4"
+                className="relative flex flex-col items-center gap-1 group"
               >
                 <div className={cn(
-                  "relative w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
-                  isActive ? "bg-[#1089A4] shadow-lg" : "text-white/30"
+                  "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500",
+                  isActive ? "bg-[#1089A4] text-white shadow-lg shadow-[#1089A4]/40" : "text-white/20"
                 )}>
-                  <span className="material-symbols-rounded text-xl">
+                  <span className={cn("material-symbols-rounded text-xl transition-transform", isActive && "scale-110")}>
                     {item.icon}
                   </span>
                 </div>
-                <span className={cn("text-[8px] font-black", isActive ? "text-[#1089A4]" : "text-white/20")}>
-                  {item.label}
-                </span>
+                {isActive && (
+                  <motion.span layoutId="activeTab" className="text-[8px] font-black text-[#1089A4] uppercase tracking-widest leading-none">
+                    {item.label}
+                  </motion.span>
+                )}
               </button>
             );
           })}

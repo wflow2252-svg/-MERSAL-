@@ -8,42 +8,55 @@ export default function ProductGallery() {
   const [activeImage, setActiveImage] = useState(0);
   
   const images = [
-    "/placeholder.jpg",
-    "/placeholder.jpg",
-    "/placeholder.jpg",
-    "/placeholder.jpg",
+    "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=1200", // Natural Titanium
+    "https://images.unsplash.com/photo-1695048132717-57356598822d?auto=format&fit=crop&q=80&w=1200", // Side View
+    "https://images.unsplash.com/photo-1695048132808-0444399e557f?auto=format&fit=crop&q=80&w=1200", // Detail View
+    "https://images.unsplash.com/photo-1695048133137-4d9f67a26f03?auto=format&fit=crop&q=80&w=1200", // Box
   ];
 
   return (
-    <div className="flex flex-col-reverse lg:flex-row gap-6">
+    <div className="flex flex-col-reverse lg:flex-row gap-6 md:gap-8">
       {/* Thumbnails Sidebar */}
-      <div className="flex lg:flex-col gap-4 lg:w-24 overflow-x-auto lg:overflow-y-visible py-2 lg:py-0 no-scrollbar">
+      <div className="flex lg:flex-col gap-4 md:gap-5 lg:w-28 overflow-x-auto lg:overflow-y-visible py-2 md:py-3 lg:py-0 no-scrollbar">
         {images.map((img, i) => (
           <button
             key={i}
             onClick={() => setActiveImage(i)}
             className={cn(
-              "w-24 h-24 flex-shrink-0 bg-muted rounded-[1.5rem] border-2 transition-all p-1.5 overflow-hidden",
-              activeImage === i ? "border-primary shadow-xl shadow-primary/10 scale-105" : "border-transparent opacity-40 hover:opacity-100"
+              "w-20 h-20 md:w-24 md:h-24 flex-shrink-0 bg-white rounded-2xl border-2 transition-all p-1.5 overflow-hidden group/thumb",
+              activeImage === i ? "border-primary shadow-lg shadow-primary/10 scale-105" : "border-border/50 opacity-60 hover:opacity-100"
             )}
           >
-            <div className="w-full h-full bg-foreground/5 rounded-[1rem] flex items-center justify-center text-[10px] font-black text-foreground/20 italic">0{i+1}</div>
+            <div className="relative w-full h-full rounded-xl overflow-hidden bg-muted">
+               <Image 
+                src={img} 
+                alt={`Thumbnail ${i + 1}`} 
+                fill 
+                className="object-cover group-hover/thumb:scale-110 transition-transform duration-500"
+               />
+            </div>
           </button>
         ))}
       </div>
 
       {/* Main Image View */}
-      <div className="flex-grow aspect-square bg-muted rounded-[3.5rem] relative overflow-hidden group cursor-zoom-in border-8 border-white shadow-2xl shadow-black/5">
-        <div className="absolute inset-0 bg-foreground/5" />
-        <div className="absolute inset-0 flex items-center justify-center text-foreground/20 italic font-black text-2xl">
-           صورة المنتج {activeImage + 1}
-        </div>
+      <div className="flex-grow aspect-square md:aspect-auto md:h-[600px] bg-muted rounded-[2.5rem] md:rounded-[3rem] relative overflow-hidden group cursor-zoom-in border-4 border-white shadow-elite-lg min-h-[350px]">
+        <Image 
+          src={images[activeImage]} 
+          alt="Product Main Image" 
+          fill 
+          className="object-cover group-hover:scale-105 transition-transform duration-1000"
+          priority
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
         
         {/* Hover zoom decoration */}
-        <div className="absolute bottom-8 left-8 bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all shadow-xl shadow-black/5 border border-border/50 flex items-center gap-2">
-           <span className="material-symbols-rounded text-base text-primary">zoom_in</span> اضغط للتكبير
+        <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 bg-white/90 backdrop-blur-md px-5 py-2.5 md:px-6 md:py-3 rounded-2xl text-[11px] md:text-[12px] font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all shadow-xl shadow-black/5 border border-border/50 flex items-center gap-2 md:gap-3">
+           <span className="material-symbols-rounded text-md md:text-lg text-primary">zoom_in</span> اضغط لمشاهدة التفاصيل
         </div>
       </div>
     </div>
   );
 }
+
+

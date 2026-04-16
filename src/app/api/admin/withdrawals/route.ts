@@ -3,34 +3,37 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
+// GET all withdrawals
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-
     if (!(session as any)?.user?.email || (session as any).user.role !== 'ADMIN') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        role: true,
-        lastIp: true,
-        lastLogin: true,
-        createdAt: true,
+    const withdrawals = await prisma.withdrawal.findMany({
+      include: {
+        vendor: true
       },
       orderBy: { createdAt: 'desc' }
     });
 
-    return NextResponse.json(users);
+    return NextResponse.json(withdrawals.map(w => ({
+      id: w.id,
+      vendor: w.vendor.storeName,
+      amount: w.amount,
+      status: w.status,
+      date: new Date(w.createdAt).toLocaleString('ar-EG'),
+      method: "بنك الخرطوم" // Default for now
+    })));
+
   } catch (error) {
+    console.error("Fetch Withdrawals Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
+// PATCH update withdrawal status
 export async function PATCH(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -38,24 +41,17 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const { email } = await req.json();
+    const { id, status } = await req.json();
 
-    const user = await prisma.user.findUnique({
-      where: { email }
+    const updated = await prisma.withdrawal.update({
+      where: { id },
+      data: { status }
     });
 
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    return NextResponse.json(updated);
 
-    const updatedUser = await prisma.user.update({
-      where: { email },
-      data: { role: 'ADMIN' }
-    });
-
-    return NextResponse.json(updatedUser);
   } catch (error) {
-    console.error("Promote User Error:", error);
+    console.error("Update Withdrawal Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

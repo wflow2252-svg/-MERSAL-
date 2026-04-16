@@ -27,6 +27,7 @@ export default function AdminDashboard() {
   const [pendingProducts, setPendingProducts] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [allVendors, setAllVendors] = useState<any[]>([]);
+  const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [sysSettings, setSysSettings] = useState<any>(null);
   const [admins, setAdmins] = useState<any[]>([]);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -52,7 +53,8 @@ export default function AdminDashboard() {
       });
       if (res.ok) {
         setPendingVendors(prev => prev.filter(v => v.id !== id));
-        fetchStats(); // Update stats
+        if (activeTab === "vendors") fetchData();
+        fetchStats(); 
       }
     } catch (e) { console.error(e); }
     setActionLoading(null);
@@ -67,39 +69,82 @@ export default function AdminDashboard() {
       });
       if (res.ok) {
         setPendingProducts(prev => prev.filter(p => p.id !== id));
-        fetchStats(); // Update stats
+        fetchStats();
       }
     } catch (e) { console.error(e); }
     setActionLoading(null);
   };
 
-  // Tab Specific Fetching
+  const handlePromoteAdmin = async () => {
+    const email = prompt("أدخل البريد الإلكتروني للمستخدم المراد تعيينه مديراً:");
+    if (!email) return;
+
+    setActionLoading("promote");
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: 'PATCH',
+        body: JSON.stringify({ email })
+      });
+      if (res.ok) {
+        alert("تم تعيين المدير بنجاح!");
+        const data = await (await fetch("/api/admin/settings")).json();
+        setAdmins(data.admins);
+      } else {
+        const err = await res.json();
+        alert(`خطأ: ${err.error}`);
+      }
+    } catch (e) { console.error(e); }
+    setActionLoading(null);
+  };
+
+  const handleWithdrawalAction = async (id: string, status: string) => {
+    setActionLoading(id);
+    try {
+      const res = await fetch("/api/admin/withdrawals", {
+        method: 'PATCH',
+        body: JSON.stringify({ id, status })
+      });
+      if (res.ok) {
+        setWithdrawals(prev => prev.map(w => w.id === id ? { ...w, status } : w));
+      }
+    } catch (e) { console.error(e); }
+    setActionLoading(null);
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    if (activeTab === "overview") await fetchStats();
+    if (activeTab === "approvals") {
+      await fetchStats();
+      const pRes = await fetch("/api/admin/products");
+      if (pRes.ok) setPendingProducts(await pRes.json());
+    }
+    if (activeTab === "users") {
+      const uRes = await fetch("/api/admin/users");
+      if (uRes.ok) setUsers(await uRes.json());
+    }
+    if (activeTab === "vendors") {
+      const vRes = await fetch("/api/admin/vendors");
+      if (vRes.ok) setAllVendors(await vRes.json());
+    }
+    if (activeTab === "finance") {
+      await fetchStats();
+      const fRes = await fetch("/api/admin/withdrawals");
+      if (fRes.ok) setWithdrawals(await fRes.json());
+    }
+    if (activeTab === "settings") {
+      const sRes = await fetch("/api/admin/settings");
+      if (sRes.ok) {
+        const data = await sRes.json();
+        setSysSettings(data.settings);
+        setAdmins(data.admins);
+      }
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (!session) return;
-    
-    const fetchData = async () => {
-      setLoading(true);
-      if (activeTab === "overview") await fetchStats();
-      if (activeTab === "approvals") {
-        await fetchStats();
-        const pRes = await fetch("/api/admin/products");
-        if (pRes.ok) setPendingProducts(await pRes.json());
-      }
-      if (activeTab === "users") {
-        const uRes = await fetch("/api/admin/users");
-        if (uRes.ok) setUsers(await uRes.json());
-      }
-      if (activeTab === "settings") {
-        const sRes = await fetch("/api/admin/settings");
-        if (sRes.ok) {
-          const data = await sRes.json();
-          setSysSettings(data.settings);
-          setAdmins(data.admins);
-        }
-      }
-      setLoading(false);
-    };
-
     fetchData();
   }, [activeTab, session]);
 
@@ -347,7 +392,11 @@ export default function AdminDashboard() {
                                </td>
                                <td className="px-8 py-6 text-[10px] opacity-40">{new Date(u.createdAt).toLocaleDateString('ar-EG')}</td>
                                <td className="px-8 py-6">
-                                  <button className="text-red-500 hover:scale-110 transition-all"><span className="material-symbols-rounded">block</span></button>
+                                  <button onClick={async () => {
+                                     if(confirm('هل أنت متأكد من حظر هذا المستخدم؟')) {
+                                        // Implement block logic if API supports it
+                                     }
+                                  }} className="text-red-500 hover:scale-110 transition-all"><span className="material-symbols-rounded">block</span></button>
                                </td>
                             </tr>
                          ))}
@@ -400,12 +449,7 @@ export default function AdminDashboard() {
                    </div>
 
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {[
-                        { name: "متجر الفخامة للهواتف", owner: "أحمد علي", sales: "145", status: "نشط" },
-                        { name: "رسيل للتقنية", owner: "محمد عثمان", sales: "89", status: "نشط" },
-                        { name: "ميديل ديزاين", owner: "سارة النور", sales: "12", status: "قيد المراجعة" },
-                        { name: "واحة العطور", owner: "خالد إبراهيم", sales: "56", status: "نشط" }
-                      ].map((store, i) => (
+                      {allVendors.map((store, i) => (
                         <div key={i} className="bg-white p-6 md:p-8 rounded-[2.5rem] md:rounded-[3rem] shadow-xl border border-primary/5 group hover:-translate-y-2 transition-all duration-500">
                            <div className="flex justify-between items-start mb-8">
                               <div className="w-16 h-16 rounded-2xl bg-[#021D24] text-white flex items-center justify-center font-black text-xl">{store.name[0]}</div>
@@ -422,11 +466,20 @@ export default function AdminDashboard() {
                                  <span className="text-[10px] font-black uppercase text-muted-foreground block">المبيعات</span>
                                  <span className="text-lg font-black text-primary">{store.sales} منتج</span>
                               </div>
+                              <div className="text-left">
+                                 <span className="text-[10px] font-black uppercase text-muted-foreground block">المنتجات</span>
+                                 <span className="text-lg font-black text-secondary">{store.productsCount}</span>
+                              </div>
                            </div>
                            
                            <div className="mt-8 flex gap-3">
-                              <button className="flex-1 bg-muted p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-50 hover:text-red-500 transition-colors">إيقاف</button>
-                              <button className="flex-1 bg-[#021D24] text-white p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">عرض التقارير</button>
+                              <button 
+                                onClick={() => handleVendorAction(store.id, store.status === 'نشط' ? 'SUSPENDED' : 'APPROVED')}
+                                className="flex-1 bg-muted p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-50 hover:text-red-500 transition-colors"
+                              >
+                                {store.status === 'نشط' ? 'إيقاف' : 'تفعيل'}
+                              </button>
+                              <button className="flex-1 bg-[#021D24] text-white p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">التفاصيل</button>
                            </div>
                         </div>
                       ))}
@@ -439,15 +492,11 @@ export default function AdminDashboard() {
               <motion.div key="finance" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
                 {/* Financial Overview Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                   {[
-                     { label: "إجمالي المبيعات", value: "1,240,500", trend: "+12%", color: "primary" },
-                     { label: "صافي الأرباح", value: "850,200", trend: "+8.5%", color: "secondary" },
-                     { label: "عمولات المنصة", value: "124,050", trend: "+10%", color: "accent" }
-                   ].map((stat, i) => (
+                   {stats.map((stat, i) => (
                      <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-primary/5 flex flex-col items-center text-center">
                         <span className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] mb-4">{stat.label}</span>
-                        <span className="text-3xl font-black text-primary mb-2">{stat.value} <span className="text-xs">ج.س</span></span>
-                        <span className="text-[10px] font-bold text-green-500 bg-green-50 px-3 py-1 rounded-full">{stat.trend} زيادة هذا الشهر</span>
+                        <span className="text-3xl font-black text-primary mb-2">{stat.value}</span>
+                        <span className="text-[10px] font-bold text-green-500 bg-green-50 px-3 py-1 rounded-full">بيانات حقيقية من النظام</span>
                      </div>
                    ))}
                 </div>
@@ -456,27 +505,39 @@ export default function AdminDashboard() {
                 <div className="bg-[#021D24] text-white rounded-[3rem] p-6 md:p-10 shadow-2xl overflow-hidden relative">
                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between mb-10 gap-6">
                       <h3 className="text-xl md:text-2xl font-black font-heading tracking-tight italic">طلبات سحب الأرباح المعلقة</h3>
-                      <button className="bg-[#F29124] text-white px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl">تسوية الطلبات</button>
+                      <button className="bg-[#F29124] text-white px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl">تسوية كافة الطلبات</button>
                    </div>
                    
                    <div className="space-y-4">
-                      {[
-                        { vendor: "متجر الفخامة", amount: "45,000", date: "منذ ساعتين", method: "بنك الخرطوم" },
-                        { vendor: "رسيل للتقنية", amount: "12,400", date: "منذ 5 ساعات", method: "كاش كارد" }
-                      ].map((req, i) => (
+                      {withdrawals.map((req, i) => (
                         <div key={i} className="bg-white/5 border border-white/10 p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between hover:bg-white/10 transition-all gap-4">
                            <div className="flex items-center gap-5 w-full">
-                              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center font-black">V</div>
+                              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center font-black">W</div>
                               <div>
                                  <p className="font-black text-sm">{req.vendor}</p>
                                  <p className="text-[10px] text-white/40">{req.method} • {req.date}</p>
                               </div>
                            </div>
-                           <div className="text-right w-full sm:w-auto">
-                              <p className="font-black text-md text-[#F29124]">{req.amount} ج.س</p>
+                           <div className="flex items-center gap-6 w-full sm:w-auto">
+                              <p className="font-black text-md text-[#F29124] whitespace-nowrap">{req.amount.toLocaleString()} ج.س</p>
+                              {req.status === 'PENDING' ? (
+                                <div className="flex gap-2">
+                                  <button 
+                                    onClick={() => handleWithdrawalAction(req.id, 'APPROVED')}
+                                    className="h-8 px-4 bg-green-500 rounded-lg text-[10px] font-black uppercase"
+                                  >موافقة</button>
+                                  <button 
+                                    onClick={() => handleWithdrawalAction(req.id, 'REJECTED')}
+                                    className="h-8 px-4 bg-red-500 rounded-lg text-[10px] font-black uppercase"
+                                  >رفض</button>
+                                </div>
+                              ) : (
+                                <span className="text-[10px] font-black opacity-40 uppercase tracking-widest">{req.status}</span>
+                              )}
                            </div>
                         </div>
                       ))}
+                      {withdrawals.length === 0 && <p className="text-center py-10 text-white/20 font-black">لا توجد طلبات سحب حالياً</p>}
                    </div>
                 </div>
               </motion.div>
@@ -521,7 +582,12 @@ export default function AdminDashboard() {
                 <div className="bg-white rounded-[3rem] p-10 shadow-xl border-4 border-white space-y-8">
                    <div className="flex justify-between items-center">
                       <h3 className="text-2xl font-black text-[#021D24]">هيئة المدراء (Admins)</h3>
-                      <button className="bg-[#1089A4] text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">إضافة مدير جديد +</button>
+                      <button 
+                        onClick={handlePromoteAdmin}
+                        className="bg-[#1089A4] text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#F29124] transition-all"
+                      >
+                        {actionLoading === "promote" ? "جاري الإضافة..." : "إضافة مدير جديد +"}
+                      </button>
                    </div>
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       {admins.map(admin => (
@@ -569,7 +635,7 @@ export default function AdminDashboard() {
 
       </main>
 
-      {/* ── Mobile Nav (Same logic) ── */}
+      {/* ── Mobile Nav ── */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[200] bg-[#021D24]/90 backdrop-blur-3xl border-t border-white/5 pb-safe">
         <div className="flex items-center justify-around h-20 px-4">
           {NAV_ITEMS.map((item) => {

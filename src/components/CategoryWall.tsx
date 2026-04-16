@@ -87,16 +87,18 @@ export default function CategoryWall() {
                  <Link 
                   key={i} 
                   href={`/category/${item.id}`}
-                  className="group relative h-[200px] md:h-[235px] rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-medium"
+                  className="group relative h-[250px] md:h-[235px] rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-medium"
                 >
                   <Image src={item.image} alt={item.name} fill className="object-cover transition-transform duration-[2s] group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                   <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end text-right">
-                     <div className="flex items-center justify-end gap-3 mb-2">
+                     <div className="flex items-center justify-end gap-3 mb-6">
                         <h3 className="text-xl md:text-2xl font-black text-white font-heading tracking-tight">{item.name}</h3>
                         <span className="material-symbols-rounded text-white/50 text-md">{item.icon}</span>
                      </div>
-                     <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest group-hover:text-secondary transition-colors">{item.sub}</span>
+                     <button className="bg-white/10 backdrop-blur-md text-white h-12 px-8 rounded-xl w-fit mr-auto border border-white/20 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all shadow-xl flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 duration-500">
+                        استكشف
+                     </button>
                   </div>
                 </Link>
              ))}
@@ -108,12 +110,17 @@ export default function CategoryWall() {
                 <Image src={wallItems[3].image} alt={wallItems[3].name} fill className="object-cover transition-transform duration-[2s] group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                 <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end text-right">
-                   <div className="flex items-center justify-end gap-3">
-                      <div className="flex flex-col">
-                         <span className="text-secondary text-[10px] font-bold tracking-widest mb-1 uppercase">{wallItems[3].sub}</span>
-                         <h3 className="text-2xl md:text-3xl font-black text-white font-heading tracking-tight">{wallItems[3].name}</h3>
+                   <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                      <button className="bg-white/10 backdrop-blur-md text-white h-12 px-10 rounded-xl w-fit mr-auto border border-white/20 font-black text-xs uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all shadow-xl flex items-center justify-center">
+                         استكشف
+                      </button>
+                      <div className="flex items-center justify-end gap-3">
+                         <div className="flex flex-col">
+                            <span className="text-secondary text-[10px] font-bold tracking-widest mb-1 uppercase">{wallItems[3].sub}</span>
+                            <h3 className="text-2xl md:text-3xl font-black text-white font-heading tracking-tight">{wallItems[3].name}</h3>
+                         </div>
+                         <span className="material-symbols-rounded text-white/40 text-2xl">{wallItems[3].icon}</span>
                       </div>
-                      <span className="material-symbols-rounded text-white/40 text-2xl">{wallItems[3].icon}</span>
                    </div>
                 </div>
               </Link>

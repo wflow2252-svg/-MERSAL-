@@ -13,10 +13,10 @@ export async function GET() {
     }
 
     // 2. Aggregate Real Data
-    const [totalVendors, totalSales, pendingRequests, pendingVendorsList, settings] = await Promise.all([
+    const [totalVendors, totalSales, totalWithdrawals, pendingVendorsList, settings] = await Promise.all([
       prisma.vendor.count(),
       prisma.order.aggregate({ _sum: { totalAmount: true } }),
-      prisma.vendor.count({ where: { status: 'PENDING' } }),
+      prisma.withdrawal.count({ where: { status: 'PENDING' } }),
       prisma.vendor.findMany({ 
         where: { status: 'PENDING' }, 
         include: { user: true },
@@ -25,20 +25,24 @@ export async function GET() {
       prisma.settings.findUnique({ where: { id: 'global' } })
     ]);
 
+    const salesAmount = totalSales._sum.totalAmount || 0;
+    const commission = settings?.platformCommission || 10;
+    const netProfit = (salesAmount * commission) / 100;
+
     return NextResponse.json({
       stats: [
         { label: "إجمالي الموردين", value: totalVendors.toString(), icon: "groups", color: "bg-gradient-to-br from-purple-600 to-purple-800" },
-        { label: "مبيعات المنصة", value: `${(totalSales._sum.totalAmount || 0).toLocaleString()} ج.س`, icon: "payments", color: "bg-gradient-to-br from-[#1089A4] to-[#086F85]" },
-        { label: "طلبات معلقة", value: pendingRequests.toString(), icon: "pending_actions", color: "bg-gradient-to-br from-[#F29124] to-[#D47B1E]" },
+        { label: "مبيعات المنصة", value: `${salesAmount.toLocaleString()} ج.س`, icon: "payments", color: "bg-gradient-to-br from-[#1089A4] to-[#086F85]" },
+        { label: "صافي أرباح الموقع", value: `${netProfit.toLocaleString()} ج.س`, icon: "trending_up", color: "bg-gradient-to-br from-[#021D24] to-[#010D11]" },
       ],
+      pendingWithdrawals: totalWithdrawals,
       pendingVendors: pendingVendorsList.map(v => ({
         id: v.id,
         name: v.user?.name || "بدون اسم",
         store: v.storeName,
         city: v.location,
         docs: v.bankStatementUrl
-      })),
-      exchangeRate: settings?.exchangeRate || 600
+      }))
     });
 
   } catch (error) {

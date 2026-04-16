@@ -1,0 +1,6 @@
+# 
+
+
+# Mersal Diagnostic Mode
+If you see this, the server environment is healthy.
+The 500 error was caused by a specific component.

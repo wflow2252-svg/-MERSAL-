@@ -11,6 +11,16 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+          role: "CUSTOMER",
+          isOnboarded: false,
+        }
+      },
     }),
     CredentialsProvider({
       name: "credentials",
@@ -22,34 +32,31 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Please enter both email and password');
         }
-
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        });
-
-        if (!user || !user.password) {
-          throw new Error('No user found with this email');
-        }
-
+        const user = await prisma.user.findUnique({ where: { email: credentials.email } });
+        if (!user || !user.password) throw new Error('No user found with this email');
         const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
-
-        if (!isPasswordCorrect) {
-          throw new Error('Incorrect password');
-        }
-
+        if (!isPasswordCorrect) throw new Error('Incorrect password');
         return user;
       }
     })
   ],
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, user }: any) {
+    async signIn({ user, account, profile }: any) {
+      if (account?.provider === "google") {
+        // Here we can enforce additional checks if needed
+        return true;
+      }
+      return true;
+    },
+    async jwt({ token, user, trigger, session }: any) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
         token.isOnboarded = user.isOnboarded;
+      }
+      if (trigger === "update" && session) {
+        token.isOnboarded = session.isOnboarded;
       }
       return token;
     },
@@ -62,10 +69,10 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Allow relative URLs and same-origin URLs
+      // In production, force base domain if needed
       if (url.startsWith("/")) return `${baseUrl}${url}`
       else if (new URL(url).origin === baseUrl) return url
-      return baseUrl
+      return baseUrl;
     }
   },
   pages: {
@@ -73,16 +80,5 @@ export const authOptions: NextAuthOptions = {
     newUser: '/onboarding',
   },
   secret: process.env.NEXTAUTH_SECRET,
-  cookies: {
-    sessionToken: {
-      name: process.env.NODE_ENV === 'production' ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-      },
-    },
-  },
-  debug: false
+  debug: process.env.NODE_ENV === "development",
 };

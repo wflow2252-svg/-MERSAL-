@@ -60,25 +60,6 @@ export const authOptions: NextAuthOptions = {
         token.isOnboarded = true; // Skip onboarding for master admin
       }
 
-      // 2.5 IP & Login Tracking (Only on initial sign in or token creation/update)
-      if (user) {
-        try {
-          // Dynamic import to avoid issues in some environments
-          const { headers } = await import("next/headers");
-          const ip = (await headers()).get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
-          
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { 
-              lastIp: ip,
-              lastLogin: new Date()
-            }
-          });
-        } catch (e) {
-          console.error("IP Tracking Error:", e);
-        }
-      }
-
       // 3. Dynamic Updates
       if (trigger === "update" && session) {
         token.isOnboarded = session.isOnboarded !== undefined ? session.isOnboarded : token.isOnboarded;

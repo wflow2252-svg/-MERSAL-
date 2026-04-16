@@ -49,6 +49,9 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.isOnboarded = user.isOnboarded;
+        token.age = (user as any).age;
+        token.phone = (user as any).phone;
+        token.interests = (user as any).interests;
       }
       
       // 2. SOVEREIGN MASTER OVERRIDE: zomatube2012@gmail.com is ALWAYS an ADMIN
@@ -59,7 +62,13 @@ export const authOptions: NextAuthOptions = {
 
       // 3. Dynamic Updates
       if (trigger === "update" && session) {
-        token.isOnboarded = session.isOnboarded;
+        token.isOnboarded = session.isOnboarded !== undefined ? session.isOnboarded : token.isOnboarded;
+        if (session.user) {
+           token.name = session.user.name;
+           token.age = session.user.age;
+           token.phone = session.user.phone;
+           token.interests = session.user.interests;
+        }
       }
       return token;
     },
@@ -68,6 +77,9 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).id = token.id;
         (session.user as any).role = token.role;
         (session.user as any).isOnboarded = token.isOnboarded;
+        (session.user as any).age = token.age;
+        (session.user as any).phone = token.phone;
+        (session.user as any).interests = token.interests;
       }
       return session;
     },

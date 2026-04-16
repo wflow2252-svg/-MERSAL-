@@ -68,6 +68,17 @@ body {
   box-shadow: 0 20px 40px -5px rgba(11, 83, 100, 0.1), 0 10px 20px -5px rgba(11, 83, 100, 0.04);
 }
 
+.glass-dark {
+  background: rgba(1, 18, 22, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.shadow-midnight {
+  box-shadow: 0 50px 100px -20px rgba(1, 18, 22, 0.4);
+}
+
 /* Animations */
 @keyframes float {
   0%, 100% { transform: translateY(0); }

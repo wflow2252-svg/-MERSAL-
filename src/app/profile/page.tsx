@@ -136,8 +136,8 @@ export default function ProfilePage() {
                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-[80px] -z-10 group-hover:bg-secondary/40 transition-colors duration-700" />
               </div>
 
-              <div className="flex-grow space-y-8 w-full text-center md:text-right">
-                 <div className="space-y-4">
+              <div className="flex-grow space-y-8 w-full text-center">
+                 <div className="space-y-4 flex flex-col items-center">
                     <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm px-6 py-2 rounded-full border border-primary/10 shadow-sm">
                        <span className="relative flex h-3 w-3">
                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
@@ -149,7 +149,7 @@ export default function ProfilePage() {
                       <input 
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        className="text-3xl md:text-6xl font-black text-primary tracking-tighter bg-white/50 px-8 py-4 rounded-[2rem] border border-primary/20 focus:border-secondary focus:ring-4 focus:ring-secondary/10 w-full text-center md:text-right outline-none transition-all shadow-inner"
+                        className="text-3xl md:text-6xl font-black text-primary tracking-tighter bg-white/50 px-8 py-4 rounded-[2rem] border border-primary/20 focus:border-secondary focus:ring-4 focus:ring-secondary/10 w-full text-center outline-none transition-all shadow-inner"
                       />
                     ) : (
                       <h1 className="text-4xl md:text-7xl font-black text-primary tracking-tighter leading-[1.1] font-heading">
@@ -159,7 +159,7 @@ export default function ProfilePage() {
                     <p className="text-sm font-black text-primary/40 uppercase tracking-widest block">{session.user?.email}</p>
                  </div>
 
-                 <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
+                 <div className="flex flex-wrap justify-center gap-4 pt-4">
                     <div className="flex items-center gap-3 bg-white px-6 py-4 rounded-[1.5rem] border border-primary/5 shadow-sm hover:-translate-y-1 transition-transform">
                        <span className="material-symbols-rounded text-secondary text-2xl">verified</span>
                        <div className="text-right">
@@ -179,41 +179,41 @@ export default function ProfilePage() {
            </div>
         </div>
 
-        {/* The Control Hub */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        {/* The Control Hub (Centered) */}
+        <div className="max-w-4xl mx-auto space-y-10">
            
            {/* Primary Configuration */}
-           <div className="lg:col-span-8 space-y-10 order-2 lg:order-1">
+           <div className="space-y-10">
               
-              <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] p-10 md:p-14 shadow-xl shadow-primary/5 border border-white space-y-12 text-right relative overflow-hidden">
+              <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] p-10 md:p-14 shadow-xl shadow-primary/5 border border-white space-y-12 text-center relative overflow-hidden">
                  
-                 <div className="flex items-center justify-between border-b border-primary/5 pb-8">
+                 <div className="flex flex-col items-center justify-center border-b border-primary/5 pb-8 gap-4">
+                    <div className="w-16 h-16 bg-primary/5 rounded-[1.5rem] flex items-center justify-center">
+                       <span className="material-symbols-rounded text-secondary text-3xl">fingerprint</span>
+                    </div>
                     <div>
                        <h2 className="text-2xl font-black text-primary uppercase tracking-tight">إحداثيات الهوية</h2>
                        <p className="text-xs font-bold text-primary/40 mt-2">تحديث بياناتك الشخصية لتعزيز تجربتك</p>
-                    </div>
-                    <div className="w-16 h-16 bg-primary/5 rounded-[1.5rem] flex items-center justify-center">
-                       <span className="material-symbols-rounded text-secondary text-3xl">fingerprint</span>
                     </div>
                  </div>
 
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
-                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] pr-4 block">العمر المعتمد</label>
+                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block">العمر المعتمد</label>
                        {isEditing ? (
-                         <input type="number" value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} className="w-full bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-right transition-all" placeholder="أدخل عمرك..." />
+                         <input type="number" value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} className="w-full max-w-sm mx-auto bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-center transition-all block" placeholder="أدخل عمرك..." />
                        ) : (
-                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm">
+                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm max-w-sm mx-auto">
                            <p className="text-xl font-black text-primary">{formData.age ? `${formData.age} عاماً` : "غير مسجل"}</p>
                          </div>
                        )}
                     </div>
                     <div className="space-y-4">
-                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] pr-4 block">رقم الاتصال</label>
+                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block">رقم الاتصال</label>
                        {isEditing ? (
-                         <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-right transition-all" placeholder="أدخل رقم الهاتف..." />
+                         <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full max-w-sm mx-auto bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-center transition-all block" placeholder="أدخل رقم الهاتف..." />
                        ) : (
-                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm">
+                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm max-w-sm mx-auto">
                            <p className="text-xl font-black text-primary" dir="ltr">{formData.phone || "غير مسجل"}</p>
                          </div>
                        )}
@@ -221,7 +221,7 @@ export default function ProfilePage() {
                  </div>
 
                  <div className="pt-8">
-                    <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] pr-4 block mb-6">النطاق التفضيلي</label>
+                    <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block mb-6">النطاق التفضيلي</label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
                        {CATEGORIES.map((cat) => (
                          <button 
@@ -270,8 +270,8 @@ export default function ProfilePage() {
               {/* Danger Zone */}
               <div className="bg-red-50/50 rounded-[3rem] p-10 border border-red-100 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden group">
                  <div className="absolute right-0 top-0 w-2 h-full bg-red-400 group-hover:w-full group-hover:opacity-5 transition-all duration-700" />
-                 <div className="text-right flex items-center gap-8 relative z-10">
-                    <div className="w-16 h-16 rounded-[1.5rem] bg-red-100 flex items-center justify-center text-red-500 shadow-inner">
+                 <div className="text-center md:text-right flex flex-col md:flex-row items-center gap-8 relative z-10 w-full justify-center">
+                    <div className="w-16 h-16 rounded-[1.5rem] bg-red-100 flex items-center justify-center text-red-500 shadow-inner flex-none">
                        <span className="material-symbols-rounded text-3xl">warning</span>
                     </div>
                     <div>
@@ -280,67 +280,25 @@ export default function ProfilePage() {
                     </div>
                  </div>
                  
+                 <div className="flex justify-center w-full">
                  {showDeleteConfirm ? (
                    <div className="flex gap-4 relative z-10">
                       <button onClick={handleDeleteAccount} className="bg-red-600 text-white px-8 py-4 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] shadow-lg hover:bg-red-700 transition-all">التدمير النهائي</button>
                       <button onClick={() => setShowDeleteConfirm(false)} className="bg-white text-primary/60 px-8 py-4 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] border border-border/10 shadow-sm">تراجع</button>
                    </div>
                  ) : (
-                   <button onClick={() => setShowDeleteConfirm(true)} className="bg-white border border-red-200 text-red-500 px-10 py-5 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.2em] hover:bg-red-50 transition-colors shadow-sm relative z-10">
+                   <button onClick={() => setShowDeleteConfirm(true)} className="bg-white border border-red-200 text-red-500 px-10 py-5 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.2em] hover:bg-red-50 transition-colors shadow-sm relative z-10 flex-none m-auto">
                       إلغاء العضوية
                    </button>
                  )}
-              </div>
-           </div>
-
-           {/* Metrics & Shortcuts (Left Side) */}
-           <div className="lg:col-span-4 space-y-10 order-1 lg:order-2">
-              
-              <div className="bg-gradient-to-br from-[#021D24] to-[#038DB1] rounded-[3rem] p-12 text-white relative overflow-hidden shadow-[0_40px_80px_rgba(3,141,177,0.3)] text-center">
-                 <div className="absolute top-0 left-0 w-full h-[50%] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 -z-10 mix-blend-overlay" />
-                 
-                 <div className="relative z-10 space-y-8">
-                    <span className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.4em] border border-white/10 backdrop-blur-md">
-                       <span className="material-symbols-rounded text-secondary text-sm">diamond</span> رصيد النخبة
-                    </span>
-                    <div className="space-y-2">
-                      <p className="text-7xl font-black tracking-tighter leading-none font-heading">١,٢٥٠</p>
-                      <p className="text-xs text-white/50 font-bold uppercase tracking-widest">نقطة ذهبية</p>
-                    </div>
-                    <Link href="/shop" className="w-full bg-secondary text-white py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-white hover:text-secondary transition-all shadow-xl">
-                       استثمار النقاط <span className="material-symbols-rounded text-lg">arrow_outward</span>
-                    </Link>
-                 </div>
-                 
-                 <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-white/5 blur-[40px] rounded-full" />
-              </div>
-
-              <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] p-10 border border-white shadow-xl shadow-primary/5 text-right space-y-8 relative">
-                 <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-black text-primary uppercase tracking-[0.2em]">آخر عملياتك</h3>
-                    <span className="material-symbols-rounded text-primary/20">history</span>
-                 </div>
-                 
-                 <div className="space-y-4">
-                    {[1, 2].map((i) => (
-                      <div key={i} className="flex gap-5 p-5 rounded-[1.5rem] bg-muted/40 border border-primary/5 hover:border-primary/20 transition-all group cursor-pointer items-center">
-                         <div className="flex-grow text-right">
-                            <p className="text-xs font-black text-primary mb-1 group-hover:text-secondary transition-colors">عقد ناجح</p>
-                            <p className="text-[10px] font-bold text-primary/40 uppercase tracking-[0.2em]">#MORSALL-889X</p>
-                         </div>
-                         <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
-                            <span className="material-symbols-rounded text-2xl">local_shipping</span>
-                         </div>
-                      </div>
-                    ))}
                  </div>
               </div>
 
-              <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full py-8 rounded-[2.5rem] bg-white border border-primary/10 text-primary/40 font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:border-red-200 hover:text-red-500 hover:shadow-xl transition-all group">
-                 تسجيل الخروج <span className="material-symbols-rounded text-2xl group-hover:-translate-x-2 transition-transform">logout</span>
+              {/* Central Logout */}
+              <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full max-w-sm mx-auto py-8 rounded-[2.5rem] bg-white border border-primary/10 text-primary/40 font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:border-red-200 hover:text-red-500 hover:shadow-xl transition-all group mt-10">
+                 تسجيل الخروج <span className="material-symbols-rounded text-2xl group-hover:-translate-y-1 transition-transform">logout</span>
               </button>
            </div>
-
         </div>
 
       </div>

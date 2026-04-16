@@ -198,38 +198,38 @@ export default function ProfilePage() {
                  </div>
 
                  <div className="flex flex-col items-center gap-8 w-full">
-                    <div className="space-y-4 w-full">
-                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block text-center">العمر المعتمد</label>
+                    <div className="w-full max-w-sm flex flex-col items-center gap-3">
+                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] text-center w-full">العمر المعتمد</label>
                        {isEditing ? (
-                         <input type="number" value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} className="w-full max-w-sm mx-auto bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-center transition-all block" placeholder="أدخل عمرك..." />
+                         <input type="number" value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} className="w-full bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-center transition-all block" placeholder="أدخل عمرك..." />
                        ) : (
-                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm max-w-sm mx-auto w-full max-w-sm">
+                         <div className="w-full bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm text-center">
                            <p className="text-xl font-black text-primary">{formData.age ? `${formData.age} عاماً` : "غير مسجل"}</p>
                          </div>
                        )}
                     </div>
-                    <div className="space-y-4 w-full">
-                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block text-center">رقم الاتصال</label>
+                    <div className="w-full max-w-sm flex flex-col items-center gap-3">
+                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] text-center w-full">رقم الاتصال</label>
                        {isEditing ? (
-                         <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full max-w-sm mx-auto bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-center transition-all block" placeholder="أدخل رقم الهاتف..." />
+                         <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-center transition-all block" placeholder="أدخل رقم الهاتف..." />
                        ) : (
-                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm max-w-sm mx-auto w-full max-w-sm">
+                         <div className="w-full bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm text-center">
                            <p className="text-xl font-black text-primary" dir="ltr">{formData.phone || "غير مسجل"}</p>
                          </div>
                        )}
                     </div>
                  </div>
 
-                 <div className="pt-12">
-                    <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] block text-center mb-8">النطاق التفضيلي</label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                 <div className="pt-10 w-full flex flex-col items-center">
+                    <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] text-center block w-full mb-8">النطاق التفضيلي</label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-5 w-full max-w-2xl">
                        {CATEGORIES.map((cat) => (
                          <button 
                            key={cat.id} 
                            disabled={!isEditing}
                            onClick={() => toggleInterest(cat.id)}
                            className={cn(
-                             "px-6 py-8 rounded-[2rem] border-2 transition-all duration-300 flex flex-col items-center text-center gap-4 group relative overflow-hidden",
+                             "px-4 py-8 rounded-[2rem] border-2 transition-all duration-300 flex flex-col items-center justify-center text-center gap-4 group relative overflow-hidden",
                              formData.interests.includes(cat.id) 
                                ? "bg-gradient-to-b from-primary to-accent border-transparent text-white shadow-[0_20px_40px_rgba(3,141,177,0.3)] -translate-y-2" 
                                : "bg-white border-primary/5 hover:border-secondary/30",
@@ -251,19 +251,21 @@ export default function ProfilePage() {
                     </div>
                  </div>
 
-                 <div className="pt-16 flex flex-col gap-6 border-t border-primary/5 w-full max-w-xs mx-auto">
-                    {isEditing ? (
-                      <>
-                        <button onClick={handleSave} disabled={isSaving} className="w-full bg-secondary text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(245,149,37,0.3)] hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
-                           {isSaving ? "جاري التشفير..." : "اعتماد الهوية"} <span className="material-symbols-rounded text-xl">done_all</span>
-                        </button>
-                        <button onClick={() => setIsEditing(false)} className="w-full px-12 py-6 rounded-[2rem] bg-white border-2 border-primary/10 text-primary font-black text-sm uppercase tracking-[0.2em] hover:bg-muted transition-colors">إلغاء</button>
-                      </>
-                    ) : (
-                      <button onClick={() => setIsEditing(true)} className="w-full bg-primary text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(3,141,177,0.3)] hover:scale-[1.02] transition-transform flex items-center justify-center gap-3 group">
-                         تحديث الرمز <span className="material-symbols-rounded text-xl group-hover:rotate-45 transition-transform">edit_square</span>
-                      </button>
-                    )}
+                 <div className="pt-16 mt-4 w-full flex flex-col items-center border-t border-primary/5">
+                    <div className="w-full max-w-sm flex flex-col gap-4">
+                       {isEditing ? (
+                         <>
+                           <button onClick={handleSave} disabled={isSaving} className="w-full bg-secondary text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(245,149,37,0.3)] hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
+                              {isSaving ? "جاري التشفير..." : "اعتماد الهوية"} <span className="material-symbols-rounded text-xl">done_all</span>
+                           </button>
+                           <button onClick={() => setIsEditing(false)} className="w-full py-6 rounded-[2rem] bg-white border-2 border-primary/10 text-primary font-black text-sm uppercase tracking-[0.2em] hover:bg-muted transition-colors">إلغاء</button>
+                         </>
+                       ) : (
+                         <button onClick={() => setIsEditing(true)} className="w-full bg-primary text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(3,141,177,0.3)] hover:scale-[1.02] transition-transform flex items-center justify-center gap-3 group">
+                            تحديث الرمز <span className="material-symbols-rounded text-xl group-hover:rotate-45 transition-transform">edit_square</span>
+                         </button>
+                       )}
+                    </div>
                  </div>
               </div>
 

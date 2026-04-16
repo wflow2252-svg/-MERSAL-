@@ -29,25 +29,34 @@ export default function Navbar() {
     const handleScroll = () => setIsScrolled(window.scrollY > 30);
     window.addEventListener("scroll", handleScroll);
 
-    // Maintenance Check
-    const checkMaintenance = async () => {
-      try {
-        const res = await fetch("/api/admin/settings");
-        if (res.ok) {
-           const data = await res.json();
-           if (data.settings?.maintenanceMode && !isAdmin) {
+    // Core Initialization (IP Tracking + Maintenance Check)
+    const initializeSession = async () => {
+      if (isAuthenticated) {
+        try {
+          // 1. Track IP safely
+          fetch("/api/user/track", { method: "POST" });
+
+          // 2. Maintenance Check
+          const res = await fetch("/api/admin/settings");
+          if (res.ok) {
+            const data = await res.json();
+            if (data.settings?.maintenanceMode && !isAdmin) {
               const isExceptionPage = window.location.pathname === "/login" || window.location.pathname === "/maintenance";
               if (!isExceptionPage) {
-                 window.location.href = "/maintenance";
+                window.location.href = "/maintenance";
               }
-           }
+            }
+          }
+        } catch (e) {
+          console.error("Session Init Error:", e);
         }
-      } catch (e) { console.error(e); }
+      }
     };
-    checkMaintenance();
+    
+    initializeSession();
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isAdmin]);
+  }, [isAuthenticated, isAdmin]);
 
   return (
     <header className="w-full fixed top-0 left-0 z-[100] font-sans flex justify-center mt-6 transition-all duration-700 pointer-events-none">

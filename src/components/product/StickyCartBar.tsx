@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/lib/CartContext";
 
 export default function StickyCartBar() {
   const [isVisible, setIsVisible] = useState(false);
+  const { addItem } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,7 +57,10 @@ export default function StickyCartBar() {
                  <span className="material-symbols-rounded group-hover:scale-125 transition-transform">compare_arrows</span>
               </button>
            </div>
-           <button className="bg-primary text-white px-14 py-5 rounded-[2rem] font-black text-xs uppercase tracking-widest shadow-2xl shadow-primary/30 hover:shadow-primary/50 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 border-4 border-white">
+           <button 
+             onClick={() => addItem({ id: "iphone15pm", title: "آيفون 15 برو ماكس - Medium - أسود", price: 980000, quantity: 1, vendor: "مرسال جادجتس", image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=400" })}
+             className="bg-primary text-white px-14 py-5 rounded-[2rem] font-black text-xs uppercase tracking-widest shadow-2xl shadow-primary/30 hover:shadow-primary/50 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 border-4 border-white"
+           >
               <span className="material-symbols-rounded">shopping_cart</span> أضف للسلة
            </button>
         </div>

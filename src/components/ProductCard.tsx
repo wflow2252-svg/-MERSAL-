@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/lib/CartContext";
 
 interface ProductCardProps {
   id: string;
@@ -19,6 +20,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ id, title, price, image, vendor, location, discount, badge, sold }: ProductCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { addItem } = useCart();
 
   return (
     <div className="bg-white rounded-[2.2rem] border border-border/10 overflow-hidden shadow-elite-lg hover:shadow-elite-xl transition-all duration-700 group flex flex-col h-full relative">
@@ -86,7 +88,10 @@ export default function ProductCard({ id, title, price, image, vendor, location,
                <span className="text-xl md:text-2xl font-black text-primary tracking-tighter">{price.toLocaleString()}</span>
                <span className="text-[8px] font-black text-primary/30 uppercase">SDG</span>
             </div>
-            <button className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center hover:bg-black transition-all shadow-xl shadow-primary/20 hover:-translate-y-1 active:scale-90 overflow-hidden relative">
+            <button 
+              onClick={() => addItem({ id, title, price, image, vendor, quantity: 1 })}
+              className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center hover:bg-black transition-all shadow-xl shadow-primary/20 hover:-translate-y-1 active:scale-90 overflow-hidden relative"
+            >
                <span className="material-symbols-rounded text-xl">shopping_cart</span>
             </button>
          </div>

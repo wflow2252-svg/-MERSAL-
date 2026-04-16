@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "@/lib/CartContext";
 
 const colors = [
   { name: "تيتانيوم طبيعي", hex: "#A5A5A1" },
@@ -16,6 +17,7 @@ export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[1]);
   const [quantity, setQuantity] = useState(1);
+  const { addItem } = useCart();
 
   return (
     <div className="space-y-16 p-12 lg:p-0">
@@ -111,7 +113,10 @@ export default function ProductDetails() {
             <button onClick={() => setQuantity(q => q+1)} className="w-20 h-full rounded-[1.5rem] flex items-center justify-center text-2xl font-black text-[#021D24]/30 hover:bg-white hover:text-[#1089A4] transition-all active:scale-90">+</button>
          </div>
 
-         <button className="flex-grow bg-[#1089A4] text-white rounded-[2.5rem] font-black text-sm uppercase tracking-[0.4em] shadow-[0_30px_70px_rgba(16,137,164,0.4)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-8 border-b-[10px] border-black/20 h-[84px] group">
+         <button 
+           onClick={() => addItem({ id: "iphone15pm", title: `آيفون 15 برو ماكس - ${selectedSize} - ${selectedColor.name}`, price: 980000, quantity, vendor: "مرسال جادجتس", image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=400" })}
+           className="flex-grow bg-[#1089A4] text-white rounded-[2.5rem] font-black text-sm uppercase tracking-[0.4em] shadow-[0_30px_70px_rgba(16,137,164,0.4)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-8 border-b-[10px] border-black/20 h-[84px] group"
+         >
             أضف لـحقيبة التسـوق <span className="material-symbols-rounded text-3xl group-hover:rotate-12 transition-transform">shopping_bag</span>
          </button>
       </div>

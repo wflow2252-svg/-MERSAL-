@@ -37,7 +37,7 @@ export default function Footer() {
                    <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
                 </div>
                 <div className="flex flex-col">
-                   <h2 className="text-4xl font-black tracking-tighter uppercase font-heading text-white">Mersal</h2>
+                   <h2 className="text-4xl font-black tracking-tighter uppercase font-heading text-white">Morsall</h2>
                    <span className="text-[11px] text-[#F29124] font-black uppercase tracking-[0.6em]">Premium Sovereignty</span>
                 </div>
              </Link>

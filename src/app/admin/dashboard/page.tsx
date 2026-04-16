@@ -67,7 +67,7 @@ export default function AdminDashboard() {
               <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="font-black text-xl tracking-tighter uppercase leading-none text-[#1089A4] font-heading">Mersal</span>
+              <span className="font-black text-xl tracking-tighter uppercase leading-none text-[#1089A4] font-heading">Morsall</span>
               <span className="text-[10px] font-black tracking-[0.3em] uppercase text-white/40 mt-1.5 opacity-80">Admin Core</span>
             </div>
         </div>

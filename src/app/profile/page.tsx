@@ -21,7 +21,6 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  // Form states
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -94,189 +93,251 @@ export default function ProfilePage() {
     }));
   };
 
-  if (status === "loading") return <div className="min-h-screen flex items-center justify-center"><div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
+  if (status === "loading") return <div className="min-h-screen flex items-center justify-center bg-background"><div className="w-16 h-16 border-4 border-secondary border-t-transparent rounded-full animate-spin"></div></div>;
 
   if (!session) {
     return (
-      <div className="min-h-screen pt-40 flex flex-col items-center justify-center gap-8 bg-muted/30">
-         <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-elite-lg border border-border/10">
-            <span className="material-symbols-rounded text-primary/20 text-5xl">lock</span>
+      <div className="min-h-screen pt-40 flex flex-col items-center justify-center gap-8 bg-background relative overflow-hidden">
+         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#038DB120,transparent_50%)]" />
+         <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-[0_30px_60px_rgba(3,141,177,0.2)] border-4 border-primary/5 relative z-10">
+            <span className="material-symbols-rounded text-primary text-6xl">lock</span>
          </div>
-         <h1 className="text-3xl font-black text-primary tracking-tighter">يجب تسجيل الدخول أولاً</h1>
-         <Link href="/login" className="btn-primary">تسجيل الدخول الآن</Link>
+         <h1 className="text-4xl font-black text-primary tracking-tighter relative z-10 text-center">بوابة النخبة مغلقة</h1>
+         <p className="text-primary/50 text-sm font-bold max-w-sm text-center relative z-10">الرجاء تسجيل الدخول للوصول إلى لوحة التحكم السيادية الخاصة بك.</p>
+         <Link href="/login" className="px-10 py-5 rounded-[2rem] bg-gradient-to-r from-primary to-accent text-white font-black uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:scale-105 transition-all relative z-10">
+           تسجيل الدخول الآن
+         </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-muted/20 pt-32 md:pt-44 pb-24 px-4 md:px-8">
-      <div className="max-w-5xl mx-auto space-y-8">
+    <div className="min-h-screen bg-background pt-32 md:pt-48 pb-24 px-4 md:px-8 relative overflow-hidden">
+      
+      {/* Neo-Luxury Ambience */}
+      <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-primary/5 blur-[200px] rounded-full pointer-events-none" />
+      <div className="absolute top-[20%] left-[-20%] w-[600px] h-[600px] bg-secondary/5 blur-[150px] rounded-full pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto space-y-10 relative z-10">
         
-        {/* Profile Card */}
-        <div className="bg-white rounded-[2.5rem] p-8 md:p-14 shadow-elite-lg border border-border/5 text-right relative overflow-hidden">
-           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32" />
+        {/* Floating Identity Canvas */}
+        <div className="relative bg-white/70 backdrop-blur-3xl rounded-[3rem] p-10 md:p-16 shadow-[0_50px_100px_rgba(3,141,177,0.1)] border border-white/50 text-right overflow-visible">
+           <div className="absolute top-0 right-0 w-full h-[50%] bg-gradient-to-l from-primary/10 to-transparent rounded-t-[3rem] -z-10" />
            
-           <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
-              <div className="relative">
-                 <div className="w-40 h-40 md:w-52 md:h-52 rounded-[2.5rem] overflow-hidden border-8 border-muted shadow-elite-xl">
+           <div className="flex flex-col md:flex-row items-center gap-16 relative">
+              <div className="relative group">
+                 <div className="w-48 h-48 md:w-60 md:h-60 rounded-full overflow-hidden border-[12px] border-white shadow-2xl relative z-20 transition-transform duration-500 group-hover:scale-105">
                     <Image src={session.user?.image || "/logo.jpg"} alt="User" fill className="object-cover" />
                  </div>
-                 <div className="absolute -bottom-4 -right-4 bg-secondary text-white p-4 rounded-2xl shadow-elite-lg">
-                    <span className="material-symbols-rounded text-xl animate-pulse">check_circle</span>
+                 {/* Levitating Badge */}
+                 <div className="absolute -bottom-4 right-8 bg-gradient-to-br from-secondary to-[#d67b14] text-white p-5 rounded-full shadow-[0_20px_40px_rgba(245,149,37,0.4)] z-30 animate-pulse border-4 border-white">
+                    <span className="material-symbols-rounded text-3xl">workspace_premium</span>
                  </div>
+                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-[80px] -z-10 group-hover:bg-secondary/40 transition-colors duration-700" />
               </div>
 
-              <div className="flex-grow space-y-6 w-full text-center md:text-right">
-                 <div className="space-y-2">
-                    <span className="text-[10px] font-black text-accent uppercase tracking-[0.3em] bg-accent/10 px-4 py-1.5 rounded-full inline-block">عضوية النخبة المميزة</span>
+              <div className="flex-grow space-y-8 w-full text-center md:text-right">
+                 <div className="space-y-4">
+                    <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm px-6 py-2 rounded-full border border-primary/10 shadow-sm">
+                       <span className="relative flex h-3 w-3">
+                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                         <span className="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+                       </span>
+                       <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">حساب سيادي موثق</span>
+                    </div>
                     {isEditing ? (
                       <input 
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        className="text-2xl md:text-5xl font-black text-primary tracking-tighter bg-muted/50 px-6 py-2 rounded-2xl border-2 border-accent/20 focus:border-accent w-full text-center md:text-right outline-none"
+                        className="text-3xl md:text-6xl font-black text-primary tracking-tighter bg-white/50 px-8 py-4 rounded-[2rem] border border-primary/20 focus:border-secondary focus:ring-4 focus:ring-secondary/10 w-full text-center md:text-right outline-none transition-all shadow-inner"
                       />
                     ) : (
-                      <h1 className="text-3xl md:text-6xl font-black text-primary tracking-tighter leading-none">{session.user?.name}</h1>
+                      <h1 className="text-4xl md:text-7xl font-black text-primary tracking-tighter leading-[1.1] font-heading">
+                         {session.user?.name}
+                      </h1>
                     )}
-                    <p className="text-sm font-bold text-primary/30 uppercase tracking-widest">{session.user?.email}</p>
+                    <p className="text-sm font-black text-primary/40 uppercase tracking-widest block">{session.user?.email}</p>
                  </div>
 
-                 <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                    <div className="flex items-center gap-2 bg-muted/50 px-6 py-3 rounded-2xl border border-border/5">
-                       <span className="material-symbols-rounded text-primary/20 text-lg">calendar_today</span>
-                       <span className="text-xs font-black text-primary/60">عضو منذ 2024</span>
+                 <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
+                    <div className="flex items-center gap-3 bg-white px-6 py-4 rounded-[1.5rem] border border-primary/5 shadow-sm hover:-translate-y-1 transition-transform">
+                       <span className="material-symbols-rounded text-secondary text-2xl">verified</span>
+                       <div className="text-right">
+                          <span className="block text-[10px] font-black text-primary/40 uppercase tracking-widest">نوع الحساب</span>
+                          <span className="text-xs font-black text-primary">عضوية بلاتينية</span>
+                       </div>
                     </div>
-                    <div className="flex items-center gap-2 bg-muted/50 px-6 py-3 rounded-2xl border border-border/5">
-                       <span className="material-symbols-rounded text-primary/20 text-lg">verified_user</span>
-                       <span className="text-xs font-black text-primary/60">حساب موثق</span>
+                    <div className="flex items-center gap-3 bg-white px-6 py-4 rounded-[1.5rem] border border-primary/5 shadow-sm hover:-translate-y-1 transition-transform">
+                       <span className="material-symbols-rounded text-primary/30 text-2xl">calendar_month</span>
+                       <div className="text-right">
+                          <span className="block text-[10px] font-black text-primary/40 uppercase tracking-widest">تاريخ الانضمام</span>
+                          <span className="text-xs font-black text-primary">الموسم الحالي</span>
+                       </div>
                     </div>
                  </div>
               </div>
            </div>
         </div>
 
-        {/* Info Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* The Control Hub */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
            
-           {/* Details & Interests */}
-           <div className="lg:col-span-8 space-y-8">
+           {/* Primary Configuration */}
+           <div className="lg:col-span-8 space-y-10 order-2 lg:order-1">
               
-              <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-elite-lg border border-border/5 space-y-10 text-right">
-                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-black text-primary uppercase tracking-widest">المعلومات الأساسية</h2>
-                    <span className="material-symbols-rounded text-accent">person_edit</span>
+              <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] p-10 md:p-14 shadow-xl shadow-primary/5 border border-white space-y-12 text-right relative overflow-hidden">
+                 
+                 <div className="flex items-center justify-between border-b border-primary/5 pb-8">
+                    <div>
+                       <h2 className="text-2xl font-black text-primary uppercase tracking-tight">إحداثيات الهوية</h2>
+                       <p className="text-xs font-bold text-primary/40 mt-2">تحديث بياناتك الشخصية لتعزيز تجربتك</p>
+                    </div>
+                    <div className="w-16 h-16 bg-primary/5 rounded-[1.5rem] flex items-center justify-center">
+                       <span className="material-symbols-rounded text-secondary text-3xl">fingerprint</span>
+                    </div>
                  </div>
 
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
-                       <label className="text-[10px] font-black text-primary/40 uppercase tracking-widest pr-2">العمر</label>
+                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] pr-4 block">العمر المعتمد</label>
                        {isEditing ? (
-                         <input type="number" value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} className="input-field" />
+                         <input type="number" value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} className="w-full bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-right transition-all" placeholder="أدخل عمرك..." />
                        ) : (
-                         <p className="text-lg font-bold text-primary px-4">{formData.age || "لم يحدد بعد"} عام</p>
+                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm">
+                           <p className="text-xl font-black text-primary">{formData.age ? `${formData.age} عاماً` : "غير مسجل"}</p>
+                         </div>
                        )}
                     </div>
                     <div className="space-y-4">
-                       <label className="text-[10px] font-black text-primary/40 uppercase tracking-widest pr-2">رقم الهاتف</label>
+                       <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] pr-4 block">رقم الاتصال</label>
                        {isEditing ? (
-                         <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="input-field" />
+                         <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full bg-muted/50 px-8 py-5 rounded-[1.5rem] border border-primary/10 focus:border-primary text-primary font-bold text-lg outline-none text-right transition-all" placeholder="أدخل رقم الهاتف..." />
                        ) : (
-                         <p className="text-lg font-bold text-primary px-4">{formData.phone || "لم يحدد بعد"}</p>
+                         <div className="bg-white px-8 py-5 rounded-[1.5rem] border border-primary/5 shadow-sm">
+                           <p className="text-xl font-black text-primary" dir="ltr">{formData.phone || "غير مسجل"}</p>
+                         </div>
                        )}
                     </div>
                  </div>
 
-                 <div className="pt-6 border-t border-border/5">
-                    <label className="text-[10px] font-black text-primary/40 uppercase tracking-widest block mb-6 pr-2">رغباتي واهتماماتي</label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                 <div className="pt-8">
+                    <label className="text-[11px] font-black text-primary/50 uppercase tracking-[0.2em] pr-4 block mb-6">النطاق التفضيلي</label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
                        {CATEGORIES.map((cat) => (
                          <button 
                            key={cat.id} 
                            disabled={!isEditing}
                            onClick={() => toggleInterest(cat.id)}
                            className={cn(
-                             "p-6 rounded-2xl border-2 transition-all flex flex-col gap-3 group relative overflow-hidden",
-                             formData.interests.includes(cat.id) ? "bg-primary border-primary text-white shadow-elite-lg" : "bg-muted/30 border-transparent hover:border-primary/20",
-                             !isEditing && "opacity-80"
+                             "px-6 py-8 rounded-[2rem] border-2 transition-all duration-300 flex flex-col items-center text-center gap-4 group relative overflow-hidden",
+                             formData.interests.includes(cat.id) 
+                               ? "bg-gradient-to-b from-primary to-accent border-transparent text-white shadow-[0_20px_40px_rgba(3,141,177,0.3)] -translate-y-2" 
+                               : "bg-white border-primary/5 hover:border-secondary/30",
+                             !isEditing && "opacity-90"
                            )}
                          >
                             <span className={cn(
-                              "material-symbols-rounded text-2xl mb-1",
-                              formData.interests.includes(cat.id) ? "text-white" : "text-primary/10"
+                              "material-symbols-rounded text-4xl mb-2 transition-transform duration-500",
+                              formData.interests.includes(cat.id) ? "text-secondary scale-110" : "text-primary/20",
+                              isEditing && !formData.interests.includes(cat.id) && "group-hover:scale-125 group-hover:text-secondary/50"
                             )}>{cat.icon}</span>
-                            <span className="text-[10px] font-black uppercase tracking-widest">{cat.name}</span>
+                            <span className="text-[12px] font-black uppercase tracking-widest">{cat.name}</span>
+                            {/* Selected Indicator */}
+                            {formData.interests.includes(cat.id) && (
+                               <div className="absolute top-4 right-4 w-3 h-3 bg-secondary rounded-full shadow-[0_0_10px_#F59525]" />
+                            )}
                          </button>
                        ))}
                     </div>
                  </div>
 
-                 <div className="pt-10 flex gap-4">
+                 <div className="pt-12 flex flex-col md:flex-row gap-6 border-t border-primary/5">
                     {isEditing ? (
                       <>
-                        <button onClick={handleSave} disabled={isSaving} className="btn-primary flex-grow">
-                           {isSaving ? "جاري الحفظ..." : "حفظ المعلومات الآن"}
+                        <button onClick={handleSave} disabled={isSaving} className="flex-1 bg-secondary text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(245,149,37,0.3)] hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
+                           {isSaving ? "جاري التشفير..." : "اعتماد الهوية السيادية"} <span className="material-symbols-rounded text-xl">done_all</span>
                         </button>
-                        <button onClick={() => setIsEditing(false)} className="px-10 py-6 rounded-2xl bg-muted text-primary/40 font-black text-[10px] uppercase tracking-widest">إلغاء</button>
+                        <button onClick={() => setIsEditing(false)} className="px-12 py-6 rounded-[2rem] bg-white border-2 border-primary/10 text-primary font-black text-sm uppercase tracking-[0.2em] hover:bg-muted transition-colors">إلغاء</button>
                       </>
                     ) : (
-                      <button onClick={() => setIsEditing(true)} className="btn-primary w-full">تعديل ملفي الشخصي</button>
+                      <button onClick={() => setIsEditing(true)} className="w-full bg-primary text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(3,141,177,0.3)] hover:scale-[1.02] transition-transform flex items-center justify-center gap-3 group">
+                         تحديث الرمز السيادي <span className="material-symbols-rounded text-xl group-hover:rotate-45 transition-transform">edit_square</span>
+                      </button>
                     )}
                  </div>
               </div>
 
               {/* Danger Zone */}
-              <div className="bg-red-50/50 rounded-[2rem] p-8 border-2 border-dashed border-red-100 flex flex-col md:flex-row items-center justify-between gap-6">
-                 <div className="text-right flex items-center gap-6">
-                    <div className="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center text-red-500">
-                       <span className="material-symbols-rounded text-2xl">heart_broken</span>
+              <div className="bg-red-50/50 rounded-[3rem] p-10 border border-red-100 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden group">
+                 <div className="absolute right-0 top-0 w-2 h-full bg-red-400 group-hover:w-full group-hover:opacity-5 transition-all duration-700" />
+                 <div className="text-right flex items-center gap-8 relative z-10">
+                    <div className="w-16 h-16 rounded-[1.5rem] bg-red-100 flex items-center justify-center text-red-500 shadow-inner">
+                       <span className="material-symbols-rounded text-3xl">warning</span>
                     </div>
                     <div>
-                       <h3 className="text-md font-black text-red-600">منطقة الخطر</h3>
-                       <p className="text-xs font-bold text-red-400">حذف الحساب سيؤدي لمسح كافة بياناتك وسجلك نهائياً</p>
+                       <h3 className="text-xl font-black text-red-600 mb-1">بروتوكول التدمير</h3>
+                       <p className="text-xs font-bold text-red-400/80">إلغاء الحساب يمحو كل الرموز والامتيازات بشكل نهائي ولا رجعة فيه.</p>
                     </div>
                  </div>
                  
                  {showDeleteConfirm ? (
-                   <div className="flex gap-3">
-                      <button onClick={handleDeleteAccount} className="bg-red-600 text-white px-6 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-black transition-all">نعم، احذف نهائياً</button>
-                      <button onClick={() => setShowDeleteConfirm(false)} className="bg-white text-primary/40 px-6 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest border border-border/10">تراجع</button>
+                   <div className="flex gap-4 relative z-10">
+                      <button onClick={handleDeleteAccount} className="bg-red-600 text-white px-8 py-4 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] shadow-lg hover:bg-red-700 transition-all">التدمير النهائي</button>
+                      <button onClick={() => setShowDeleteConfirm(false)} className="bg-white text-primary/60 px-8 py-4 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] border border-border/10 shadow-sm">تراجع</button>
                    </div>
                  ) : (
-                   <button onClick={() => setShowDeleteConfirm(true)} className="text-red-600 border border-red-200 px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all">حذف الحساب</button>
+                   <button onClick={() => setShowDeleteConfirm(true)} className="bg-white border border-red-200 text-red-500 px-10 py-5 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.2em] hover:bg-red-50 transition-colors shadow-sm relative z-10">
+                      إلغاء العضوية
+                   </button>
                  )}
               </div>
            </div>
 
-           {/* Quick Stats Sidebar */}
-           <div className="lg:col-span-4 space-y-8">
-              <div className="bg-primary rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-elite-xl">
-                 <div className="relative z-10 space-y-6">
-                    <span className="text-white/40 text-[9px] font-black uppercase tracking-[0.5em]">رصيد النقاط</span>
-                    <p className="text-6xl font-black tracking-tighter leading-none">١,٢٥٠</p>
-                    <Link href="/shop" className="w-full bg-secondary text-white py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white hover:text-primary transition-all">استبدل النقاط الآن <span className="material-symbols-rounded text-sm">bolt</span></Link>
+           {/* Metrics & Shortcuts (Left Side) */}
+           <div className="lg:col-span-4 space-y-10 order-1 lg:order-2">
+              
+              <div className="bg-gradient-to-br from-[#021D24] to-[#038DB1] rounded-[3rem] p-12 text-white relative overflow-hidden shadow-[0_40px_80px_rgba(3,141,177,0.3)] text-center">
+                 <div className="absolute top-0 left-0 w-full h-[50%] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 -z-10 mix-blend-overlay" />
+                 
+                 <div className="relative z-10 space-y-8">
+                    <span className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.4em] border border-white/10 backdrop-blur-md">
+                       <span className="material-symbols-rounded text-secondary text-sm">diamond</span> رصيد النخبة
+                    </span>
+                    <div className="space-y-2">
+                      <p className="text-7xl font-black tracking-tighter leading-none font-heading">١,٢٥٠</p>
+                      <p className="text-xs text-white/50 font-bold uppercase tracking-widest">نقطة ذهبية</p>
+                    </div>
+                    <Link href="/shop" className="w-full bg-secondary text-white py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-white hover:text-secondary transition-all shadow-xl">
+                       استثمار النقاط <span className="material-symbols-rounded text-lg">arrow_outward</span>
+                    </Link>
                  </div>
-                 <div className="absolute -bottom-10 -right-10 w-44 h-44 bg-white/10 blur-[80px] rounded-full" />
+                 
+                 <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-white/5 blur-[40px] rounded-full" />
               </div>
 
-              <div className="bg-white rounded-[2rem] p-8 border border-border/5 space-y-6 text-right">
-                 <h3 className="text-[10px] font-black text-primary/30 uppercase tracking-[0.3em]">الطلبات الأخيرة</h3>
+              <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] p-10 border border-white shadow-xl shadow-primary/5 text-right space-y-8 relative">
+                 <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-black text-primary uppercase tracking-[0.2em]">آخر عملياتك</h3>
+                    <span className="material-symbols-rounded text-primary/20">history</span>
+                 </div>
+                 
                  <div className="space-y-4">
                     {[1, 2].map((i) => (
-                      <div key={i} className="flex gap-4 p-4 rounded-xl hover:bg-muted/50 transition-all border border-transparent hover:border-border/10 group cursor-pointer">
-                         <div className="flex-grow">
-                            <p className="text-xs font-black text-primary leading-none mb-1">طلب مكتمل</p>
-                            <p className="text-[9px] font-bold text-primary/30 uppercase tracking-widest">#M2349-SD</p>
+                      <div key={i} className="flex gap-5 p-5 rounded-[1.5rem] bg-muted/40 border border-primary/5 hover:border-primary/20 transition-all group cursor-pointer items-center">
+                         <div className="flex-grow text-right">
+                            <p className="text-xs font-black text-primary mb-1 group-hover:text-secondary transition-colors">عقد ناجح</p>
+                            <p className="text-[10px] font-bold text-primary/40 uppercase tracking-[0.2em]">#MORSALL-889X</p>
                          </div>
-                         <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center text-accent group-hover:bg-primary group-hover:text-white transition-all">
-                            <span className="material-symbols-rounded text-xl">package_2</span>
+                         <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
+                            <span className="material-symbols-rounded text-2xl">local_shipping</span>
                          </div>
                       </div>
                     ))}
                  </div>
               </div>
 
-              <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full py-6 rounded-2xl border-2 border-dashed border-border/10 text-primary/20 font-black text-[10px] uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:border-primary/20 hover:text-primary/60 transition-all">
-                 <span className="material-symbols-rounded text-lg">logout</span> تسجيل الخروج الآمن
+              <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full py-8 rounded-[2.5rem] bg-white border border-primary/10 text-primary/40 font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:border-red-200 hover:text-red-500 hover:shadow-xl transition-all group">
+                 تسجيل الخروج <span className="material-symbols-rounded text-2xl group-hover:-translate-x-2 transition-transform">logout</span>
               </button>
            </div>
 
@@ -286,3 +347,4 @@ export default function ProfilePage() {
     </div>
   );
 }
+

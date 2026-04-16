@@ -47,7 +47,7 @@ export default function Navbar() {
                <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
             </div>
             <div className="hidden sm:flex flex-col">
-               <span className="text-xl md:text-2xl font-black text-primary tracking-tighter leading-none font-heading uppercase group-hover:text-secondary transition-colors">Mersal</span>
+               <span className="text-xl md:text-2xl font-black text-primary tracking-tighter leading-none font-heading uppercase group-hover:text-secondary transition-colors">Morsall</span>
                <span className="text-[9px] text-secondary font-black uppercase tracking-[0.4em] mt-1">Sovereign App</span>
             </div>
           </Link>

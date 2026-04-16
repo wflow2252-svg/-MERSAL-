@@ -65,7 +65,7 @@ export default function LoginPage() {
                    <Image src="/logo.jpg" alt="Logo" width={50} height={50} className="object-contain" />
                 </div>
                 <div className="flex flex-col">
-                   <span className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter">Mersal</span>
+                   <span className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter">Morsall</span>
                    <span className="text-[9px] text-[#F29124] font-black uppercase tracking-[0.4em]">Elite Marketplace</span>
                 </div>
               </Link>

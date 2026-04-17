@@ -6,6 +6,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { useCart } from "@/lib/CartContext";
+import { useRouter } from "next/navigation";
 
 const categories = [
   { name: "الإلكترونيات والموبايل", icon: "smartphone", id: "electronics" },
@@ -20,10 +21,18 @@ export default function Navbar() {
   const { cartCount } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCatOpen, setIsCatOpen] = useState(false);
-  const [isMaintenance, setIsMaintenance] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
   const isAdmin = (session?.user as any)?.role === "ADMIN";
   const isAuthenticated = status === "authenticated";
+
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 30);
@@ -81,14 +90,14 @@ export default function Navbar() {
           </Link>
 
           {/* Search Bar - Responsive */}
-          <div className="flex-grow max-w-[140px] xs:max-w-[200px] sm:max-w-[300px] md:max-w-[550px] relative group/search mx-0.5 md:mx-0">
+          <form onSubmit={handleSearch} className="flex-grow max-w-[200px] xs:max-w-[260px] sm:max-w-[350px] md:max-w-[550px] relative group/search mx-0.5 md:mx-0">
              <div className="flex items-center bg-muted/40 md:bg-muted/30 rounded-2xl p-1 md:p-1.5 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-xl transition-all duration-500">
                 <div 
                    className="relative flex-none hidden md:block" // Hidden on mobile to save space
                    onMouseEnter={() => setIsCatOpen(true)}
                    onMouseLeave={() => setIsCatOpen(false)}
                 >
-                   <button className="flex items-center gap-2 bg-white text-primary/40 px-5 py-3 rounded-xl font-bold text-[9px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm">
+                   <button type="button" className="flex items-center gap-2 bg-white text-primary/40 px-5 py-3 rounded-xl font-bold text-[9px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm">
                       <span className="material-symbols-rounded text-md">apps</span>
                    </button>
                    
@@ -112,14 +121,16 @@ export default function Navbar() {
                 </div>
                 <input 
                    type="text" 
+                   value={searchQuery}
+                   onChange={(e) => setSearchQuery(e.target.value)}
                    placeholder="ابحث..." 
-                   className="flex-grow px-1.5 md:px-6 bg-transparent outline-none text-[8px] sm:text-[9px] md:text-[11px] font-bold text-primary placeholder:text-primary/30 text-right min-w-0" 
+                   className="flex-grow px-2 md:px-6 bg-transparent outline-none text-[9px] sm:text-[10px] md:text-[11px] font-bold text-primary placeholder:text-primary/30 text-right min-w-0" 
                 />
-                <button className="bg-primary text-white w-7 h-7 md:w-11 md:h-11 rounded-lg md:rounded-xl flex items-center justify-center hover:bg-secondary transition-all mr-0.5 md:mr-1 shadow-lg shadow-primary/10 flex-none scale-90 md:scale-100">
-                   <span className="material-symbols-rounded text-[10px] md:text-lg">search</span>
+                <button type="submit" className="bg-primary text-white w-8 h-8 md:w-11 md:h-11 rounded-lg md:rounded-xl flex items-center justify-center hover:bg-secondary transition-all mr-0.5 md:mr-1 shadow-lg shadow-primary/10 flex-none scale-95 md:scale-100">
+                   <span className="material-symbols-rounded text-sm md:text-lg">search</span>
                 </button>
              </div>
-          </div>
+          </form>
 
           {/* User & Actions Hub */}
           <div className="flex items-center gap-1 md:gap-5 flex-none relative pr-1">

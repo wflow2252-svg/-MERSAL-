@@ -80,8 +80,8 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Search Bar - Responsive */}
-          <div className="flex-grow max-w-[550px] relative group/search mx-0.5 md:mx-0">
+          {/* Search Bar - Responsive (Hidden on Mobile) */}
+          <div className="hidden md:block flex-grow max-w-[550px] relative group/search mx-0.5 md:mx-0">
              <div className="flex items-center bg-muted/40 md:bg-muted/30 rounded-2xl p-1 md:p-1.5 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-xl transition-all duration-500">
                 <div 
                    className="relative flex-none hidden md:block"

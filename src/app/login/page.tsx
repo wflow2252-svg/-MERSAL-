@@ -249,22 +249,22 @@ export default function LoginPage() {
         </div>
 
         {/* ── Auth Form Area ── */}
-        <div className="p-10 md:p-20 lg:p-28 flex flex-col justify-center bg-white relative z-10 order-1">
+        <div className="p-10 md:p-16 lg:p-24 flex flex-col justify-center bg-white relative z-10 order-1">
             <AnimatePresence mode="wait">
               <motion.div 
                 key={isLogin ? "login" : "signup"}
-                initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -30, filter: "blur(10px)" }}
-                transition={{ duration: 0.6, ease: "anticipate" }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
                 className="w-full"
               >
-                <div className="mb-16 text-right">
-                   <h1 className="text-5xl font-black text-[#021D24] font-heading tracking-tighter mb-4">
+                <div className="mb-12 text-right">
+                   <h1 className="text-4xl font-black text-[#021D24] font-heading tracking-tighter mb-3">
                       {isLogin ? "تسجيل الدخول" : "إنشاء حساب جديد"}
                    </h1>
-                   <div className="h-1.5 w-24 bg-[#1089A4] rounded-full mb-4" />
-                   <p className="text-[#1089A4] text-xs font-black uppercase tracking-[0.3em]">
+                   <div className="h-1 w-20 bg-[#1089A4] rounded-full mb-3" />
+                   <p className="text-[#1089A4] text-[11px] font-black uppercase tracking-[0.2em]">
                       {isLogin ? "بوابة النفوذ والسيطرة التجارية" : "مفتاح العبور إلى العالم النخبوي"}
                    </p>
                 </div>
@@ -272,78 +272,75 @@ export default function LoginPage() {
                 {error && (
                   <motion.div 
                     initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-                    className="bg-red-50 text-red-600 text-[11px] font-black uppercase tracking-[0.2em] p-6 rounded-[2.5rem] border border-red-100 mb-12 flex items-center gap-4 shadow-xl"
+                    className="bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest p-5 rounded-2xl border border-red-100 mb-8 flex items-center gap-3 shadow-sm"
                    >
-                     <span className="material-symbols-rounded bg-red-600 text-white p-1.5 rounded-xl text-md">lock_reset</span> {error}
+                     <span className="material-symbols-rounded bg-red-600 text-white p-1 rounded-lg text-xs">error</span> {error}
                   </motion.div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-10">
+                <form onSubmit={handleSubmit} className="space-y-5">
                    {!isLogin && (
-                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-4 group">
-                        <label className="text-[11px] font-black text-primary/30 uppercase tracking-[0.4em] pr-6 transition-colors group-focus-within:text-[#1089A4]">الاسـم الـكـامـل</label>
+                     <motion.div className="space-y-1.5 group">
+                        <label className="text-[10px] font-black text-primary/30 uppercase tracking-[0.2em] pr-4">الاسـم الـكـامـل</label>
                         <input value={name} onChange={(e) => setName(e.target.value)} required type="text" placeholder="اسمك النخبوي" className="luxury-field" />
                      </motion.div>
                    )}
-                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="space-y-4 group">
-                      <label className="text-[11px] font-black text-primary/30 uppercase tracking-[0.4em] pr-6 transition-colors group-focus-within:text-[#1089A4]">الـبـريـد الإلـكـتـروني</label>
+                   <motion.div className="space-y-1.5 group">
+                      <label className="text-[10px] font-black text-primary/30 uppercase tracking-[0.2em] pr-4">الـبـريـد الإلـكـتـروني</label>
                       <input value={email} onChange={(e) => setEmail(e.target.value)} required type="email" placeholder="example@sovereign.sd" className="luxury-field" />
                    </motion.div>
-                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="space-y-4 group">
-                      <div className="flex justify-between items-center pr-6">
-                         <label className="text-[11px] font-black text-primary/30 uppercase tracking-[0.4em] transition-colors group-focus-within:text-[#1089A4]">كـلـمة الـمـرور</label>
-                         {isLogin && <button type="button" className="text-[10px] font-black text-[#1089A4] hover:text-[#F29124] uppercase tracking-widest transition-colors">استعادة السيادة؟</button>}
+                   <motion.div className="space-y-1.5 group">
+                      <div className="flex justify-between items-center pr-4">
+                         <label className="text-[10px] font-black text-primary/30 uppercase tracking-[0.2em]">كـلـمة الـمـرور</label>
+                         {isLogin && <button type="button" className="text-[9px] font-bold text-[#1089A4] hover:text-[#F29124] transition-colors mb-1">استعادة؟</button>}
                       </div>
                       <input value={password} onChange={(e) => setPassword(e.target.value)} required type="password" placeholder="••••••••" className="luxury-field" />
                    </motion.div>
 
-                   <div className="pt-4">
+                   <div className="pt-6">
                       <MagneticButton 
                          disabled={loading} 
                          type="submit" 
-                         className="w-full bg-[#021D24] text-white py-8 rounded-[2rem] font-black text-sm uppercase tracking-[0.8em] shadow-[0_30px_60px_rgba(2,29,36,0.25)] hover:bg-[#1089A4] transition-colors overflow-hidden group/btn"
+                         className="w-full bg-[#021D24] text-white py-6 rounded-2xl font-black text-[12px] uppercase tracking-[0.4em] shadow-xl hover:bg-[#1089A4] transition-all overflow-hidden group/btn"
                       >
-                         <span className="relative z-10">{loading ? "جاري الـفـحـص..." : (isLogin ? "دخول ســيادي" : "تـفعيل الـنـظام")}</span>
-                         <motion.div 
-                            className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-1000 skew-x-[45deg]" 
-                         />
+                         <span className="relative z-10">{loading ? "جاري الفحص..." : (isLogin ? "دخول ســيادي" : "تـفعيل الـنظام")}</span>
                       </MagneticButton>
                    </div>
                 </form>
 
-                <div className="relative my-16">
-                   <div className="absolute inset-0 flex items-center px-10 md:px-20"><div className="w-full border-t-2 border-[#021D24]/5"></div></div>
-                   <span className="relative bg-white px-10 text-[10px] font-black text-primary/10 uppercase tracking-[0.6em] block mx-auto w-max italic">بـروتوكـولات بـديلة</span>
+                <div className="relative my-10 text-center">
+                   <div className="absolute inset-0 flex items-center px-12 md:px-20"><div className="w-full border-t border-primary/5"></div></div>
+                   <span className="relative bg-white px-6 text-[9px] font-bold text-primary/20 uppercase tracking-[0.4em]">أو عبر البروتوكولات</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-4">
                    <MagneticButton 
                      onClick={() => signIn("google", { callbackUrl: "/" })}
-                     className="py-6 border-2 border-[#021D24]/5 rounded-[2rem] flex items-center justify-center gap-5 hover:bg-[#F8F9FA] transition-all text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/5 group/social"
+                     className="py-4 border border-primary/5 rounded-2xl flex items-center justify-center gap-3 hover:bg-[#F8F9FA] transition-all text-[10px] font-black uppercase tracking-widest group/social"
                    >
-                      <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={24} height={24} className="group-hover/social:rotate-12 transition-transform" /> 
-                      <span className="hidden md:block">جـوجـل</span>
+                      <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={18} height={18} /> 
+                      <span className="hidden sm:block">جـوجـل</span>
                    </MagneticButton>
                    <MagneticButton 
-                     className="py-6 bg-[#021D24] text-white rounded-[2rem] flex items-center justify-center gap-5 hover:bg-black transition-all text-[11px] font-black uppercase tracking-widest shadow-2xl relative overflow-hidden"
+                     className="py-4 bg-[#021D24] text-white rounded-2xl flex items-center justify-center gap-3 hover:bg-black transition-all text-[10px] font-black uppercase tracking-widest shadow-lg group/social"
                    >
-                      <Image src="https://www.svgrepo.com/show/473543/apple.svg" alt="Apple" width={22} height={22} className="invert group-hover/social:scale-110" />
-                      <span className="hidden md:block">آيـفــون</span>
+                      <Image src="https://www.svgrepo.com/show/473543/apple.svg" alt="Apple" width={16} height={16} className="invert" />
+                      <span className="hidden sm:block">آيـفــون</span>
                    </MagneticButton>
                 </div>
 
                 <motion.p 
-                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
-                   className="text-center text-[11px] font-black mt-20 text-primary/40 uppercase tracking-[0.4em]"
+                   className="text-center text-[10px] font-bold mt-12 text-primary/40 uppercase tracking-[0.2em]"
                 >
                    {isLogin ? "لا تـمـلك سـيادة مـسبقة؟" : "تـمتلك كـود الـعـبور؟"}
-                   <button onClick={() => setIsLogin(!isLogin)} className="mr-6 text-[#1089A4] hover:text-[#F29124] underline underline-offset-8 transition-colors">
-                      {isLogin ? "افـتح حـسابك النـخبوي" : "سـجل دخـولك"}
+                   <button onClick={() => setIsLogin(!isLogin)} className="mr-3 text-[#1089A4] hover:text-[#F29124] underline underline-offset-4 transition-colors">
+                      {isLogin ? "افـتح حـسابك" : "سـجل دخـولك"}
                    </button>
                 </motion.p>
               </motion.div>
             </AnimatePresence>
         </div>
+
 
       </motion.div>
 

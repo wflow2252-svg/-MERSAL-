@@ -89,41 +89,29 @@ export default function VendorRegister() {
           )}
 
           {step === 1 && (
-            <div className="space-y-8 text-right">
-              <div className="text-center mb-10">
-                <h2 className="text-3xl font-black text-[#021D24] font-heading tracking-tighter">معلومات الحساب الشخصي</h2>
-                <p className="text-sm font-bold text-primary/40 mt-2">ابدأ بإنشاء حسابك الأساسي كمورد نخبة</p>
+            <div className="space-y-6 text-right">
+              <div className="text-center mb-12">
+                <h2 className="text-2xl font-black text-[#021D24] font-heading tracking-tight">معلومات الحساب الشخصي</h2>
+                <p className="text-[11px] font-bold text-primary/30 uppercase tracking-widest mt-2">ابدأ بإنشاء حسابك المرجعي</p>
               </div>
-              <div className="space-y-6">
-                <div>
-                   <label className="block text-[10px] font-black text-primary/50 uppercase tracking-[0.2em] mb-3 mr-2 text-right">الاسم الكامل للمالك</label>
-                   <input 
-                     value={formData.name}
-                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                     type="text" placeholder="أدخل اسمك كما في الهوية" className="input-field" 
-                   />
+              <div className="space-y-5">
+                <div className="space-y-1.5">
+                   <label className="block text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] mr-2">الاسم الكامل للمالك</label>
+                   <input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} type="text" placeholder="أدخل اسمك كما في الهوية" className="input-field" />
                 </div>
-                <div>
-                   <label className="block text-[10px] font-black text-primary/50 uppercase tracking-[0.2em] mb-3 mr-2 text-right">البريد الإلكتروني للعمل</label>
-                   <input 
-                     value={formData.email}
-                     onChange={(e) => setFormData({...formData, email: e.target.value})}
-                     type="email" placeholder="example@mersal.com" className="input-field" 
-                   />
+                <div className="space-y-1.5">
+                   <label className="block text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] mr-2">البريد الإلكتروني للعمل</label>
+                   <input value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} type="email" placeholder="example@mersal.com" className="input-field" />
                 </div>
-                <div>
-                   <label className="block text-[10px] font-black text-primary/50 uppercase tracking-[0.2em] mb-3 mr-2 text-right">رقم الواتساب الفعال</label>
-                   <input 
-                     value={formData.phone}
-                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                     type="tel" placeholder="09xxxx-xxxx" className="input-field" 
-                   />
+                <div className="space-y-1.5">
+                   <label className="block text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] mr-2">رقم الواتساب الفعال</label>
+                   <input value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} type="tel" placeholder="09xxxx-xxxx" className="input-field" />
                 </div>
               </div>
               <button 
                 onClick={nextStep}
                 disabled={!formData.name || !formData.email || !formData.phone}
-                className="w-full btn-primary py-7 mt-6 disabled:opacity-20"
+                className="w-full btn-primary py-6 mt-8 disabled:opacity-30 flex items-center justify-center gap-4 transition-all"
               >
                 تأكيد ومتابعة للمتجر <ArrowLeft className="w-5 h-5" />
               </button>
@@ -131,27 +119,19 @@ export default function VendorRegister() {
           )}
 
           {step === 2 && (
-            <div className="space-y-8 text-right">
-              <div className="text-center mb-10">
-                <h2 className="text-3xl font-black text-[#021D24] font-heading tracking-tighter">هوية المتجر التجاري</h2>
-                <p className="text-sm font-bold text-primary/40 mt-2">حدد بصمتك التجارية في المنصة</p>
+            <div className="space-y-6 text-right">
+              <div className="text-center mb-12">
+                <h2 className="text-2xl font-black text-[#021D24] font-heading tracking-tight">هوية المتجر التجاري</h2>
+                <p className="text-[11px] font-bold text-primary/30 uppercase tracking-widest mt-2">حدد بصمتك التجارية</p>
               </div>
-              <div className="space-y-6">
-                <div>
-                   <label className="block text-[10px] font-black text-primary/50 uppercase tracking-[0.2em] mb-3 mr-2">اسم المتجر الرسمي</label>
-                   <input 
-                     value={formData.storeName}
-                     onChange={(e) => setFormData({...formData, storeName: e.target.value})}
-                     type="text" placeholder="مثلاً: بستان الفواكه النخبوي" className="input-field" 
-                   />
+              <div className="space-y-5">
+                <div className="space-y-1.5">
+                   <label className="block text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] mr-2">اسم المتجر الرسمي</label>
+                   <input value={formData.storeName} onChange={(e) => setFormData({...formData, storeName: e.target.value})} type="text" placeholder="مثلاً: بستان الفواكه النخبوي" className="input-field" />
                 </div>
-                <div>
-                   <label className="block text-[10px] font-black text-primary/50 uppercase tracking-[0.2em] mb-3 mr-2">مقر المتجر الرئيسي</label>
-                   <select 
-                    value={formData.storeCity}
-                    onChange={(e) => setFormData({...formData, storeCity: e.target.value})}
-                    className="input-field cursor-pointer bg-white"
-                   >
+                <div className="space-y-1.5">
+                   <label className="block text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] mr-2">مقر المتجر الرئيسي</label>
+                   <select value={formData.storeCity} onChange={(e) => setFormData({...formData, storeCity: e.target.value})} className="input-field cursor-pointer bg-[#F8F9FA]">
                      <option>الخرطوم</option>
                      <option>أمدرمان</option>
                      <option>بحرى</option>
@@ -160,12 +140,12 @@ export default function VendorRegister() {
                    </select>
                 </div>
               </div>
-              <div className="flex gap-6 mt-10">
-                <button onClick={prevStep} className="flex-1 py-5 text-[10px] font-black text-primary/40 hover:text-[#021D24] uppercase tracking-widest transition-all">العودة للخلف</button>
+              <div className="flex gap-4 mt-12">
+                <button onClick={prevStep} className="flex-1 py-5 text-[10px] font-black text-primary/30 hover:text-[#021D24] uppercase tracking-widest transition-all">خلف</button>
                 <button 
                   onClick={nextStep}
                   disabled={!formData.storeName}
-                  className="flex-[2] btn-primary py-7 disabled:opacity-20"
+                  className="flex-[2] btn-primary py-6 disabled:opacity-30 flex items-center justify-center gap-4"
                 >
                   التالي: التوثيق <ArrowLeft className="w-5 h-5" />
                 </button>
@@ -174,35 +154,34 @@ export default function VendorRegister() {
           )}
 
           {step === 3 && (
-            <div className="space-y-8 text-right">
-              <div className="text-center mb-10">
-                <h2 className="text-3xl font-black text-[#021D24] font-heading tracking-tighter">السيادة والتوثيق</h2>
-                <p className="text-sm font-bold text-primary/40 mt-2">إرفاق المستندات الرسمية للتحقق</p>
+            <div className="space-y-6 text-right">
+              <div className="text-center mb-12">
+                <h2 className="text-2xl font-black text-[#021D24] font-heading tracking-tight">السيادة والتوثيق</h2>
+                <p className="text-[11px] font-bold text-primary/30 uppercase tracking-widest mt-2">إرفاق المستندات للتحقق</p>
               </div>
-              <div className="grid grid-cols-1 gap-6">
-                 <div className="p-12 border-4 border-dashed border-border/40 rounded-[2.5rem] text-center bg-muted/20 hover:border-[#1089A4] hover:bg-white transition-all cursor-pointer group shadow-inner">
-                    <span className="material-symbols-rounded text-[#1089A4] text-4xl mb-4 group-hover:scale-125 transition-transform">upload_file</span>
-                    <h4 className="text-sm font-black text-[#021D24] uppercase tracking-widest">كشف حساب بنكي (PDF)</h4>
-                    <p className="text-[10px] text-primary/40 font-bold mt-2">إلزامي لضمان دورة دفع آمنة</p>
-                 </div>
-                 <div className="p-12 border-4 border-dashed border-border/40 rounded-[2.5rem] text-center bg-muted/20 hover:border-[#F29124] hover:bg-white transition-all cursor-pointer group shadow-inner">
-                    <span className="material-symbols-rounded text-[#F29124] text-4xl mb-4 group-hover:scale-125 transition-transform">verified_user</span>
-                    <h4 className="text-sm font-black text-[#021D24] uppercase tracking-widest">السجل التجاري (اختياري)</h4>
-                    <p className="text-[10px] text-primary/40 font-bold mt-2">يفضل لرفع موثوقية متجرك</p>
-                 </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-8 border-2 border-dashed border-border/60 rounded-3xl text-center bg-muted/10 hover:border-[#1089A4] group transition-all cursor-pointer">
+                    <span className="material-symbols-rounded text-[#1089A4] text-3xl mb-3 block opacity-40 group-hover:opacity-100">upload_file</span>
+                    <h4 className="text-[10px] font-black text-[#021D24] uppercase tracking-widest">كشف حساب</h4>
+                  </div>
+                  <div className="p-8 border-2 border-dashed border-border/60 rounded-3xl text-center bg-muted/10 hover:border-[#F29124] group transition-all cursor-pointer">
+                    <span className="material-symbols-rounded text-[#F29124] text-3xl mb-3 block opacity-40 group-hover:opacity-100">verified_user</span>
+                    <h4 className="text-[10px] font-black text-[#021D24] uppercase tracking-widest">السجل التجاري</h4>
+                  </div>
               </div>
-              <div className="flex gap-6 mt-10">
-                <button onClick={prevStep} className="flex-1 py-5 text-[10px] font-black text-primary/40 hover:text-[#021D24] uppercase tracking-widest transition-all">العودة للخلف</button>
+              <div className="flex gap-4 mt-12">
+                <button onClick={prevStep} className="flex-1 py-5 text-[10px] font-black text-primary/30 hover:text-[#021D24] uppercase tracking-widest transition-all">خلف</button>
                 <button 
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="flex-[2] btn-primary bg-secondary hover:bg-secondary/90 py-5"
+                  className="flex-[2] btn-primary bg-secondary hover:bg-secondary/90 py-6 flex items-center justify-center gap-4"
                 >
-                  {isSubmitting ? "جاري الإرسال..." : "إرسال طلب الانضمام"} <CheckCircle2 className="w-5 h-5" />
+                  {isSubmitting ? "جاري الإرسال..." : "إرسال الطلب"} <CheckCircle2 className="w-5 h-5" />
                 </button>
               </div>
             </div>
           )}
+
 
         </div>
 

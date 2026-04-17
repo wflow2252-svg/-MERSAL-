@@ -30,52 +30,52 @@ export default function Footer() {
 
       {/* ── Newsletter Banner ── */}
       <div className="responsive-container relative z-30 -translate-y-1/2">
-        <div className="bg-gradient-to-l from-[#1089A4]/20 to-[#021D24] p-10 md:p-14 rounded-[3rem] border border-white/10 shadow-[0_40px_80px_rgba(0,0,0,0.4)] flex flex-col lg:flex-row items-center justify-between gap-10 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-[#1089A4]/10 blur-[100px] rounded-full pointer-events-none" />
-          <div className="flex flex-col gap-2 text-center lg:text-right relative z-10 flex-none">
-            <h3 className="text-3xl md:text-4xl font-black font-heading tracking-tighter text-white">
+        <div className="bg-gradient-to-l from-[#1089A4]/10 to-[#021D24] p-8 md:p-12 rounded-[2.5rem] border border-white/5 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#1089A4]/5 blur-[80px] rounded-full pointer-events-none" />
+          <div className="flex flex-col gap-1 text-center lg:text-right relative z-10 flex-none">
+            <h3 className="text-2xl md:text-3xl font-black font-heading tracking-tight text-white">
               انضم إلى مجتمع النخبة
             </h3>
-            <p className="text-white/30 text-[10px] font-black uppercase tracking-[0.5em]">
-              حصري • عروض يومية • تحديثات فورية
+            <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.4em]">
+              عروض حصرية • تحديثات فورية
             </p>
           </div>
-          <div className="w-full lg:w-[55%] flex flex-col sm:flex-row gap-4 relative z-10">
+          <div className="w-full lg:w-[50%] flex flex-col sm:flex-row gap-3 relative z-10">
             <input
               type="email"
               placeholder="بريدك الإلكتروني..."
-              className="flex-grow bg-white/5 border-2 border-white/10 rounded-[2rem] px-8 py-5 text-sm font-black text-white outline-none focus:border-[#F29124] focus:bg-white/10 transition-all placeholder:text-white/20 text-right"
+              className="flex-grow bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-xs font-bold text-white outline-none focus:border-[#F29124] transition-all placeholder:text-white/10 text-right"
             />
-            <button className="bg-[#F29124] text-[#021D24] px-10 py-5 rounded-[2rem] font-black text-[12px] uppercase tracking-[0.3em] hover:scale-105 hover:shadow-[0_20px_40px_rgba(242,145,36,0.35)] active:scale-95 transition-all flex items-center justify-center gap-3 flex-none border-b-4 border-black/20 shadow-xl">
+            <button className="bg-[#F29124] text-[#021D24] px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 flex-none shadow-lg">
               اشترك
-              <span className="material-symbols-rounded text-xl">arrow_left</span>
+              <span className="material-symbols-rounded text-lg">arrow_left</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* ── Main Footer Grid ── */}
-      <div className="responsive-container relative z-10 pb-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16 mb-20">
+      <div className="responsive-container relative z-10 pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-24 mb-16">
 
           {/* Col 1: Brand */}
-          <div className="lg:col-span-4 flex flex-col gap-8 text-right">
-            <Link href="/" className="flex items-center gap-5 justify-end group w-fit mr-0 ml-auto">
-              <div className="relative w-16 h-16 rounded-[1.5rem] bg-white p-3 shadow-2xl group-hover:rotate-6 group-hover:scale-105 transition-all flex-none">
+          <div className="lg:col-span-5 flex flex-col gap-6 text-right">
+            <Link href="/" className="flex items-center gap-4 justify-end group w-fit mr-0 ml-auto">
+              <div className="relative w-14 h-14 rounded-2xl bg-white p-2.5 shadow-xl group-hover:rotate-6 transition-all flex-none">
                 <Image src="/logo.jpg" alt="Morsall" fill className="object-contain" />
               </div>
               <div className="flex flex-col">
-                <span className="text-3xl font-black tracking-tighter uppercase font-heading text-white leading-none">Morsall</span>
-                <span className="text-[10px] text-[#F29124] font-black uppercase tracking-[0.5em] mt-1">Premium Sovereignty</span>
+                <span className="text-2xl font-black tracking-tighter uppercase font-heading text-white leading-none">Morsall</span>
+                <span className="text-[9px] text-[#F29124] font-black uppercase tracking-[0.4em] mt-1">Premium Sovereignty</span>
               </div>
             </Link>
 
-            <p className="text-white/30 text-sm leading-[2] font-medium max-w-xs mr-0 ml-auto">
+            <p className="text-white/20 text-[13px] leading-[1.8] font-medium max-w-xs mr-0 ml-auto">
               مرسال ليست مجرد متجر، هي تجسيد للسيادة التجارية في السودان. ننتقي النخبة لنقدمها للنخبة.
             </p>
 
             {/* Social Icons */}
-            <div className="flex gap-3 justify-end flex-wrap">
+            <div className="flex gap-2.5 justify-end mt-2">
               {[
                 { label: "Facebook",  icon: "language", href: "#" },
                 { label: "Twitter",   icon: "tag",      href: "#" },
@@ -85,88 +85,56 @@ export default function Footer() {
                 <a
                   key={s.label}
                   href={s.href}
-                  aria-label={s.label}
-                  className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#1089A4] hover:border-[#1089A4] hover:shadow-[0_0_24px_rgba(16,137,164,0.4)] hover:scale-110 active:scale-95 transition-all group/s"
+                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center hover:bg-[#1089A4] transition-all group/s"
                 >
-                  <span className="material-symbols-rounded text-[18px] text-white/40 group-hover/s:text-white transition-colors">{s.icon}</span>
+                  <span className="material-symbols-rounded text-base text-white/20 group-hover/s:text-white transition-colors">{s.icon}</span>
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Col 2: Explore */}
-          <div className="lg:col-span-2 flex flex-col gap-8 text-right">
-            <div className="flex items-center gap-3 justify-end">
-              <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#1089A4]">استكشاف المنصة</h4>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#1089A4]" />
-            </div>
-            <ul className="space-y-4">
-              {exploreLinks.map((l) => (
-                <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    className="text-white/30 text-xs font-black uppercase tracking-[0.2em] hover:text-white hover:translate-x-[-4px] transition-all inline-flex items-center gap-2 group/link"
-                  >
-                    <span className="material-symbols-rounded text-sm opacity-0 group-hover/link:opacity-100 transition-opacity text-[#1089A4]">chevron_left</span>
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Col 2: Links Group (Applying Proximity) */}
+          <div className="lg:col-span-4 grid grid-cols-2 gap-8 text-right">
+             <div className="flex flex-col gap-6">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1089A4]">استكشاف</h4>
+                <ul className="space-y-3">
+                  {exploreLinks.map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-white/25 text-[11px] font-bold hover:text-white transition-all uppercase tracking-wider">{l.label}</Link>
+                    </li>
+                  ))}
+                </ul>
+             </div>
+             <div className="flex flex-col gap-6">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F29124]">الدعم</h4>
+                <ul className="space-y-3">
+                  {supportLinks.map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-white/25 text-[11px] font-bold hover:text-white transition-all uppercase tracking-wider">{l.label}</Link>
+                    </li>
+                  ))}
+                </ul>
+             </div>
           </div>
 
-          {/* Col 3: Support */}
-          <div className="lg:col-span-2 flex flex-col gap-8 text-right">
-            <div className="flex items-center gap-3 justify-end">
-              <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#F29124]">الدعم السيادي</h4>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#F29124]" />
-            </div>
-            <ul className="space-y-4">
-              {supportLinks.map((l) => (
-                <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    className="text-white/30 text-xs font-black uppercase tracking-[0.2em] hover:text-white hover:translate-x-[-4px] transition-all inline-flex items-center gap-2 group/link"
-                  >
-                    <span className="material-symbols-rounded text-sm opacity-0 group-hover/link:opacity-100 transition-opacity text-[#F29124]">chevron_left</span>
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Col 4: Join CTA */}
-          <div className="lg:col-span-4 flex items-start justify-start lg:justify-end">
-            <div className="w-full max-w-sm bg-gradient-to-br from-white/[0.07] to-transparent p-8 rounded-[2.5rem] border border-white/10 text-right space-y-5 shadow-2xl relative overflow-hidden group/box hover:border-[#1089A4]/30 transition-all">
-              {/* Accent bar */}
-              <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-[#1089A4] to-[#F29124] rounded-full opacity-60" />
-
-              {/* Decorative icon */}
-              <span className="material-symbols-rounded text-[80px] text-white/5 absolute bottom-4 left-4 pointer-events-none">storefront</span>
-
-              <div className="flex items-center gap-3 justify-end">
-                <h4 className="text-xl font-black text-white">هل تود الانضمام؟</h4>
-                <span className="w-8 h-8 rounded-xl bg-[#1089A4]/20 flex items-center justify-center">
-                  <span className="material-symbols-rounded text-sm text-[#1089A4]">add_business</span>
-                </span>
-              </div>
-
-              <p className="text-[11px] text-white/30 font-black uppercase tracking-widest leading-loose">
-                كن جزءاً من منظومة مرسال وابدأ رحلة تجارتك النخبوية اليوم.
-              </p>
-
-              <Link
+          {/* Col 3: CTA */}
+          <div className="lg:col-span-3 flex justify-start lg:justify-end">
+             <Link
                 href="/vendor/register"
-                className="inline-flex gap-3 items-center bg-[#1089A4] text-white text-[11px] font-black uppercase tracking-[0.3em] px-7 py-4 rounded-[1.5rem] hover:bg-[#0d7a8e] hover:shadow-[0_12px_32px_rgba(16,137,164,0.4)] hover:scale-105 active:scale-95 transition-all border-b-4 border-black/20 shadow-lg"
-              >
-                <span className="material-symbols-rounded text-base">arrow_back</span>
-                سجل كمورد الآن
-              </Link>
-            </div>
+                className="group flex flex-col gap-4 p-7 bg-white/5 border border-white/5 rounded-[2rem] hover:bg-white/10 transition-all text-right w-full"
+             >
+                <div className="w-10 h-10 rounded-xl bg-[#1089A4]/20 flex items-center justify-center text-[#1089A4] group-hover:scale-110 transition-transform">
+                   <span className="material-symbols-rounded text-xl">add_business</span>
+                </div>
+                <div>
+                   <h4 className="text-white font-black text-md">سجل كمورد</h4>
+                   <p className="text-white/20 text-[10px] uppercase font-bold tracking-widest mt-1">ابدأ رحلتك النخبوية اليوم</p>
+                </div>
+             </Link>
           </div>
 
         </div>
+
 
         {/* ── Legal Bar ── */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">

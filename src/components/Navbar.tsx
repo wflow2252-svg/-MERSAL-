@@ -81,36 +81,46 @@ export default function Navbar() {
           </Link>
 
           {/* Central Interactive Search Bar */}
-          <div className="flex-grow max-w-[500px] relative hidden lg:block group/search">
-             <div className="flex items-center bg-muted/40 rounded-2xl p-1 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-lg transition-all duration-500">
+          <div className="flex-grow max-w-[550px] relative hidden lg:block group/search">
+             <div className="flex items-center bg-muted/30 rounded-2xl p-1.5 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-xl transition-all duration-500">
                 <div 
                    className="relative flex-none"
                    onMouseEnter={() => setIsCatOpen(true)}
                    onMouseLeave={() => setIsCatOpen(false)}
                 >
-                   <button className="flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-xl font-bold text-[12px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm min-w-[100px]">
+                   <button className="flex items-center gap-2 bg-white text-primary/40 px-6 py-3.5 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm">
                       <span className="material-symbols-rounded text-md">apps</span>
                    </button>
+                   
+                   {/* Simplified Gestalt Dropdown */}
                    <div className={cn(
-                     "absolute top-[120%] right-0 w-[280px] bg-white/95 backdrop-blur-3xl shadow-2xl border border-primary/5 py-4 rounded-2xl transition-all duration-500 origin-top",
+                     "absolute top-[130%] right-0 w-[240px] bg-white/95 backdrop-blur-3xl shadow-2xl border border-primary/5 py-4 rounded-2xl transition-all duration-500 origin-top",
                      isCatOpen ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-4 pointer-events-none"
                    )}>
-                      {categories.map((cat) => (
-                        <Link key={cat.id} href={`/category/${cat.id}`} className="flex items-center justify-between px-6 py-3 hover:bg-muted text-primary/70 hover:text-primary transition-all group/item mx-2 rounded-xl">
-                           <div className="flex items-center gap-3">
-                              <span className="material-symbols-rounded text-lg text-secondary/30 group-hover/item:text-secondary">{cat.icon}</span>
-                              <span className="text-xs font-bold">{cat.name}</span>
-                           </div>
-                        </Link>
-                      ))}
+                      <div className="px-6 mb-4">
+                         <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-primary/20">التصنيفات النخبوية</h4>
+                      </div>
+                      <div className="space-y-1">
+                        {categories.map((cat) => (
+                          <Link key={cat.id} href={`/category/${cat.id}`} className="flex items-center gap-4 px-6 py-2.5 hover:bg-muted text-primary/60 hover:text-primary transition-all group/item mx-2 rounded-xl">
+                             <span className="material-symbols-rounded text-lg text-secondary/40 group-hover/item:text-secondary transition-colors">{cat.icon}</span>
+                             <span className="text-[11px] font-bold">{cat.name}</span>
+                          </Link>
+                        ))}
+                      </div>
                    </div>
                 </div>
-                <input type="text" placeholder="ابحث عن المنتجات..." className="flex-grow px-6 bg-transparent outline-none text-[12px] font-medium text-primary placeholder:text-primary/30 text-right" />
-                <button className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-secondary transition-all mr-1">
+                <input 
+                   type="text" 
+                   placeholder="ابحث عن التميز..." 
+                   className="flex-grow px-6 bg-transparent outline-none text-[11px] font-bold text-primary placeholder:text-primary/20 text-right" 
+                />
+                <button className="bg-primary text-white w-11 h-11 rounded-xl flex items-center justify-center hover:bg-secondary transition-all mr-1 shadow-lg shadow-primary/10">
                    <span className="material-symbols-rounded text-lg">search</span>
                 </button>
              </div>
           </div>
+
 
           {/* User & Actions Hub */}
           <div className="flex items-center gap-3 md:gap-5 flex-none">

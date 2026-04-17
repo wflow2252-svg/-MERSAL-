@@ -58,26 +58,26 @@ export default function ProductCard({ id, title, price, image, vendor, location,
       </Link>
 
       {/* Content */}
-      <div className="p-7 flex flex-col flex-grow text-right relative">
-         <div className="flex items-center gap-2 mb-1.5 opacity-60">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-            <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{vendor}</span>
+      <div className="p-4 md:p-7 flex flex-col flex-grow text-right relative">
+         <div className="flex items-center gap-2 mb-1 md:mb-1.5 opacity-60">
+            <span className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-accent" />
+            <span className="text-[9px] md:text-[10px] font-bold text-primary uppercase tracking-widest">{vendor}</span>
          </div>
 
          <Link href={`/product/${id}`}>
-            <h3 className="text-md font-bold text-foreground leading-snug line-clamp-2 h-[2.8em] mb-4 group-hover:text-primary transition-colors">{title}</h3>
+            <h3 className="text-sm md:text-md font-bold text-foreground leading-snug line-clamp-2 h-[2.8em] mb-4 group-hover:text-primary transition-colors">{title}</h3>
          </Link>
 
-         <div className="mt-auto pt-4 border-t border-border/5 flex items-center justify-between">
+         <div className="mt-auto pt-3 md:pt-4 border-t border-border/5 flex items-center justify-between">
             <div className="flex items-baseline gap-1 group/price">
-               <span className="text-2xl font-black text-primary tracking-tighter transition-transform group-hover/price:scale-105">{price.toLocaleString()}</span>
-               <span className="text-[9px] font-bold text-primary/30 uppercase">ج.س</span>
+               <span className="text-xl md:text-2xl font-black text-primary tracking-tighter transition-transform group-hover/price:scale-105">{price.toLocaleString()}</span>
+               <span className="text-[8px] md:text-[9px] font-bold text-primary/30 uppercase">ج.س</span>
             </div>
             <button 
               onClick={() => addItem({ id, title, price, image, vendor, quantity: 1 })}
-              className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center hover:bg-foreground transition-all shadow-xl shadow-primary/10 hover:-translate-y-1 active:scale-95 group/add"
+              className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-primary text-white flex items-center justify-center hover:bg-foreground transition-all shadow-xl shadow-primary/10 hover:-translate-y-1 active:scale-95 group/add"
             >
-               <span className="material-symbols-rounded text-xl group-hover/add:rotate-[-10deg] transition-transform">shopping_bag</span>
+               <span className="material-symbols-rounded text-lg md:text-xl group-hover/add:rotate-[-10deg] transition-transform">shopping_bag</span>
             </button>
          </div>
       </div>

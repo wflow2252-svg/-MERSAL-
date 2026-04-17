@@ -68,33 +68,33 @@ export default function Navbar() {
            ? "w-[95%] md:w-[85%] rounded-[3rem] py-3 shadow-[0_40px_80px_rgba(3,141,177,0.15)] border border-primary/10 mt-2" 
            : "w-[98%] md:w-[95%] rounded-[3rem] py-4 shadow-2xl border border-transparent"
       )}>
-        <div className="px-6 md:px-12 flex items-center justify-between gap-6 md:gap-16">
+        <div className="px-4 md:px-12 flex items-center justify-between gap-3 md:gap-16">
           
           {/* Logo & Branding */}
-          <Link href="/" className="flex items-center gap-4 group/logo">
-            <div className="relative w-12 h-12 md:w-16 md:h-16 group-hover/logo:scale-105 transition-transform duration-500">
+          <Link href="/" className="flex items-center gap-2 md:gap-4 group/logo shrink-0">
+            <div className="relative w-10 h-10 md:w-16 md:h-16 group-hover/logo:scale-105 transition-transform duration-500">
                <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
             </div>
-            <div className="hidden sm:flex flex-col">
-               <span className="text-xl md:text-2xl font-black text-primary tracking-tighter leading-none font-heading uppercase">Morsall</span>
+            <div className="hidden xs:flex flex-col">
+               <span className="text-lg md:text-2xl font-black text-primary tracking-tighter leading-none font-heading uppercase">Morsall</span>
             </div>
           </Link>
 
-          {/* Central Interactive Search Bar */}
-          <div className="flex-grow max-w-[550px] relative hidden lg:block group/search">
-             <div className="flex items-center bg-muted/30 rounded-2xl p-1.5 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-xl transition-all duration-500">
+          {/* Search Bar - Responsive */}
+          <div className="flex-grow max-w-[550px] relative group/search mx-1 md:mx-0">
+             <div className="flex items-center bg-muted/40 md:bg-muted/30 rounded-2xl p-1 md:p-1.5 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-xl transition-all duration-500">
                 <div 
-                   className="relative flex-none"
+                   className="relative flex-none hidden md:block"
                    onMouseEnter={() => setIsCatOpen(true)}
                    onMouseLeave={() => setIsCatOpen(false)}
                 >
-                   <button className="flex items-center gap-2 bg-white text-primary/40 px-6 py-3.5 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm">
+                   <button className="flex items-center gap-2 bg-white text-primary/40 px-5 py-3 rounded-xl font-bold text-[9px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm">
                       <span className="material-symbols-rounded text-md">apps</span>
                    </button>
                    
-                   {/* Simplified Gestalt Dropdown */}
+                   {/* Categories Dropdown */}
                    <div className={cn(
-                     "absolute top-[130%] right-0 w-[240px] bg-white/95 backdrop-blur-3xl shadow-2xl border border-primary/5 py-4 rounded-2xl transition-all duration-500 origin-top",
+                     "absolute top-[130%] right-0 w-[240px] bg-white/95 backdrop-blur-3xl shadow-2xl border border-primary/5 py-4 rounded-2xl transition-all duration-500 origin-top z-50",
                      isCatOpen ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-4 pointer-events-none"
                    )}>
                       <div className="px-6 mb-4">
@@ -102,59 +102,56 @@ export default function Navbar() {
                       </div>
                       <div className="space-y-1">
                         {categories.map((cat) => (
-                          <Link key={cat.id} href={`/category/${cat.id}`} className="flex items-center gap-4 px-6 py-2.5 hover:bg-muted text-primary/60 hover:text-primary transition-all group/item mx-2 rounded-xl">
-                             <span className="material-symbols-rounded text-lg text-secondary/40 group-hover/item:text-secondary transition-colors">{cat.icon}</span>
-                             <span className="text-[11px] font-bold">{cat.name}</span>
-                          </Link>
+                           <Link key={cat.id} href={`/category/${cat.id}`} className="flex items-center gap-4 px-6 py-2.5 hover:bg-muted text-primary/60 hover:text-primary transition-all group/item mx-2 rounded-xl">
+                              <span className="material-symbols-rounded text-lg text-secondary/40 group-hover/item:text-secondary transition-colors">{cat.icon}</span>
+                              <span className="text-[11px] font-bold">{cat.name}</span>
+                           </Link>
                         ))}
                       </div>
                    </div>
                 </div>
                 <input 
                    type="text" 
-                   placeholder="ابحث عن التميز..." 
-                   className="flex-grow px-6 bg-transparent outline-none text-[11px] font-bold text-primary placeholder:text-primary/20 text-right" 
+                   placeholder="ابحث..." 
+                   className="flex-grow px-3 md:px-6 bg-transparent outline-none text-[10px] md:text-[11px] font-bold text-primary placeholder:text-primary/30 text-right" 
                 />
-                <button className="bg-primary text-white w-11 h-11 rounded-xl flex items-center justify-center hover:bg-secondary transition-all mr-1 shadow-lg shadow-primary/10">
-                   <span className="material-symbols-rounded text-lg">search</span>
+                <button className="bg-primary text-white w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center hover:bg-secondary transition-all mr-0.5 md:mr-1 shadow-lg shadow-primary/10 flex-none">
+                   <span className="material-symbols-rounded text-sm md:text-lg">search</span>
                 </button>
              </div>
           </div>
 
-
           {/* User & Actions Hub */}
-          <div className="flex items-center gap-3 md:gap-5 flex-none">
+          <div className="flex items-center gap-2 md:gap-5 flex-none">
              {isAuthenticated ? (
-               <>
-                 <Link href="/profile" className="relative group flex items-center justify-center w-10 h-10 md:w-12 md:h-12">
+               <div className="flex items-center gap-2 md:gap-4">
+                 <Link href="/profile" className="relative group flex items-center justify-center w-9 h-9 md:w-12 md:h-12">
                    <div className="w-full h-full rounded-full bg-muted text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border-2 border-transparent group-hover:border-secondary flex items-center justify-center">
                      {session?.user?.image ? (
                        <Image src={session.user.image} alt="Profile" width={48} height={48} className="object-cover w-full h-full" />
-                     ) : <span className="material-symbols-rounded text-xl group-hover:scale-110 transition-transform">person</span>}
+                     ) : <span className="material-symbols-rounded text-lg md:text-xl group-hover:scale-110 transition-transform">person</span>}
                    </div>
                  </Link>
-
-                 {/* Admin Quick Access - Now Visible on Mobile */}
+                 
                  {isAdmin && (
-                   <Link href="/admin/dashboard" className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all group relative">
-                     <span className="material-symbols-rounded text-xl">admin_panel_settings</span>
+                   <Link href="/admin/dashboard" className="hidden xs:flex items-center justify-center w-9 h-9 md:w-12 md:h-12 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all">
+                     <span className="material-symbols-rounded text-lg md:text-xl">admin_panel_settings</span>
                    </Link>
                  )}
-               </>
+               </div>
              ) : (
-               <Link href="/login" className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-muted text-primary/40 hover:bg-primary hover:text-white transition-all border border-primary/5 hover:border-transparent relative group">
-                  <span className="material-symbols-rounded text-xl group-hover:scale-110 transition-transform">person</span>
+               <Link href="/login" className="flex items-center justify-center w-9 h-9 md:w-12 md:h-12 rounded-full bg-muted text-primary/40 hover:bg-primary hover:text-white transition-all border border-primary/5 relative">
+                  <span className="material-symbols-rounded text-lg md:text-xl">person</span>
                </Link>
              )}
 
-             <div className="w-px h-6 bg-primary/10 hidden sm:block" />
-
-             <Link href="/cart" className="relative group flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary text-white shadow-xl shadow-primary/20 hover:scale-105 transition-all">
-                <span className="material-symbols-rounded text-[21px] group-hover:-rotate-[-10deg] transition-transform">shopping_bag</span>
-                <span className="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-lg font-inter">{cartCount}</span>
+             <Link href="/cart" className="relative group flex items-center justify-center w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-primary text-white shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                <span className="material-symbols-rounded text-lg md:text-[21px]">shopping_bag</span>
+                <span className="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] md:text-[10px] font-bold w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center border-2 border-white shadow-lg font-inter">{cartCount}</span>
              </Link>
           </div>
         </div>
+
       </div>
     </header>
   );

@@ -249,7 +249,7 @@ export default function LoginPage() {
         </div>
 
         {/* ── Auth Form Area ── */}
-        <div className="p-10 md:p-16 lg:p-24 flex flex-col justify-center bg-white relative z-10 order-1">
+        <div className="p-8 md:p-16 lg:p-24 flex flex-col justify-center bg-white relative z-10 order-1">
             <AnimatePresence mode="wait">
               <motion.div 
                 key={isLogin ? "login" : "signup"}
@@ -259,15 +259,16 @@ export default function LoginPage() {
                 transition={{ duration: 0.5 }}
                 className="w-full"
               >
-                <div className="mb-12 text-right">
-                   <h1 className="text-4xl font-black text-[#021D24] font-heading tracking-tighter mb-3">
+                <div className="mb-8 md:mb-12 text-right">
+                   <h1 className="text-3xl md:text-4xl font-black text-[#021D24] font-heading tracking-tighter mb-2 md:mb-3">
                       {isLogin ? "تسجيل الدخول" : "إنشاء حساب جديد"}
                    </h1>
-                   <div className="h-1 w-20 bg-[#1089A4] rounded-full mb-3" />
-                   <p className="text-[#1089A4] text-[11px] font-black uppercase tracking-[0.2em]">
+                   <div className="h-1 w-16 md:w-20 bg-[#1089A4] rounded-full mb-2 md:mb-3" />
+                   <p className="text-[#1089A4] text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em]">
                       {isLogin ? "بوابة النفوذ والسيطرة التجارية" : "مفتاح العبور إلى العالم النخبوي"}
                    </p>
                 </div>
+
 
                 {error && (
                   <motion.div 
@@ -347,16 +348,23 @@ export default function LoginPage() {
       <style jsx global>{`
         .luxury-field {
           width: 100%;
-          padding: 1.8rem 2rem;
+          padding: 1.4rem 1.6rem;
           background: #F8F9FA;
           border: 3px solid transparent;
-          border-radius: 2rem;
+          border-radius: 1.5rem;
           font-weight: 900;
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
           color: #021D24;
           text-align: right;
           box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        @media (min-width: 768px) {
+          .luxury-field {
+            padding: 1.8rem 2rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+          }
         }
         .luxury-field:focus {
           background: white;

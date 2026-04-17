@@ -107,19 +107,19 @@ export default function ProfilePage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen pt-40 flex flex-col items-center justify-center gap-12 bg-[#01090C] px-6 text-center">
+      <div className="min-h-screen pt-32 md:pt-40 flex flex-col items-center justify-center gap-8 md:gap-12 bg-[#01090C] px-6 text-center">
          <motion.div 
            initial={{ scale: 0 }} animate={{ scale: 1 }}
-           className="w-40 h-40 bg-white/5 rounded-full flex items-center justify-center border-2 border-white/10 shadow-2xl relative"
+           className="w-32 h-32 md:w-40 md:h-40 bg-white/5 rounded-full flex items-center justify-center border-2 border-white/10 shadow-2xl relative"
          >
-            <span className="material-symbols-rounded text-[#1089A4] text-7xl">security</span>
+            <span className="material-symbols-rounded text-[#1089A4] text-5xl md:text-7xl">security</span>
             <div className="absolute inset-0 rounded-full border-4 border-[#1089A4]/20 animate-ping" />
          </motion.div>
          <div className="space-y-4">
-            <h1 className="text-5xl font-black text-white tracking-tighter italic">بـوابة الـسـيادة مـغـلـقـة</h1>
-            <p className="text-white/40 font-bold max-w-sm mx-auto">الرداء الأحمر للنخبة لا يُمنح إلا لمن يملك مفاتيح العبور السيادية.</p>
+            <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter italic">بـوابة الـسـيادة مـغـلـقـة</h1>
+            <p className="text-white/40 font-bold max-w-sm mx-auto text-xs md:text-base">الرداء الأحمر للنخبة لا يُمنح إلا لمن يملك مفاتيح العبور السيادية.</p>
          </div>
-         <Link href="/login" className="px-16 py-7 rounded-[2.5rem] bg-[#1089A4] text-white font-black uppercase tracking-[0.4em] shadow-2xl hover:bg-secondary transition-all">
+         <Link href="/login" className="px-12 py-5 md:px-16 md:py-7 rounded-[2rem] md:rounded-[2.5rem] bg-[#1089A4] text-white font-black uppercase tracking-[0.3em] md:tracking-[0.4em] shadow-2xl hover:bg-secondary transition-all text-xs md:text-base">
            إظـهار الـهويـة
          </Link>
       </div>
@@ -145,64 +145,65 @@ export default function ProfilePage() {
         {/* ── Sovereign ID Card ── */}
         <motion.div 
            variants={{ hidden: { y: 50, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
-           className="w-full relative bg-white/5 backdrop-blur-3xl rounded-[2rem] p-12 md:p-20 shadow-[0_80px_160px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden"
+           className="w-full relative bg-white/5 backdrop-blur-3xl rounded-[2rem] p-8 md:p-20 shadow-[0_80px_160px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden"
         >
            <div className="absolute top-0 left-0 w-full h-[30%] bg-gradient-to-b from-[#1089A4]/20 to-transparent" />
-           <div className="flex flex-col lg:flex-row items-center justify-between gap-16 relative z-10">
+           <div className="flex flex-col lg:flex-row items-center justify-between gap-10 md:gap-16 relative z-10">
               
-              <div className="flex flex-col md:flex-row items-center gap-12 text-center md:text-right">
+              <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 text-center md:text-right">
                  <motion.div 
                     whileHover={{ scale: 1.05, rotate: 2 }}
                     className="relative shrink-0"
                  >
-                    <div className="w-56 h-56 rounded-full border-[12px] border-white/10 shadow-2xl overflow-hidden relative z-20">
+                    <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-[8px] md:border-[12px] border-white/10 shadow-2xl overflow-hidden relative z-20">
                        <Image src={session.user?.image || "/logo.jpg"} alt={session.user?.name || ""} fill className="object-cover" />
                     </div>
-                    <div className="absolute -bottom-4 right-1/2 translate-x-1/2 md:translate-x-0 md:right-0 bg-secondary text-white p-5 rounded-3xl shadow-2xl z-30 border-4 border-[#010103]">
-                       <span className="material-symbols-rounded text-3xl">workspace_premium</span>
+                    <div className="absolute -bottom-2 right-1/2 translate-x-1/2 md:translate-x-0 md:right-0 bg-secondary text-white p-3 md:p-5 rounded-2xl md:rounded-3xl shadow-2xl z-30 border-4 border-[#010103]">
+                       <span className="material-symbols-rounded text-xl md:text-3xl">workspace_premium</span>
                     </div>
-                    <div className="absolute inset-0 bg-[#1089A4]/30 rounded-full blur-[60px] -z-10 animate-pulse" />
+                    <div className="absolute inset-0 bg-[#1089A4]/30 rounded-full blur-[40px] md:blur-[60px] -z-10 animate-pulse" />
                  </motion.div>
 
-                 <div className="space-y-6">
-                    <div className="inline-flex items-center gap-3 bg-[#1089A4]/10 px-6 py-2 rounded-full border border-[#1089A4]/20 text-[10px] font-black text-[#1089A4] uppercase tracking-[0.5em]">
-                       <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" /> حـساب نـخـبوي مـوثـق
+                 <div className="space-y-4 md:space-y-6">
+                    <div className="inline-flex items-center gap-2 md:gap-3 bg-[#1089A4]/10 px-4 md:px-6 py-1.5 md:py-2 rounded-full border border-[#1089A4]/20 text-[8px] md:text-[10px] font-black text-[#1089A4] uppercase tracking-[0.3em] md:tracking-[0.5em]">
+                       <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-secondary animate-pulse" /> حـساب نـخـبوي مـوثـق
                     </div>
                     <div>
                        {isEditing ? (
                          <input 
                            value={formData.name}
                            onChange={(e) => setFormData({...formData, name: e.target.value})}
-                           className="text-4xl md:text-7xl font-black text-white tracking-tighter bg-white/5 border-2 border-white/10 rounded-3xl px-8 py-4 outline-none focus:border-[#1089A4] transition-all"
+                           className="text-3xl md:text-7xl font-black text-white tracking-tighter bg-white/5 border-2 border-white/10 rounded-2xl md:rounded-3xl px-6 md:px-8 py-3 md:py-4 outline-none focus:border-[#1089A4] transition-all"
                          />
                        ) : (
-                         <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-none italic uppercase">
+                         <h1 className="text-4xl md:text-8xl font-black text-white tracking-tighter leading-none italic uppercase">
                            {session.user?.name}
                          </h1>
                        )}
-                       <p className="text-lg font-bold text-white/30 uppercase tracking-[0.5em] mt-4 block">{session.user?.email}</p>
+                       <p className="text-sm md:text-lg font-bold text-white/30 uppercase tracking-[0.4em] md:tracking-[0.5em] mt-3 md:mt-4 block truncate max-w-[300px] md:max-w-none">{session.user?.email}</p>
                     </div>
                  </div>
               </div>
 
-              <div className="flex flex-col items-center lg:items-end gap-8">
-                 <div className="flex gap-4">
-                    <div className="bg-white/5 px-10 py-6 rounded-3xl border border-white/10 text-center min-w-[140px]">
-                       <span className="block text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">رتبة النخبة</span>
-                       <span className="text-xl font-black text-white">بـلاتيني</span>
+              <div className="flex flex-col items-center lg:items-end gap-6 md:gap-8 w-full md:w-auto">
+                 <div className="flex gap-3 md:gap-4 justify-center lg:justify-end w-full">
+                    <div className="bg-white/5 px-6 py-4 md:px-10 md:py-6 rounded-2xl md:rounded-3xl border border-white/10 text-center min-w-[120px] md:min-w-[140px] flex-1 md:flex-none">
+                       <span className="block text-[8px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-1.5 md:mb-2">رتبة النخبة</span>
+                       <span className="text-lg md:text-xl font-black text-white">بـلاتيني</span>
                     </div>
-                    <div className="bg-white/5 px-10 py-6 rounded-3xl border border-white/10 text-center min-w-[140px]">
-                       <span className="block text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">نقاط السيادة</span>
-                       <span className="text-xl font-black text-[#F29124]">2,450</span>
+                    <div className="bg-white/5 px-6 py-4 md:px-10 md:py-6 rounded-2xl md:rounded-3xl border border-white/10 text-center min-w-[120px] md:min-w-[140px] flex-1 md:flex-none">
+                       <span className="block text-[8px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-1.5 md:mb-2">نقاط السيادة</span>
+                       <span className="text-lg md:text-xl font-black text-[#F29124]">2,450</span>
                     </div>
                  </div>
-                 <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                 <div className="w-full h-1.5 md:h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
                     <motion.div initial={{ width: 0 }} animate={{ width: "75%" }} className="h-full bg-gradient-to-r from-[#1089A4] to-secondary" />
                  </div>
               </div>
 
            </div>
         </motion.div>
+
 
         {/* ── Dashboard Grid ── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -348,15 +349,22 @@ export default function ProfilePage() {
       <style jsx global>{`
         .dashboard-input {
           width: 100%;
-          padding: 1.6rem 2rem;
+          padding: 1.2rem 1.4rem;
           background: rgba(255,255,255,0.03);
           border: 2px solid rgba(255,255,255,0.05);
-          border-radius: 2rem;
+          border-radius: 1.2rem;
           color: white;
           font-weight: 900;
-          font-size: 1.1rem;
+          font-size: 0.95rem;
           text-align: right;
           transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        @media (min-width: 768px) {
+          .dashboard-input {
+            padding: 1.6rem 2rem;
+            border-radius: 2rem;
+            font-size: 1.1rem;
+          }
         }
         .dashboard-input:focus {
           background: rgba(255,255,255,0.07);
@@ -366,14 +374,21 @@ export default function ProfilePage() {
           transform: translateY(-2px);
         }
         .dashboard-static {
-          padding: 1.6rem 2rem;
+          padding: 1.2rem 1.4rem;
           background: rgba(255,255,255,0.02);
           border: 2px solid rgba(255,255,255,0.03);
-          border-radius: 2rem;
+          border-radius: 1.2rem;
           color: white;
-          font-size: 1.2rem;
+          font-size: 1rem;
           font-weight: 900;
           text-align: right;
+        }
+        @media (min-width: 768px) {
+          .dashboard-static {
+            padding: 1.6rem 2rem;
+            border-radius: 2rem;
+            font-size: 1.2rem;
+          }
         }
       `}</style>
     </div>

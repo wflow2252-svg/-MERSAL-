@@ -30,13 +30,13 @@ export default function Footer() {
 
       {/* ── Newsletter Banner ── */}
       <div className="responsive-container relative z-30 -translate-y-1/2">
-        <div className="bg-gradient-to-l from-[#1089A4]/10 to-[#021D24] p-8 md:p-12 rounded-[2.5rem] border border-white/5 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
+        <div className="bg-gradient-to-l from-[#1089A4]/10 to-[#021D24] p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] border border-white/5 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#1089A4]/5 blur-[80px] rounded-full pointer-events-none" />
           <div className="flex flex-col gap-1 text-center lg:text-right relative z-10 flex-none">
-            <h3 className="text-2xl md:text-3xl font-black font-heading tracking-tight text-white">
+            <h3 className="text-xl md:text-3xl font-black font-heading tracking-tight text-white">
               انضم إلى مجتمع النخبة
             </h3>
-            <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.4em]">
+            <p className="text-white/20 text-[8px] md:text-[9px] font-black uppercase tracking-[0.4em]">
               عروض حصرية • تحديثات فورية
             </p>
           </div>
@@ -44,9 +44,9 @@ export default function Footer() {
             <input
               type="email"
               placeholder="بريدك الإلكتروني..."
-              className="flex-grow bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-xs font-bold text-white outline-none focus:border-[#F29124] transition-all placeholder:text-white/10 text-right"
+              className="flex-grow bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-5 py-3.5 md:px-6 md:py-4 text-[11px] font-bold text-white outline-none focus:border-[#F29124] transition-all placeholder:text-white/10 text-right"
             />
-            <button className="bg-[#F29124] text-[#021D24] px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 flex-none shadow-lg">
+            <button className="bg-[#F29124] text-[#021D24] px-7 py-3.5 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-[11px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 flex-none shadow-lg">
               اشترك
               <span className="material-symbols-rounded text-lg">arrow_left</span>
             </button>
@@ -56,26 +56,26 @@ export default function Footer() {
 
       {/* ── Main Footer Grid ── */}
       <div className="responsive-container relative z-10 pb-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-24 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 mb-16">
 
           {/* Col 1: Brand */}
-          <div className="lg:col-span-5 flex flex-col gap-6 text-right">
-            <Link href="/" className="flex items-center gap-4 justify-end group w-fit mr-0 ml-auto">
-              <div className="relative w-14 h-14 rounded-2xl bg-white p-2.5 shadow-xl group-hover:rotate-6 transition-all flex-none">
+          <div className="lg:col-span-5 flex flex-col items-center lg:items-end gap-6 text-center lg:text-right">
+            <Link href="/" className="flex items-center gap-4 group">
+              <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-white p-2 md:p-2.5 shadow-xl group-hover:rotate-6 transition-all flex-none">
                 <Image src="/logo.jpg" alt="Morsall" fill className="object-contain" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-black tracking-tighter uppercase font-heading text-white leading-none">Morsall</span>
-                <span className="text-[9px] text-[#F29124] font-black uppercase tracking-[0.4em] mt-1">Premium Sovereignty</span>
+              <div className="flex flex-col text-right">
+                <span className="text-xl md:text-2xl font-black tracking-tighter uppercase font-heading text-white leading-none">Morsall</span>
+                <span className="text-[8px] md:text-[9px] text-[#F29124] font-black uppercase tracking-[0.4em] mt-1">Premium Sovereignty</span>
               </div>
             </Link>
 
-            <p className="text-white/20 text-[13px] leading-[1.8] font-medium max-w-xs mr-0 ml-auto">
+            <p className="text-white/20 text-[12px] md:text-[13px] leading-[1.8] font-medium max-w-sm">
               مرسال ليست مجرد متجر، هي تجسيد للسيادة التجارية في السودان. ننتقي النخبة لنقدمها للنخبة.
             </p>
 
             {/* Social Icons */}
-            <div className="flex gap-2.5 justify-end mt-2">
+            <div className="flex gap-2.5 mt-2">
               {[
                 { label: "Facebook",  icon: "language", href: "#" },
                 { label: "Twitter",   icon: "tag",      href: "#" },
@@ -85,32 +85,32 @@ export default function Footer() {
                 <a
                   key={s.label}
                   href={s.href}
-                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center hover:bg-[#1089A4] transition-all group/s"
+                  className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center hover:bg-[#1089A4] transition-all group/s"
                 >
-                  <span className="material-symbols-rounded text-base text-white/20 group-hover/s:text-white transition-colors">{s.icon}</span>
+                  <span className="material-symbols-rounded text-[14px] md:text-base text-white/20 group-hover/s:text-white transition-colors">{s.icon}</span>
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Col 2: Links Group (Applying Proximity) */}
+          {/* Col 2: Links */}
           <div className="lg:col-span-4 grid grid-cols-2 gap-8 text-right">
-             <div className="flex flex-col gap-6">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1089A4]">استكشاف</h4>
-                <ul className="space-y-3">
+             <div className="flex flex-col gap-5 md:gap-6">
+                <h4 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-[#1089A4]">استكشاف</h4>
+                <ul className="space-y-2 md:space-y-3">
                   {exploreLinks.map((l) => (
                     <li key={l.href}>
-                      <Link href={l.href} className="text-white/25 text-[11px] font-bold hover:text-white transition-all uppercase tracking-wider">{l.label}</Link>
+                      <Link href={l.href} className="text-white/25 text-[10px] md:text-[11px] font-bold hover:text-white transition-all uppercase tracking-wider">{l.label}</Link>
                     </li>
                   ))}
                 </ul>
              </div>
-             <div className="flex flex-col gap-6">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F29124]">الدعم</h4>
-                <ul className="space-y-3">
+             <div className="flex flex-col gap-5 md:gap-6">
+                <h4 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-[#F29124]">الدعم</h4>
+                <ul className="space-y-2 md:space-y-3">
                   {supportLinks.map((l) => (
                     <li key={l.href}>
-                      <Link href={l.href} className="text-white/25 text-[11px] font-bold hover:text-white transition-all uppercase tracking-wider">{l.label}</Link>
+                      <Link href={l.href} className="text-white/25 text-[10px] md:text-[11px] font-bold hover:text-white transition-all uppercase tracking-wider">{l.label}</Link>
                     </li>
                   ))}
                 </ul>
@@ -118,22 +118,23 @@ export default function Footer() {
           </div>
 
           {/* Col 3: CTA */}
-          <div className="lg:col-span-3 flex justify-start lg:justify-end">
+          <div className="lg:col-span-3">
              <Link
                 href="/vendor/register"
-                className="group flex flex-col gap-4 p-7 bg-white/5 border border-white/5 rounded-[2rem] hover:bg-white/10 transition-all text-right w-full"
+                className="group flex flex-col gap-4 p-6 md:p-7 bg-white/5 border border-white/5 rounded-[1.5rem] md:rounded-[2rem] hover:bg-white/10 transition-all text-right w-full"
              >
-                <div className="w-10 h-10 rounded-xl bg-[#1089A4]/20 flex items-center justify-center text-[#1089A4] group-hover:scale-110 transition-transform">
-                   <span className="material-symbols-rounded text-xl">add_business</span>
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-[#1089A4]/20 flex items-center justify-center text-[#1089A4] group-hover:scale-110 transition-transform">
+                   <span className="material-symbols-rounded text-lg md:text-xl">add_business</span>
                 </div>
                 <div>
-                   <h4 className="text-white font-black text-md">سجل كمورد</h4>
-                   <p className="text-white/20 text-[10px] uppercase font-bold tracking-widest mt-1">ابدأ رحلتك النخبوية اليوم</p>
+                   <h4 className="text-white font-black text-sm md:text-md">سجل كمورد</h4>
+                   <p className="text-white/20 text-[9px] md:text-[10px] uppercase font-bold tracking-widest mt-1">ابدأ رحلتك النخبوية اليوم</p>
                 </div>
              </Link>
           </div>
 
         </div>
+
 
 
         {/* ── Legal Bar ── */}

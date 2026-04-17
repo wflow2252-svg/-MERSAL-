@@ -68,20 +68,20 @@ export default function Navbar() {
            ? "w-[95%] md:w-[85%] rounded-[3rem] py-3 shadow-[0_40px_80px_rgba(3,141,177,0.15)] border border-primary/10 mt-2" 
            : "w-[98%] md:w-[95%] rounded-[3rem] py-4 shadow-2xl border border-transparent"
       )}>
-        <div className="px-4 md:px-12 flex items-center justify-between gap-3 md:gap-16">
+        <div className="px-3 md:px-12 flex items-center justify-between gap-2 md:gap-16">
           
           {/* Logo & Branding */}
           <Link href="/" className="flex items-center gap-2 md:gap-4 group/logo shrink-0">
-            <div className="relative w-10 h-10 md:w-16 md:h-16 group-hover/logo:scale-105 transition-transform duration-500">
+            <div className="relative w-9 h-9 md:w-16 md:h-16 group-hover/logo:scale-105 transition-transform duration-500">
                <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
             </div>
-            <div className="hidden xs:flex flex-col">
+            <div className="hidden sm:flex flex-col">
                <span className="text-lg md:text-2xl font-black text-primary tracking-tighter leading-none font-heading uppercase">Morsall</span>
             </div>
           </Link>
 
           {/* Search Bar - Responsive */}
-          <div className="flex-grow max-w-[550px] relative group/search mx-1 md:mx-0">
+          <div className="flex-grow max-w-[550px] relative group/search mx-0.5 md:mx-0">
              <div className="flex items-center bg-muted/40 md:bg-muted/30 rounded-2xl p-1 md:p-1.5 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-xl transition-all duration-500">
                 <div 
                    className="relative flex-none hidden md:block"
@@ -113,18 +113,18 @@ export default function Navbar() {
                 <input 
                    type="text" 
                    placeholder="ابحث..." 
-                   className="flex-grow px-3 md:px-6 bg-transparent outline-none text-[10px] md:text-[11px] font-bold text-primary placeholder:text-primary/30 text-right" 
+                   className="flex-grow px-2 md:px-6 bg-transparent outline-none text-[9px] md:text-[11px] font-bold text-primary placeholder:text-primary/30 text-right" 
                 />
-                <button className="bg-primary text-white w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center hover:bg-secondary transition-all mr-0.5 md:mr-1 shadow-lg shadow-primary/10 flex-none">
-                   <span className="material-symbols-rounded text-sm md:text-lg">search</span>
+                <button className="bg-primary text-white w-8 h-8 md:w-11 md:h-11 rounded-lg md:rounded-xl flex items-center justify-center hover:bg-secondary transition-all mr-0.5 md:mr-1 shadow-lg shadow-primary/10 flex-none scale-90 md:scale-100">
+                   <span className="material-symbols-rounded text-xs md:text-lg">search</span>
                 </button>
              </div>
           </div>
 
           {/* User & Actions Hub */}
-          <div className="flex items-center gap-1.5 md:gap-5 flex-none relative">
+          <div className="flex items-center gap-1 md:gap-5 flex-none relative pr-1">
              {isAuthenticated ? (
-               <div className="flex items-center gap-1.5 md:gap-4">
+               <div className="flex items-center gap-1 md:gap-4">
                  <Link href="/profile" className="relative group flex items-center justify-center w-8 h-8 md:w-12 md:h-12">
                    <div className="w-full h-full rounded-full bg-muted text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border-2 border-transparent group-hover:border-secondary flex items-center justify-center">
                      {session?.user?.image ? (

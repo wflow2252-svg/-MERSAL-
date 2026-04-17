@@ -39,9 +39,18 @@ export async function PATCH(req: Request) {
     }
 
     const { email } = await req.json();
+    if (!email) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    }
 
-    const user = await prisma.user.findUnique({
-      where: { email }
+    // Find user with case-insensitivity
+    const user = await prisma.user.findFirst({
+      where: { 
+        email: {
+          equals: email,
+          mode: 'insensitive'
+        }
+      }
     });
 
     if (!user) {
@@ -49,7 +58,7 @@ export async function PATCH(req: Request) {
     }
 
     const updatedUser = await prisma.user.update({
-      where: { email },
+      where: { id: user.id },
       data: { role: 'ADMIN' }
     });
 

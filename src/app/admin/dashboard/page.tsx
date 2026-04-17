@@ -383,8 +383,15 @@ export default function AdminDashboard() {
                          {users.map(u => (
                             <tr key={u.id} className="hover:bg-muted/30 transition-all font-bold group">
                                <td className="px-8 py-6">
-                                  <p className="text-[#021D24]">{u.name || 'بدون اسم'}</p>
-                                  <p className="text-[10px] text-muted-foreground">{u.email}</p>
+                                  <div className="flex items-center gap-5">
+                                     <div className="w-12 h-12 rounded-full bg-[#1089A4]/10 text-[#1089A4] flex items-center justify-center font-black text-lg border-2 border-white shadow-sm flex-shrink-0">
+                                        {(u.name?.[0] || 'U').toUpperCase()}
+                                     </div>
+                                     <div className="flex flex-col text-right">
+                                        <p className="text-[#021D24] font-black text-md leading-none mb-1">{u.name || 'بدون اسم'}</p>
+                                        <p className="text-[11px] text-[#1089A4] font-bold tracking-tight">{u.email}</p>
+                                     </div>
+                                  </div>
                                </td>
                                <td className="px-8 py-6">{u.phone || '—'}</td>
                                <td className="px-8 py-6">

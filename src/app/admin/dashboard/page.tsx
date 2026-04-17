@@ -316,7 +316,7 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Pending Products */}
-                <div className="bg-white rounded-[3rem] p-10 shadow-xl border-4 border-white space-y-8">
+                <div className="bg-white rounded-[1.5rem] p-10 shadow-xl border-4 border-white space-y-8">
                   <div className="flex justify-between items-center">
                     <h3 className="text-2xl font-black text-[#021D24]">مراجعة المنتجات</h3>
                     <span className="bg-[#1089A4] text-white px-4 py-1.5 rounded-full text-[10px] font-black">{pendingProducts.length} جديد</span>
@@ -359,7 +359,7 @@ export default function AdminDashboard() {
 
             {/* 3. USERS */}
             {activeTab === "users" && (
-              <motion.div key="users" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-[2rem] md:rounded-[3rem] shadow-xl border-4 border-white overflow-hidden">
+              <motion.div key="users" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-xl border-4 border-white overflow-hidden pb-10">
                 <div className="p-6 md:p-8 border-b flex flex-col md:flex-row justify-between items-center gap-4 bg-muted/10">
                    <h3 className="text-xl md:text-2xl font-black text-[#021D24]">قاعدة بيانات المستخدمين</h3>
                    <div className="w-full md:w-auto">

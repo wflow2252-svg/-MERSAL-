@@ -169,7 +169,7 @@ export default function LoginPage() {
         initial={{ opacity: 0, scale: 0.9, rotateY: isLogin ? 15 : -15 }}
         animate={{ opacity: 1, scale: 1, rotateY: 0 }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-        className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 rounded-[4rem] overflow-hidden shadow-[0_80px_160px_rgba(0,0,0,0.8)] bg-white/5 backdrop-blur-3xl border border-white/10 relative z-10 group"
+        className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 rounded-[2rem] overflow-hidden shadow-[0_80px_160px_rgba(0,0,0,0.8)] bg-white/5 backdrop-blur-3xl border border-white/10 relative z-10 group"
       >
         {/* Dynamic Light Glow (Mouse Follow) */}
         <motion.div 
@@ -192,7 +192,7 @@ export default function LoginPage() {
                 <motion.div 
                    whileHover={{ rotate: 360, scale: 1.1 }}
                    transition={{ duration: 1, ease: "circInOut" }}
-                   className="w-20 h-20 bg-white rounded-[2rem] p-4 flex items-center justify-center shadow-elite-xl relative"
+                   className="w-20 h-20 bg-white rounded-[1.5rem] p-4 flex items-center justify-center shadow-elite-xl relative"
                 >
                    <Image src="/logo.jpg" alt="Logo" width={80} height={80} className="object-contain" />
                    <div className="absolute inset-0 rounded-[2rem] border-2 border-primary/20 animate-pulse" />

@@ -134,7 +134,7 @@ export default function ProfilePage() {
         {/* ── Sovereign ID Card ── */}
         <motion.div 
            variants={{ hidden: { y: 50, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
-           className="w-full relative bg-white/5 backdrop-blur-3xl rounded-[4rem] p-12 md:p-20 shadow-[0_80px_160px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden"
+           className="w-full relative bg-white/5 backdrop-blur-3xl rounded-[2rem] p-12 md:p-20 shadow-[0_80px_160px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden"
         >
            <div className="absolute top-0 left-0 w-full h-[30%] bg-gradient-to-b from-[#1089A4]/20 to-transparent" />
            <div className="flex flex-col lg:flex-row items-center justify-between gap-16 relative z-10">
@@ -199,7 +199,7 @@ export default function ProfilePage() {
             {/* Identity Coordinates */}
             <motion.div 
                variants={{ hidden: { y: 30, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
-               className="lg:col-span-2 bg-white/5 backdrop-blur-3xl rounded-[3.5rem] p-12 md:p-16 border border-white/10 shadow-3xl space-y-12"
+               className="lg:col-span-2 bg-white/5 backdrop-blur-3xl rounded-[2rem] p-12 md:p-16 border border-white/10 shadow-3xl space-y-12 pb-20"
             >
                <div className="flex items-center gap-6 border-b border-white/5 pb-10">
                   <div className="w-16 h-16 bg-[#1089A4] rounded-2xl flex items-center justify-center shadow-elite-xl">
@@ -278,7 +278,7 @@ export default function ProfilePage() {
                {/* Security Card */}
                <motion.div 
                  variants={{ hidden: { x: 30, opacity: 0 }, visible: { x: 0, opacity: 1 } }}
-                 className="bg-white/5 backdrop-blur-3xl rounded-[3rem] p-12 border border-white/10 space-y-8"
+                 className="bg-white/5 backdrop-blur-3xl rounded-[2rem] p-12 border border-white/10 space-y-8 pb-14"
                >
                   <div className="flex items-center gap-4">
                      <span className="material-symbols-rounded text-[#1089A4] text-3xl">verified_user</span>
@@ -299,7 +299,7 @@ export default function ProfilePage() {
                {/* Danger Zone */}
                <motion.div 
                  variants={{ hidden: { x: 30, opacity: 0 }, visible: { x: 0, opacity: 1 } }}
-                 className="bg-red-500/5 rounded-[3rem] p-12 border border-red-500/20 space-y-8 relative overflow-hidden group"
+                 className="bg-red-500/5 rounded-[2rem] p-12 border border-red-500/20 space-y-8 relative overflow-hidden group pb-14"
                >
                   <div className="absolute top-0 right-0 w-2 h-full bg-red-500 opacity-20" />
                   <div className="flex items-center gap-4">

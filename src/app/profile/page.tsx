@@ -84,6 +84,17 @@ export default function ProfilePage() {
     }));
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      const res = await fetch("/api/user/delete", { method: "POST" });
+      if (res.ok) {
+        signOut({ callbackUrl: "/" });
+      }
+    } catch (error) {
+      console.error("Failed to delete account", error);
+    }
+  };
+
   if (status === "loading") return (
     <div className="min-h-screen flex items-center justify-center bg-[#01090C]">
        <motion.div 

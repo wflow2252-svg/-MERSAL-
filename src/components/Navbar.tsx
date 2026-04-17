@@ -90,8 +90,8 @@ export default function Navbar() {
           </Link>
 
           {/* Search Bar - Responsive */}
-          <form onSubmit={handleSearch} className="flex-grow max-w-[200px] xs:max-w-[260px] sm:max-w-[350px] md:max-w-[550px] relative group/search mx-0.5 md:mx-0">
-             <div className="flex items-center bg-muted/40 md:bg-muted/30 rounded-2xl p-1 md:p-1.5 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-xl transition-all duration-500">
+          <form onSubmit={handleSearch} className="flex-grow max-w-[120px] xs:max-w-[200px] sm:max-w-[350px] md:max-w-[550px] relative group/search mx-0.5 md:mx-0">
+             <div className="flex items-center bg-muted/40 md:bg-muted/30 rounded-2xl p-0.5 md:p-1.5 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-xl transition-all duration-500">
                 <div 
                    className="relative flex-none hidden md:block" // Hidden on mobile to save space
                    onMouseEnter={() => setIsCatOpen(true)}
@@ -124,10 +124,10 @@ export default function Navbar() {
                    value={searchQuery}
                    onChange={(e) => setSearchQuery(e.target.value)}
                    placeholder="ابحث..." 
-                   className="flex-grow px-2 md:px-6 bg-transparent outline-none text-[9px] sm:text-[10px] md:text-[11px] font-bold text-primary placeholder:text-primary/30 text-right min-w-0" 
+                   className="flex-grow px-1 md:px-6 bg-transparent outline-none text-[8px] sm:text-[10px] md:text-[11px] font-bold text-primary placeholder:text-primary/30 text-right min-w-0" 
                 />
-                <button type="submit" className="bg-primary text-white w-8 h-8 md:w-11 md:h-11 rounded-lg md:rounded-xl flex items-center justify-center hover:bg-secondary transition-all mr-0.5 md:mr-1 shadow-lg shadow-primary/10 flex-none scale-95 md:scale-100">
-                   <span className="material-symbols-rounded text-sm md:text-lg">search</span>
+                <button type="submit" className="bg-primary text-white w-7 h-7 md:w-11 md:h-11 rounded-lg md:rounded-xl flex items-center justify-center hover:bg-secondary transition-all mr-0.5 md:mr-1 shadow-lg shadow-primary/10 flex-none scale-90 md:scale-100">
+                   <span className="material-symbols-rounded text-[10px] md:text-lg">search</span>
                 </button>
              </div>
           </form>
@@ -145,7 +145,7 @@ export default function Navbar() {
                  </Link>
                  
                  {isAdmin && (
-                   <Link href="/admin/dashboard" className="hidden xs:flex items-center justify-center w-8 h-8 md:w-12 md:h-12 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all">
+                   <Link href="/admin/dashboard" className="flex items-center justify-center w-8 h-8 md:w-12 md:h-12 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all">
                      <span className="material-symbols-rounded text-md md:text-xl">admin_panel_settings</span>
                    </Link>
                  )}

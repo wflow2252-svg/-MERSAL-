@@ -25,13 +25,21 @@ export async function POST(req: Request) {
     // 1. Find the existing user
     const user = await prisma.user.findUnique({
       where: { email: (session as any).user.email },
+      include: { vendorProfile: true }
     });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // 2. Create Vendor Profile and update User Role
+    // 2. Prevent duplicate vendor registration
+    if (user.vendorProfile) {
+      return NextResponse.json({ 
+        error: "أنت مسجل كبائع بالفعل. يرجى التوجه للوحة التحكم." 
+      }, { status: 400 });
+    }
+
+    // 3. Create Vendor Profile and update User Role
     const vendor = await prisma.$transaction(async (tx) => {
       // Update User
       await tx.user.update({
@@ -58,8 +66,19 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true, vendor });
-  } catch (error) {
-    console.error("Vendor registration error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Vendor registration error details:", {
+      message: error?.message,
+      code: error?.code,
+      meta: error?.meta
+    });
+
+    if (error?.code === "P2002") {
+      return NextResponse.json({ 
+        error: "بيانات المتجر مستخدمة بالفعل. حاول اسم متجر آخر." 
+      }, { status: 400 });
+    }
+
+    return NextResponse.json({ error: "خطأ في معالجة طلب التسجيل" }, { status: 500 });
   }
 }

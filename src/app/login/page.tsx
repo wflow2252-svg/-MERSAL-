@@ -314,21 +314,15 @@ export default function LoginPage() {
                    <span className="relative bg-white px-6 text-[9px] font-bold text-primary/20 uppercase tracking-[0.4em]">أو عبر البروتوكولات</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                   <MagneticButton 
-                     onClick={() => signIn("google", { callbackUrl: "/" })}
-                     className="py-4 border border-primary/5 rounded-2xl flex items-center justify-center gap-3 hover:bg-[#F8F9FA] transition-all text-[10px] font-black uppercase tracking-widest group/social"
-                   >
-                      <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={18} height={18} /> 
-                      <span className="hidden sm:block">جـوجـل</span>
-                   </MagneticButton>
-                   <MagneticButton 
-                     className="py-4 bg-[#021D24] text-white rounded-2xl flex items-center justify-center gap-3 hover:bg-black transition-all text-[10px] font-black uppercase tracking-widest shadow-lg group/social"
-                   >
-                      <Image src="https://www.svgrepo.com/show/473543/apple.svg" alt="Apple" width={16} height={16} className="invert" />
-                      <span className="hidden sm:block">آيـفــون</span>
-                   </MagneticButton>
-                </div>
+                <div className="w-full">
+                    <MagneticButton 
+                      onClick={() => signIn("google", { callbackUrl: "/" })}
+                      className="w-full py-5 border border-primary/5 rounded-2xl flex items-center justify-center gap-4 hover:bg-[#F8F9FA] transition-all text-[11px] font-black uppercase tracking-widest group/social shadow-sm"
+                    >
+                       <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={20} height={20} /> 
+                       <span>تـسـجـيل الـدخـول بـواسـطـة جـوجـل</span>
+                    </MagneticButton>
+                 </div>
 
                 <motion.p 
                    className="text-center text-[10px] font-bold mt-12 text-primary/40 uppercase tracking-[0.2em]"

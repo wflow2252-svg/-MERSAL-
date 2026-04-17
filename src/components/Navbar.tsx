@@ -122,32 +122,32 @@ export default function Navbar() {
           </div>
 
           {/* User & Actions Hub */}
-          <div className="flex items-center gap-2 md:gap-5 flex-none">
+          <div className="flex items-center gap-1.5 md:gap-5 flex-none relative">
              {isAuthenticated ? (
-               <div className="flex items-center gap-2 md:gap-4">
-                 <Link href="/profile" className="relative group flex items-center justify-center w-9 h-9 md:w-12 md:h-12">
+               <div className="flex items-center gap-1.5 md:gap-4">
+                 <Link href="/profile" className="relative group flex items-center justify-center w-8 h-8 md:w-12 md:h-12">
                    <div className="w-full h-full rounded-full bg-muted text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border-2 border-transparent group-hover:border-secondary flex items-center justify-center">
                      {session?.user?.image ? (
                        <Image src={session.user.image} alt="Profile" width={48} height={48} className="object-cover w-full h-full" />
-                     ) : <span className="material-symbols-rounded text-lg md:text-xl group-hover:scale-110 transition-transform">person</span>}
+                     ) : <span className="material-symbols-rounded text-md md:text-xl group-hover:scale-110 transition-transform">person</span>}
                    </div>
                  </Link>
                  
                  {isAdmin && (
-                   <Link href="/admin/dashboard" className="hidden xs:flex items-center justify-center w-9 h-9 md:w-12 md:h-12 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all">
-                     <span className="material-symbols-rounded text-lg md:text-xl">admin_panel_settings</span>
+                   <Link href="/admin/dashboard" className="hidden xs:flex items-center justify-center w-8 h-8 md:w-12 md:h-12 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all">
+                     <span className="material-symbols-rounded text-md md:text-xl">admin_panel_settings</span>
                    </Link>
                  )}
                </div>
              ) : (
-               <Link href="/login" className="flex items-center justify-center w-9 h-9 md:w-12 md:h-12 rounded-full bg-muted text-primary/40 hover:bg-primary hover:text-white transition-all border border-primary/5 relative">
-                  <span className="material-symbols-rounded text-lg md:text-xl">person</span>
+               <Link href="/login" className="flex items-center justify-center w-8 h-8 md:w-12 md:h-12 rounded-full bg-muted text-primary/40 hover:bg-primary hover:text-white transition-all border border-primary/5 relative">
+                  <span className="material-symbols-rounded text-md md:text-xl">person</span>
                </Link>
              )}
 
-             <Link href="/cart" className="relative group flex items-center justify-center w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-primary text-white shadow-xl shadow-primary/20 hover:scale-105 transition-all">
-                <span className="material-symbols-rounded text-lg md:text-[21px]">shopping_bag</span>
-                <span className="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] md:text-[10px] font-bold w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center border-2 border-white shadow-lg font-inter">{cartCount}</span>
+             <Link href="/cart" className="relative group flex items-center justify-center w-9 h-9 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-primary text-white shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                <span className="material-symbols-rounded text-md md:text-[21px]">shopping_bag</span>
+                <span className="absolute -top-1 -right-1 bg-secondary text-white text-[8px] md:text-[10px] font-bold w-4 h-4 md:w-6 md:h-6 rounded-full flex items-center justify-center border-2 border-white shadow-lg font-inter">{cartCount}</span>
              </Link>
           </div>
         </div>

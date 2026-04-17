@@ -57,20 +57,21 @@ const RevealText = ({ text, className, delay = 0 }: { text: string; className?: 
       opacity: 1,
       transition: { staggerChildren: 0.03, delayChildren: 0.02 * i + delay },
     }),
-  };
+  } as const;
 
   const child = {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { type: "spring", damping: 12, stiffness: 200 },
+      transition: { type: "spring" as const, damping: 12, stiffness: 200 },
     },
     hidden: {
       opacity: 0,
       y: 20,
-      transition: { type: "spring", damping: 12, stiffness: 200 },
+      transition: { type: "spring" as const, damping: 12, stiffness: 200 },
     },
   };
+
 
   return (
     <motion.div

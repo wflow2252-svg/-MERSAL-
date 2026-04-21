@@ -12,7 +12,7 @@ export interface ProductCardProps {
   price: number;
   image: string;
   vendor: string;
-  location: string;
+  vendorLocation: string;
   discount?: number;
   badge?: string;
   sold?: number;
@@ -34,7 +34,7 @@ function Stars({ rating = 4.3, count = 128 }: { rating?: number; count?: number 
   );
 }
 
-export default function ProductCard({ id, title, price, image, vendor, location, discount, badge, vendorId }: ProductCardProps) {
+export default function ProductCard({ id, title, price, image, vendor, vendorLocation, discount, badge, vendorId }: ProductCardProps) {
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
   const { toggleFavorite, toggleCompare, isInFavorites, isInCompare } = useWishlist();
@@ -112,10 +112,10 @@ export default function ProductCard({ id, title, price, image, vendor, location,
           <span className="text-[10px] text-[#1089A4] font-black hover:underline cursor-pointer truncate">{vendor}</span>
         </div>
 
-        {location && (
+        {vendorLocation && (
           <div className="flex items-center gap-0.5 text-gray-400 mb-2">
             <span className="material-symbols-rounded text-[10px]">location_on</span>
-            <span className="text-[10px] font-bold">{location}</span>
+            <span className="text-[10px] font-bold">{vendorLocation}</span>
           </div>
         )}
 

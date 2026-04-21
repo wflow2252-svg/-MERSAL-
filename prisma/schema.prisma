@@ -137,6 +137,8 @@ model Order {
   trackingLat       Float?      // موقع المندوب
   trackingLng       Float?
   trackingNumber    String?     // رقم تتبع شركة الشحن
+  trackingUrl       String?     // رابط تتبع يدوي (أو خارجي)
+  estimatedDays     Int?        // عدد أيام التوصيل المتوقعة
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
   customer          User        @relation(fields: [customerId], references: [id])

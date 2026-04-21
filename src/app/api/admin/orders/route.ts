@@ -46,7 +46,7 @@ export async function GET(req: Request) {
 export async function PATCH(req: Request) {
   try {
     const body = await req.json();
-    const { id, status, trackingNumber, driverId } = body;
+    const { id, status, trackingNumber, driverId, trackingUrl, estimatedDays, shippingCost } = body;
 
     if (!id || !status) {
       return NextResponse.json({ error: "id و status مطلوبان" }, { status: 400 });
@@ -59,6 +59,9 @@ export async function PATCH(req: Request) {
 
     if (trackingNumber) updateData.trackingNumber = trackingNumber;
     if (driverId) updateData.driverId = driverId;
+    if (trackingUrl) updateData.trackingUrl = trackingUrl;
+    if (estimatedDays) updateData.estimatedDays = parseInt(estimatedDays);
+    if (shippingCost !== undefined) updateData.shippingCost = parseFloat(shippingCost);
 
     const updated = await db.order.update({
       where: { id },

@@ -195,6 +195,11 @@ export default function AdminDashboard() {
   const [assigningDriver, setAssigningDriver] = useState<any>(null); // { orderId, status }
   const [selectedDriverId, setSelectedDriverId] = useState(""); 
   const [trackingOrder, setTrackingOrder] = useState<any>(null); // الطلب الجاري تتبعه حالياً
+  
+  // Delivery details states
+  const [deliveryDays, setDeliveryDays] = useState("3");
+  const [deliveryPrice, setDeliveryPrice] = useState("");
+  const [manualTrackingLink, setManualTrackingLink] = useState("");
 
 
   // Data states
@@ -417,6 +422,8 @@ export default function AdminDashboard() {
 
   const handleOrderStatus = async (id: string, status: string) => {
     if (status === "SHIPPED") {
+      const order = orders.find(o => o.id === id);
+      setDeliveryPrice(order?.shippingCost?.toString() || "0");
       setAssigningDriver({ orderId: id, status });
       return;
     }
@@ -430,14 +437,32 @@ export default function AdminDashboard() {
     if (!assigningDriver || !selectedDriverId) return;
     const { orderId, status } = assigningDriver;
     setActionLoading(orderId);
-    await fetch("/api/admin/drivers"); // Just to ensure they are fetched if not yet
+    
     await fetch("/api/admin/orders", { 
       method: "PATCH", 
-      body: JSON.stringify({ id: orderId, status, driverId: selectedDriverId }) 
+      body: JSON.stringify({ 
+        id: orderId, 
+        status, 
+        driverId: selectedDriverId,
+        estimatedDays: parseInt(deliveryDays) || 0,
+        shippingCost: parseFloat(deliveryPrice) || 0,
+        trackingUrl: manualTrackingLink
+      }) 
     });
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status, driverId: selectedDriverId } : o));
+
+    setOrders(prev => prev.map(o => o.id === orderId ? { 
+      ...o, 
+      status, 
+      driverId: selectedDriverId,
+      shippingCost: parseFloat(deliveryPrice) || 0,
+      estimatedDays: parseInt(deliveryDays) || 0,
+      trackingUrl: manualTrackingLink
+    } : o));
+
     setAssigningDriver(null);
     setSelectedDriverId("");
+    setDeliveryDays("3");
+    setManualTrackingLink("");
     setActionLoading(null);
   };
 
@@ -806,21 +831,41 @@ export default function AdminDashboard() {
                       </div>
 
                       {/* Driver Assigned Alert */}
-                      {order.driver && (
-                        <div className="mx-4 mt-3 p-3 bg-sky-50 rounded-xl border border-sky-100 flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-[#1089A4] text-white flex items-center justify-center">
-                              <span className="material-symbols-rounded text-sm">sports_motorsports</span>
+                      {(order.driver || order.trackingUrl) && (
+                        <div className="mx-4 mt-3 p-3 bg-sky-50 rounded-xl border border-sky-100 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-[#1089A4] text-white flex items-center justify-center">
+                                <span className="material-symbols-rounded text-sm">sports_motorsports</span>
+                              </div>
+                              <div>
+                                <p className="text-[10px] text-sky-400 font-bold uppercase">بيانات الشحن والتوصيل</p>
+                                <p className="text-xs font-black text-[#021D24]">
+                                  {order.driver ? `${order.driver.name} (${order.driver.vehicleType})` : "تم تحديد المسار"}
+                                  {order.estimatedDays && <span className="mr-2 text-gray-400 font-normal">| الوصول خلال: {order.estimatedDays} أيام</span>}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-[10px] text-sky-400 font-bold uppercase">المندوب القائم بالتوصيل</p>
-                              <p className="text-xs font-black text-[#021D24]">{order.driver.name} ({order.driver.vehicleType})</p>
-                            </div>
+                            {order.driver && (
+                              <a href={`tel:${order.driver.phone}`} className="text-xs font-bold text-[#1089A4] hover:underline flex items-center gap-1">
+                                <span className="material-symbols-rounded text-xs">phone</span>
+                                اتصال
+                              </a>
+                            )}
                           </div>
-                          <a href={`tel:${order.driver.phone}`} className="text-xs font-bold text-[#1089A4] hover:underline flex items-center gap-1">
-                            <span className="material-symbols-rounded text-xs">phone</span>
-                            اتصال بالمندوب
-                          </a>
+                          
+                          {order.trackingUrl && (
+                            <div className="flex items-center gap-2 pt-2 border-t border-sky-100">
+                              <span className="material-symbols-rounded text-sky-500 text-sm">link</span>
+                              <a 
+                                href={order.trackingUrl} 
+                                target="_blank" 
+                                className="text-[10px] font-bold text-[#1089A4] underline truncate"
+                              >
+                                رابط التتبع اليدوي: {order.trackingUrl}
+                              </a>
+                            </div>
+                          )}
                         </div>
                       )}
 
@@ -1671,6 +1716,40 @@ export default function AdminDashboard() {
                           </option>
                         ))}
                       </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-400 block px-1">سعر التوصيل (ج.س)</label>
+                        <input 
+                          type="number"
+                          className="input-mersal w-full"
+                          value={deliveryPrice}
+                          onChange={e => setDeliveryPrice(e.target.value)}
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-400 block px-1">أيام التوصيل المتوقعة</label>
+                        <input 
+                          type="number"
+                          className="input-mersal w-full"
+                          value={deliveryDays}
+                          onChange={e => setDeliveryDays(e.target.value)}
+                          placeholder="3"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-gray-400 block px-1">رابط تتبع خارجي (اختياري)</label>
+                      <input 
+                        type="url"
+                        className="input-mersal w-full"
+                        value={manualTrackingLink}
+                        onChange={e => setManualTrackingLink(e.target.value)}
+                        placeholder="https://track.link/..."
+                      />
                     </div>
 
                     {drivers.length === 0 && (

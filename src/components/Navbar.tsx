@@ -65,13 +65,17 @@ export default function Navbar() {
     <header className="w-full fixed top-0 left-0 z-[100] flex flex-col" dir="rtl">
 
       {/* ── TOP BAR (Amazon dark header) ─────────────────── */}
-      <div className="bg-[#021D24] text-white">
+      <div className="bg-[#108DB2] text-white">
         <div className="max-w-[1600px] mx-auto px-3 lg:px-6 h-14 flex items-center gap-2 lg:gap-4">
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="relative w-32 h-10">
-              <Image src="/logo.png" alt="مرسال" fill className="object-contain" priority />
+            <div className="relative w-10 h-10">
+              <Image src="/icon-mersal.png" alt="مرسال" fill className="object-contain" priority />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl font-black text-white tracking-tighter leading-none">مـرسـال</span>
+              <span className="text-[9px] text-white/70 font-bold tracking-widest uppercase">Mersal</span>
             </div>
           </Link>
 

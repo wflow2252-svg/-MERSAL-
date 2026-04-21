@@ -60,28 +60,38 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
   const handlePrint = () => window.print();
 
   return (
-    <div className="fixed inset-0 z-[999] bg-black/60 flex items-center justify-center p-4 print:bg-white print:p-0 print:block" onClick={onClose}>
+    <div className="fixed inset-0 z-[999] bg-black/80 flex flex-col items-center justify-center p-4 print:bg-white print:p-0 print:block" onClick={onClose}>
+      
+      {/* Action Buttons (Visible on screen, Hidden on Print) */}
+      <div className="flex gap-4 print:hidden mb-4 bg-white/10 p-3 rounded-xl border border-white/20" onClick={e => e.stopPropagation()}>
+        <button onClick={handlePrint} className="bg-[#1089A4] text-white px-6 py-2 rounded-lg font-bold text-sm shadow-lg flex items-center gap-2 hover:bg-[#0c7287] transition">
+          <span className="material-symbols-rounded">print</span> طباعة الفاتورة (مقاس 100x150)
+        </button>
+        <button onClick={onClose} className="bg-red-500/80 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-red-500 transition">إغلاق المستند</button>
+      </div>
+
       <div
         id="shipping-label-print"
-        className="bg-white max-w-[100mm] w-full min-h-[150mm] mx-auto overflow-hidden print:w-[100mm] print:h-[150mm] print:overflow-hidden print:mx-auto border print:border-none shadow-2xl print:shadow-none"
+        className="bg-white w-[100mm] h-[150mm] overflow-hidden print:w-[100mm] print:h-[150mm] print:mx-auto border print:border-none shadow-2xl print:shadow-none"
         onClick={(e) => e.stopPropagation()}
         dir="rtl"
       >
         {/* Print Content Area (thermal receipt style) */}
         <div className="p-3 text-[10px] font-medium text-black leading-tight bg-white h-full relative">
           
-          {/* Header */}
-          <div className="flex justify-between items-center border-b-2 border-black pb-2 mb-2">
-            <div className="text-left w-1/2">
+          {/* Header - Forced LTR to ensure Logo is strictly on the Left */}
+          <div className="flex justify-between items-center border-b-2 border-black pb-2 mb-2" dir="ltr">
+            {/* Left: Logo */}
+            <div className="w-1/2 flex flex-col items-start pl-1">
+               <Image src="/logo.png" alt="Morsall" width={80} height={40} className="object-contain" />
+            </div>
+            {/* Right: Barcode & Order */}
+            <div className="text-right w-1/2 flex flex-col items-end border-l-2 border-black pr-2">
                {/* Faux Barcode */}
-               <div className="font-mono text-xs tracking-widest bg-black text-white px-1 mt-1 text-center font-bold absolute top-0 left-0">
+               <div className="font-mono text-xs tracking-widest bg-black text-white px-1 text-center font-bold w-full">
                  ||| | || |  ||| | ||
                </div>
-               <p className="mt-5 text-[9px] font-bold">{order.id?.slice(-12).toUpperCase()}</p>
-            </div>
-            <div className="w-1/2 flex flex-col items-center border-r-2 border-black">
-               <Image src="/logo.png" alt="Morsall" width={80} height={40} className="object-contain" />
-               <p className="font-bold uppercase text-[9px] mt-1 tracking-widest">morsall</p>
+               <p className="mt-1 text-[9px] font-bold">ORDER ID: {order.id?.slice(-12).toUpperCase()}</p>
             </div>
           </div>
 
@@ -98,7 +108,7 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
              </div>
              <div className="pr-2 space-y-1">
                 <div className="flex gap-1 text-[8px]"><span className="text-gray-500 w-8">إلى:</span> <strong>{order.city}</strong></div>
-                <div className="flex gap-1"><span className="text-gray-500 text-[8px] w-8">المستقبل:</span> <strong>{order.customerName || order.customer?.name}</strong></div>
+                <div className="flex gap-1"><span className="text-gray-500 text-[8px] w-8">المستلم:</span> <strong>{order.customerName || order.customer?.name}</strong></div>
              </div>
           </div>
 
@@ -110,13 +120,13 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
             </div>
             <div className="pr-2">
               <p className="text-[7px] text-gray-500 mb-0.5">العنوان التفصيلي للمستلم:</p>
-              <p className="text-[8px] font-bold leading-relaxed">{`${order.street}، ${order.district}، ${order.city}`}</p>
+              <p className="text-[8px] font-bold leading-relaxed">{`${order.street || ''}، ${order.district || ''}، ${order.city}`}</p>
               <p className="font-mono text-[9px] mt-1" dir="ltr">{order.phone}</p>
             </div>
           </div>
 
           {/* Financials & Packages Grid */}
-          <div className="border-b-2 border-black pb-2 mb-2 uppercase pb-2">
+          <div className="border-b-2 border-black pb-2 mb-2 uppercase">
              <div className="grid grid-cols-2 text-[9px] mb-1">
                 <div className="border-l border-black text-center"><span className="text-gray-500 text-[7px] block">قيمة التحصيل (SAR)</span><strong className="text-sm">{order.paymentMethod === "COD" ? `ج.س ${order.totalAmount}` : "0 ج.س"}</strong></div>
                 <div className="text-center"><span className="text-gray-500 text-[7px] block">نوع الدفع</span><strong className="text-[10px]">{order.paymentMethod === "COD" ? "دفع عند الاستلام" : "مدفوع مسبقاً"}</strong></div>
@@ -126,10 +136,10 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
                     <span className="text-gray-500 text-[7px] block">الوزن</span> 1 KG
                  </div>
                  <div className="border-l border-black">
-                    <span className="text-gray-500 text-[7px] block">الكمية</span> {order.items?.length || 1}
+                    <span className="text-gray-500 text-[7px] block">القطعة</span> {order.items?.length || 1}
                  </div>
                  <div className="border-l border-black">
-                    <span className="text-gray-500 text-[7px] block">محاولات</span> 0
+                    <span className="text-gray-500 text-[7px] block">طرد</span> 1/1
                  </div>
                  <div>
                     <span className="text-gray-500 text-[7px] block">المندوب</span> {order.driver?.name || "—"}
@@ -140,10 +150,10 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
           {/* Contents */}
           <div className="min-h-[30mm]">
              <p className="text-[8px] text-gray-500 mb-1 border-b border-black pb-0.5 w-max">محتوى الطرد:</p>
-             <div className="flex flex-wrap gap-1">
+             <div className="flex flex-col gap-1">
                 {order.items?.map((item: any, i: number) => (
-                  <span key={i} className="bg-gray-100 px-1 py-0.5 rounded-sm font-bold text-[7px] border border-gray-300 print:border-black uppercase">
-                     {item.quantity}x {item.product?.title?.substring(0, 20)}
+                  <span key={i} className="font-bold text-[8px]">
+                     {item.quantity}x {item.product?.title?.substring(0, 30)}
                   </span>
                 ))}
              </div>
@@ -155,21 +165,13 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
              )}
           </div>
 
-          {/* Barcode Footer */}
+          {/* UID Footer */}
           <div className="absolute bottom-2 left-0 w-full text-center">
-             <div className="font-mono text-center mb-1 font-bold text-xs">
-                | || | ||| | ||| || | 
+             <div className="font-mono text-center mb-1 font-bold text-xs" dir="ltr">
+                * {order.id?.slice(-8).toUpperCase()} *
              </div>
              <p className="text-[6px] tracking-widest uppercase">M E R S A L L   L O G I S T I C S</p>
           </div>
-        </div>
-
-        {/* Action Buttons (Hidden on Print) */}
-        <div className="absolute bottom-[-60px] left-0 w-full flex gap-2 print:hidden pb-4 px-4 bg-black/60 pt-4 rounded-b-xl border-t border-white/20">
-          <button onClick={handlePrint} className="flex-1 bg-[#1089A4] text-white py-2 rounded-lg font-bold text-xs shadow-lg flex items-center justify-center gap-1">
-            <span className="material-symbols-rounded text-sm">print</span> طباعة
-          </button>
-          <button onClick={onClose} className="bg-white/10 text-white px-4 py-2 rounded-lg font-bold text-xs hover:bg-white/20">إغلاق</button>
         </div>
       </div>
     </div>

@@ -126,9 +126,7 @@ export default function ProductDetails({ product }: { product: Product }) {
             <span className="material-symbols-rounded text-gray-300">chevron_left</span>
          </div>
       </div>
-    </div>
-  );
-}
+
 
 
       {/* Price Comparison (Other Offers) */}

@@ -11,7 +11,7 @@ import Link from "next/link";
 type TabId =
   | "overview" | "approvals" | "users" | "vendors"
   | "categories" | "employees" | "orders" | "payments"
-  | "delivery" | "shipping" | "finance" | "settings";
+  | "delivery" | "shipping" | "finance" | "settings" | "inventory";
 
 const NAV_ITEMS: { id: TabId; icon: string; label: string }[] = [
   { id: "overview",    icon: "dashboard_customize",  label: "التحكم" },
@@ -20,6 +20,7 @@ const NAV_ITEMS: { id: TabId; icon: string; label: string }[] = [
   { id: "users",       icon: "person_search",         label: "المستخدمون" },
   { id: "vendors",     icon: "storefront",            label: "الموردون" },
   { id: "categories",  icon: "category",              label: "الأقسام" },
+  { id: "inventory",   icon: "inventory_2",           label: "المنتجات" },
   { id: "employees",   icon: "badge",                 label: "الموظفون" },
   { id: "payments",    icon: "payments",              label: "طرق الدفع" },
   { id: "delivery",    icon: "local_shipping",        label: "مناطق التوصيل" },
@@ -177,6 +178,8 @@ export default function AdminDashboard() {
   const [allVendors, setAllVendors] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [inventoryProducts, setInventoryProducts] = useState<any[]>([]);
+  const [inventorySearch, setInventorySearch] = useState("");
   const [employees, setEmployees] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [orderStatus, setOrderStatus] = useState("ALL");
@@ -226,6 +229,12 @@ export default function AdminDashboard() {
         const r = await fetch("/api/admin/categories");
         if (r.ok) setCategories(await r.json());
       }
+      if (activeTab === "inventory") {
+        const params = new URLSearchParams();
+        if (inventorySearch) params.set("search", inventorySearch);
+        const r = await fetch(`/api/admin/inventory?${params}`);
+        if (r.ok) setInventoryProducts(await r.json());
+      }
       if (activeTab === "employees") {
         const r = await fetch("/api/admin/employees");
         if (r.ok) setEmployees(await r.json());
@@ -267,7 +276,7 @@ export default function AdminDashboard() {
       }
     } catch {}
     setLoading(false);
-  }, [activeTab, orderStatus, orderSearch, fetchStats]);
+  }, [activeTab, orderStatus, orderSearch, inventorySearch, fetchStats]);
 
   useEffect(() => {
     if (!session) return;
@@ -275,6 +284,73 @@ export default function AdminDashboard() {
   }, [activeTab, session, fetchData]);
 
   // ── Actions ──
+  const handleExportExcel = async () => {
+    try {
+      const XLSX = await import("xlsx");
+      const exportData = inventoryProducts.map(p => ({
+        "معرف المنتج (ID)": p.id,
+        "اسم المنتج": p.title,
+        "تاريخ الإضافة": new Date(p.createdAt).toLocaleDateString('ar-EG'),
+        "السعر الحالي (ج.س)": p.price,
+        "الكمية المتوفرة (Stock)": p.stock,
+        "الحالة": p.status,
+        "اسم البائع": p.vendor?.storeName || "—",
+        "القسم": p.category?.name || "—"
+      }));
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "المنتجات والمخزون");
+      XLSX.writeFile(workbook, `مرسال_المخزون_${new Date().toISOString().slice(0,10)}.xlsx`);
+    } catch (err) {
+      alert("حدث خطأ أثناء تصدير الملف.");
+    }
+  };
+
+  const handleImportExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setActionLoading("import_excel");
+    try {
+      const XLSX = await import("xlsx");
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        const bstr = evt.target?.result;
+        const workbook = XLSX.read(bstr, { type: "binary" });
+        const wsname = workbook.SheetNames[0];
+        const ws = workbook.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+        
+        const formattedData = data.map((row: any) => ({
+          id: row["معرف المنتج (ID)"],
+          title: row["اسم المنتج"],
+          price: row["السعر الحالي (ج.س)"],
+          stock: row["الكمية المتوفرة (Stock)"],
+          status: row["الحالة"]
+        })).filter(p => !!p.id);
+
+        if (formattedData.length > 0) {
+          const res = await fetch("/api/admin/inventory", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ products: formattedData })
+          });
+          if (res.ok) {
+            alert("تم تحديث المخزون بنجاح!");
+            fetchData();
+          } else {
+            alert("حدث خطأ أثناء التحديث من الخادم.");
+          }
+        }
+        setActionLoading(null);
+      };
+      reader.readAsBinaryString(file);
+    } catch (err) {
+      alert("فشل قراءة ومسح الملف.");
+      setActionLoading(null);
+    }
+    e.target.value = '';
+  };
+
   const handleVendorAction = async (id: string, status: string) => {
     setActionLoading(id);
     await fetch(`/api/admin/vendors/${id}`, { method: "PATCH", body: JSON.stringify({ status }) });
@@ -1180,6 +1256,78 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── 13. INVENTORY ── */}
+            {activeTab === "inventory" && (
+              <motion.div key="inventory" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                  <div className="flex items-center gap-2 flex-grow max-w-sm">
+                    <div className="relative flex-grow">
+                      <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                      <input
+                        value={inventorySearch}
+                        onChange={e => setInventorySearch(e.target.value)}
+                        placeholder="ابحث عن منتج، بائع..."
+                        className="input-mersal pr-10 w-full"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button onClick={handleExportExcel} className="px-4 py-2 bg-green-600 text-white font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-green-700 transition">
+                      <span className="material-symbols-rounded text-sm">download</span>
+                      تصدير Excel
+                    </button>
+                    <label className="px-4 py-2 bg-[#1089A4] text-white font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-[#0c7287] transition cursor-pointer relative overflow-hidden">
+                      <span className="material-symbols-rounded text-sm">upload</span>
+                      {actionLoading === "import_excel" ? "جاري التحديث..." : "استيراد Excel"}
+                      <input type="file" accept=".xlsx, .xls" className="hidden" onChange={handleImportExcel} disabled={actionLoading === "import_excel"} />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-sm">
+                      <thead className="bg-[#021D24] text-white text-xs">
+                        <tr>
+                          <th className="px-5 py-4">ID</th>
+                          <th className="px-5 py-4">المنتج</th>
+                          <th className="px-5 py-4">البائع</th>
+                          <th className="px-5 py-4">القسم</th>
+                          <th className="px-5 py-4">السعر</th>
+                          <th className="px-5 py-4">المخزون</th>
+                          <th className="px-5 py-4">الحالة</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y">
+                        {inventoryProducts.map(p => (
+                          <tr key={p.id} className="hover:bg-gray-50">
+                            <td className="px-5 py-3 text-xs text-gray-400 font-mono" dir="ltr">{p.id.slice(-8)}</td>
+                            <td className="px-5 py-3 font-bold text-[#021D24] max-w-[200px] truncate">{p.title}</td>
+                            <td className="px-5 py-3 text-gray-600">{p.vendor?.storeName || '—'}</td>
+                            <td className="px-5 py-3 text-gray-500">{p.category?.name || '—'}</td>
+                            <td className="px-5 py-3 font-black text-[#1089A4]">{p.price?.toLocaleString()} ج.س</td>
+                            <td className="px-5 py-3">
+                              <span className={cn("font-bold px-2 py-1 rounded border", p.stock > 0 ? "text-green-600 border-green-200 bg-green-50" : "text-red-600 border-red-200 bg-red-50")}>
+                                {p.stock} قطعة
+                              </span>
+                            </td>
+                            <td className="px-5 py-3">
+                              <span className={cn("badge text-[10px]", p.status === 'APPROVED' ? "badge-approved" : p.status === 'PENDING' ? "badge-pending" : "badge-rejected")}>
+                                {p.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {inventoryProducts.length === 0 && (
+                      <div className="text-center py-10 text-gray-400 font-bold">لا توجد منتجات مطابقة</div>
+                    )}
                   </div>
                 </div>
               </motion.div>

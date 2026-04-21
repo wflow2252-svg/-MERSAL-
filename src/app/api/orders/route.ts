@@ -52,9 +52,9 @@ export async function POST(req: Request) {
     const productIds = items.map((i: any) => i.productId).filter(Boolean);
     const dbProducts = productIds.length > 0
       ? await prisma.product.findMany({
-          where: { id: { in: productIds } },
-          select: { id: true, vendorId: true, price: true, title: true, stock: true },
-        })
+        where: { id: { in: productIds } },
+        select: { id: true, vendorId: true, price: true, title: true, stock: true },
+      })
       : [];
 
     const productMap = Object.fromEntries(dbProducts.map(p => [p.id, p]));
@@ -64,29 +64,29 @@ export async function POST(req: Request) {
 
     const finalItems = items.map((item: any) => {
       const dbProduct = productMap[item.productId];
-      
+
       if (!dbProduct && fallbackProduct) {
         // Replace demo product with a real one
         return {
-           productId: fallbackProduct.id,
-           vendorId:  fallbackProduct.vendorId,
-           quantity:  Math.max(1, parseInt(item.quantity) || 1),
-           priceAtTime: item.price || 0,
-           size:  item.size || null,
-           color: item.color || null,
+          productId: fallbackProduct.id,
+          vendorId: fallbackProduct.vendorId,
+          quantity: Math.max(1, parseInt(item.quantity) || 1),
+          priceAtTime: item.price || 0,
+          size: item.size || null,
+          color: item.color || null,
         };
       }
-      
+
       if (!dbProduct && !fallbackProduct) {
-         return null;
+        return null;
       }
 
       return {
         productId: dbProduct!.id,
-        vendorId:  dbProduct!.vendorId,
-        quantity:  Math.max(1, parseInt(item.quantity) || 1),
+        vendorId: dbProduct!.vendorId,
+        quantity: Math.max(1, parseInt(item.quantity) || 1),
         priceAtTime: dbProduct!.price || item.price || 0,
-        size:  item.size  || null,
+        size: item.size || null,
         color: item.color || null,
       };
     }).filter(Boolean) as any[];
@@ -104,13 +104,13 @@ export async function POST(req: Request) {
     const order = await prisma.order.create({
       data: {
         customerId,
-        customerName:  name  || session?.user?.name  || "",
+        customerName: name || session?.user?.name || "",
         customerEmail: email || session?.user?.email || "",
-        phone:   phone.trim(),
-        city:    city.trim(),
+        phone: phone.trim(),
+        city: city.trim(),
         district: (district || city).trim(),
-        street:  street.trim(),
-        notes:   notes || null,
+        street: street.trim(),
+        notes: notes || null,
         paymentMethod,
         totalAmount,
         shippingCost: shippingCost || 0,
@@ -123,15 +123,15 @@ export async function POST(req: Request) {
         items: {
           include: {
             product: { select: { title: true } },
-            vendor:  { select: { storeName: true } },
+            vendor: { select: { storeName: true } },
           },
         },
       },
     });
 
     return NextResponse.json({
-      success:  true,
-      orderId:  order.id,
+      success: true,
+      orderId: order.id,
       itemCount: (order as any).items?.length || finalItems.length,
       totalAmount: order.totalAmount,
     });
@@ -162,7 +162,7 @@ export async function GET(req: Request) {
         items: {
           include: {
             product: { select: { title: true, images: true } },
-            vendor:  { select: { storeName: true } },
+            vendor: { select: { storeName: true } },
           },
         },
       },

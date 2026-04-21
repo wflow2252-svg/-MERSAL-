@@ -1,0 +1,93 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+
+// GET — Fetch all products for the inventory dashboard
+export async function GET(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!(session as any)?.user?.email || (session as any).user.role !== 'ADMIN') {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get("search") || "";
+
+    const whereClause: any = {};
+    if (search) {
+      whereClause.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { vendor: { storeName: { contains: search, mode: "insensitive" } } },
+      ];
+    }
+
+    const products = await prisma.product.findMany({
+      where: whereClause,
+      include: {
+        vendor: { select: { storeName: true } },
+        category: { select: { name: true } }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    return NextResponse.json(products);
+  } catch (error: any) {
+    console.error("Inventory GET error:", error);
+    return NextResponse.json({ error: "Internal Server Error: " + error.message }, { status: 500 });
+  }
+}
+
+// POST — Bulk update products from Excel import
+export async function POST(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!(session as any)?.user?.email || (session as any).user.role !== 'ADMIN') {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    const { products } = await req.json();
+
+    if (!Array.isArray(products) || products.length === 0) {
+      return NextResponse.json({ error: "مصفوفة المنتجات غير صالحة أو فارغة" }, { status: 400 });
+    }
+
+    let updatedCount = 0;
+    const errors: string[] = [];
+
+    // Perform updates in a loop (could use transactions for bulk, but this gives granular error reporting)
+    for (const p of products) {
+      if (!p.id) {
+        errors.push(`منتج بدون ID: ${p.title || 'Unknown'}`);
+        continue;
+      }
+
+      try {
+        const updateData: any = {};
+        
+        // We only update what is provided to avoid erasing data
+        if (p.title !== undefined) updateData.title = p.title;
+        if (p.price !== undefined) updateData.price = parseFloat(p.price);
+        if (p.stock !== undefined) updateData.stock = parseInt(p.stock, 10);
+        if (p.status !== undefined) updateData.status = p.status;
+
+        await prisma.product.update({
+          where: { id: p.id },
+          data: updateData
+        });
+        updatedCount++;
+      } catch (err: any) {
+        errors.push(`فشل تحديث (${p.id}): ${err.message}`);
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      updatedCount,
+      errors: errors.length > 0 ? errors : undefined
+    });
+  } catch (error: any) {
+    console.error("Inventory POST error:", error);
+    return NextResponse.json({ error: "Internal Server Error: " + error.message }, { status: 500 });
+  }
+}

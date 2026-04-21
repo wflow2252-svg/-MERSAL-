@@ -64,18 +64,14 @@ export default function Navbar() {
   return (
     <header className="w-full fixed top-0 left-0 z-[100] flex flex-col" dir="rtl">
 
-      {/* ── TOP BAR (Amazon dark header) ─────────────────── */}
-      <div className="bg-[#108DB2] text-white">
+      {/* ── TOP BAR (ORANGE) ─────────────────────────── */}
+      <div className="bg-[#F89522] text-white shadow-md">
         <div className="max-w-[1600px] mx-auto px-3 lg:px-6 h-14 flex items-center gap-2 lg:gap-4">
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <div className="relative w-11 h-11">
+            <div className="relative w-16 h-16">
               <Image src="/icon-mersal.png" alt="مرسال" fill className="object-contain" priority />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-black text-white tracking-tighter leading-none">مـرسـال</span>
-              <span className="text-[10px] text-white/70 font-bold tracking-widest uppercase">Mersal</span>
             </div>
           </Link>
 
@@ -89,7 +85,7 @@ export default function Navbar() {
           </Link>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex-grow flex items-stretch rounded-lg overflow-hidden border-2 border-[#F29124] transition-all focus-within:border-[#FFB35A]">
+          <form onSubmit={handleSearch} className="flex-grow flex items-stretch rounded-lg overflow-hidden border-2 border-[#108DB2] transition-all focus-within:border-[#0D708E]">
             {/* Category select */}
             <select className="hidden md:block bg-gray-100 text-gray-700 text-[11px] font-bold px-3 border-l border-gray-200 outline-none cursor-pointer min-w-[120px]">
               <option>كل الأقسام</option>
@@ -107,7 +103,7 @@ export default function Navbar() {
             />
             <button
               type="submit"
-              className="bg-[#F29124] text-white px-4 lg:px-5 flex items-center justify-center hover:bg-[#D97B10] transition-colors"
+              className="bg-[#108DB2] text-white px-4 lg:px-5 flex items-center justify-center hover:bg-[#0D708E] transition-colors"
             >
               <span className="material-symbols-rounded text-xl">search</span>
             </button>
@@ -170,7 +166,7 @@ export default function Navbar() {
                     </>
                   ) : (
                     <>
-                      <Link href="/login" className="flex items-center justify-center gap-2 mx-3 my-3 bg-[#F29124] text-white py-2 rounded-lg font-bold text-sm">
+                      <Link href="/login" className="flex items-center justify-center gap-2 mx-3 my-3 bg-[#108DB2] text-white py-2 rounded-lg font-bold text-sm">
                         <span className="material-symbols-rounded text-base">login</span>
                         تسجيل الدخول
                       </Link>
@@ -193,7 +189,7 @@ export default function Navbar() {
             <Link href="/cart" className="relative flex items-end gap-1 hover:ring-1 ring-white/30 rounded px-2 py-1 transition-all">
               <div className="relative">
                 <span className="material-symbols-rounded text-3xl text-white">shopping_cart</span>
-                <span className="absolute -top-1 -left-1 min-w-[20px] h-5 bg-[#F29124] text-white text-[10px] font-black rounded-full flex items-center justify-center px-1">
+                <span className="absolute -top-1 -left-1 min-w-[20px] h-5 bg-[#108DB2] text-white text-[10px] font-black rounded-full flex items-center justify-center px-1">
                   {cartCount}
                 </span>
               </div>
@@ -203,8 +199,8 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── SECONDARY NAV BAR ─────────────────────────────── */}
-      <div className="bg-[#F89522] text-white border-t border-white/10">
+      {/* ── SECONDARY NAV BAR (BLUE) ──────────────────────── */}
+      <div className="bg-[#108DB2] text-white border-t border-white/10 shadow-sm">
         <div className="max-w-[1600px] mx-auto px-3 lg:px-6 flex items-center gap-1 overflow-x-auto scrollbar-none h-10">
 
           {/* Hamburger "All" */}

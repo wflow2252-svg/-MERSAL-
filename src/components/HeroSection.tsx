@@ -65,7 +65,7 @@ export default function HeroSection() {
   const s = SLIDES[active];
 
   return (
-    <section className="w-full mt-[96px]" dir="rtl">
+    <section className="w-full pt-[96px]" dir="rtl">
 
       {/* ── MAIN HERO BANNER ─────────────────────────────── */}
       <div className={cn("relative h-[320px] md:h-[420px] lg:h-[480px] bg-gradient-to-l overflow-hidden transition-all duration-500", s.bg)}>

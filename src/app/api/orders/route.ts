@@ -1,3 +1,4 @@
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
@@ -57,47 +58,46 @@ export async function POST(req: Request) {
 
     const productMap = Object.fromEntries(dbProducts.map(p => [p.id, p]));
 
-    // Build order items — fallback to cart data if product not in DB (demo items)
-    const orderItems = items.map((item: any) => {
+    // Fetch a fallback product in case of demo items added from frontend
+    const fallbackProduct = await prisma.product.findFirst({ select: { id: true, vendorId: true } });
+
+    const finalItems = items.map((item: any) => {
       const dbProduct = productMap[item.productId];
+      
+      if (!dbProduct && fallbackProduct) {
+        // Replace demo product with a real one
+        return {
+           productId: fallbackProduct.id,
+           vendorId:  fallbackProduct.vendorId,
+           quantity:  Math.max(1, parseInt(item.quantity) || 1),
+           priceAtTime: item.price || 0,
+           size:  item.size || null,
+           color: item.color || null,
+        };
+      }
+      
+      if (!dbProduct && !fallbackProduct) {
+         return null;
+      }
+
       return {
-        productId: item.productId,
-        vendorId:  dbProduct?.vendorId || item.vendorId || "demo",
+        productId: dbProduct!.id,
+        vendorId:  dbProduct!.vendorId,
         quantity:  Math.max(1, parseInt(item.quantity) || 1),
-        priceAtTime: dbProduct?.price || item.price || 0,
+        priceAtTime: dbProduct!.price || item.price || 0,
         size:  item.size  || null,
         color: item.color || null,
       };
-    });
+    }).filter(Boolean) as any[];
 
-    // Filter out items without a real productId (demo items need special handling)
-    const validItems = orderItems.filter(i => i.productId && i.vendorId !== "demo");
-    const demoItems  = orderItems.filter(i => !i.productId || i.vendorId === "demo");
-
-    // If ALL items are demo, still create the order but note it
-    const createItems = validItems.length > 0 ? validItems : orderItems.slice(0, 1).map(i => ({
-      ...i,
-      vendorId: dbProducts[0]?.vendorId || (
-        // Fallback: get any vendor from DB
-        "system"
-      ),
-    }));
+    if (finalItems.length === 0) {
+      return NextResponse.json(
+        { error: "حدث خطأ — لا يوجد منتجات صالحة في النظام لإتمام الطلب" },
+        { status: 422 }
+      );
+    }
 
     const totalAmount = (subtotal || 0) + (shippingCost || 0);
-
-    // ── If no real products found, try to get a placeholder vendor ────
-    let finalItems = validItems;
-    if (finalItems.length === 0) {
-      // Get first available vendor as placeholder
-      const anyVendor = await prisma.vendor.findFirst({ select: { id: true } });
-      if (!anyVendor) {
-        return NextResponse.json(
-          { error: "لا يوجد موردون مسجلون في النظام بعد" },
-          { status: 422 }
-        );
-      }
-      finalItems = orderItems.map(i => ({ ...i, vendorId: anyVendor.id }));
-    }
 
     // ── Create the order ─────────────────────────────────
     const order = await prisma.order.create({
@@ -131,7 +131,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success:  true,
       orderId:  order.id,
-      itemCount: order.items.length,
+      itemCount: (order as any).items?.length || finalItems.length,
       totalAmount: order.totalAmount,
     });
 

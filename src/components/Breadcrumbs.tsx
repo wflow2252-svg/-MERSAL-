@@ -29,7 +29,7 @@ export default function Breadcrumbs() {
   ]
 
   return (
-    <nav className="responsive-container py-8" aria-label="Breadcrumb">
+    <nav className="responsive-container pt-24 pb-4" aria-label="Breadcrumb">
       <motion.ol 
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}

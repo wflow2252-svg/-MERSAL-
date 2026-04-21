@@ -47,9 +47,8 @@ export default async function RootLayout({
           </Suspense>
           
           <div className="flex flex-col min-h-screen">
-             <div className="pt-24">
-                <Breadcrumbs />
-             </div>
+             {/* Breadcrumbs — only shown on inner pages, has its own top padding */}
+             <Breadcrumbs />
              
              <main className="flex-grow">
                 {children}

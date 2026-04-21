@@ -17,7 +17,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-[#F3F4F6]" dir="rtl">
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-200 pt-24 pb-4">
+      <div className="bg-white border-b border-gray-200">
         <div className="max-w-[1200px] mx-auto px-4 lg:px-6">
           <nav className="text-xs text-gray-400 font-bold flex items-center gap-2 mb-1">
             <Link href="/" className="hover:text-[#1089A4]">الرئيسية</Link>

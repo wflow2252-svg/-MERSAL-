@@ -81,14 +81,14 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
           
           {/* Header - Forced LTR to ensure Logo is strictly on the Left */}
           <div className="flex justify-between items-start border-b-4 border-black pb-4 mb-4" dir="ltr">
-            {/* Left: Logo */}
-            <div className="w-1/2 flex flex-col items-start pl-2 pt-4">
-               <Image src="/logo.png" alt="Morsall" width={100} height={50} className="object-contain" />
+            {/* Left: Combined Logo (Icon + Text) */}
+            <div className="w-1/2 flex flex-col items-start pl-2 pt-2">
+               <Image src="/logo.png" alt="Mersall" width={180} height={90} className="object-contain" />
             </div>
-            {/* Right: Order ID */}
-            <div className="text-right w-1/2 flex flex-col items-end pr-2 pt-2">
-               <p className="text-[12px] font-black uppercase tracking-wider">Mersal Logistics</p>
-               <p className="text-[14px] font-black mt-2">ID: {order.id?.slice(-12).toUpperCase()}</p>
+            {/* Right: Order ID (Clear and Large) */}
+            <div className="text-right w-1/2 flex flex-col items-end pr-4 pt-4">
+               <p className="text-[11px] font-black uppercase tracking-widest text-[#021D24]">Standard Shipping</p>
+               <p className="text-[18px] font-black mt-2 text-black">ID: {order.id?.slice(-12).toUpperCase()}</p>
             </div>
           </div>
 

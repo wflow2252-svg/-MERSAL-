@@ -590,7 +590,7 @@ export default function AdminDashboard() {
       {/* ── Sidebar ── */}
       <aside className="hidden lg:flex w-72 bg-[#021D24] text-white flex-col pt-28 shadow-2xl z-20 overflow-y-auto">
         <div className="px-6 mb-8 flex flex-col items-center gap-4 text-center">
-          <div className="relative w-24 h-24 mb-2">
+          <div className="relative w-48 h-16 mb-2">
             <Image src="/logo.png" alt="Logo" fill className="object-contain" />
           </div>
           <div>

@@ -189,23 +189,10 @@ export default function LoginPage() {
            <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/20 blur-[100px] rounded-full" />
            
            <div className="relative z-10 w-full">
-              <Link href="/" className="inline-flex items-center gap-6 group/logo">
-                <motion.div 
-                   whileHover={{ rotate: 360, scale: 1.1 }}
-                   transition={{ duration: 1, ease: "circInOut" }}
-                   className="w-24 h-24 flex items-center justify-center relative"
-                >
-                   <Image src="/logo.png" alt="Logo" width={96} height={96} className="object-contain" />
-                </motion.div>
-                <div className="flex flex-col">
-                   <RevealText text="MORSALL" className="text-3xl font-black text-white tracking-[-0.05em] h-8" />
-                   <motion.span 
-                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
-                      className="text-[11px] text-[#F29124] font-black uppercase tracking-[0.6em] mt-2 block"
-                   >
-                     ELITE SOVEREIGNTY
-                   </motion.span>
-                </div>
+              <Link href="/" className="inline-flex items-center group/logo">
+                 <div className="w-48 h-16 flex items-center justify-center relative">
+                    <Image src="/logo.png" alt="Logo" fill className="object-contain" />
+                 </div>
               </Link>
            </div>
 

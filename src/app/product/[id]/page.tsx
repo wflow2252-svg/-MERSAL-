@@ -10,11 +10,15 @@ import ProductCard from "@/components/ProductCard";
 import PurchaseBox from "@/components/product/PurchaseBox";
 import ProductSpecs from "@/components/product/ProductSpecs";
 
+import ProductCarousel from "@/components/product/ProductCarousel";
+import { MOCK_PRODUCTS } from "@/lib/mockData/products";
+
 export default function ProductPage() {
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "iphone-15-pm";
   const product = getProductById(id);
   const related = getRelatedProducts(product.categoryId, product.id);
+  const alsoViewed = MOCK_PRODUCTS.filter(p => p.id !== product.id).slice(0, 8);
   const vendorUpsells = getVendorUpsells(product.vendor, product.id);
 
   return (
@@ -51,27 +55,26 @@ export default function ProductPage() {
          {/* Technical Specifications Section */}
          <ProductSpecs product={product} />
 
-         {/* Motta Deep-Dive: Frequently Bought Together (Same Store Bundle) */}
+         {/* Discovery Tier: Also Viewed */}
+         <ProductCarousel 
+            title="المستكشفون شاهدوا أيضاً هذا" 
+            products={alsoViewed} 
+            subtitle="بناءً على تفضيلات عملاء مرسال الموثوقين"
+         />
+
          {/* Motta Deep-Dive: Frequently Bought Together (Same Store Bundle) */}
          <RelatedUpsell mainProduct={product} upsellProducts={vendorUpsells} />
 
          {/* Discovery Tier: Related Products */}
-         <div className="space-y-16">
-            <div className="flex items-end justify-between border-b-4 border-border/30 pb-12">
-               <h3 className="text-5xl font-black text-[#021D24] tracking-tighter font-heading">منتجات <span className="text-[#1089A4]">قد تعجبك</span></h3>
-               <Link href="/shop" className="text-sm font-black uppercase tracking-widest text-[#F29124] flex items-center gap-3">استكشف المزيد <span className="material-symbols-rounded">trending_flat</span></Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
-               {related.map(p => (
-                 <ProductCard key={p.id} {...p} />
-               ))}
-            </div>
-         </div>
+         <ProductCarousel 
+            title="منتجات ذات صلة بهذه السلعة" 
+            products={related} 
+            subtitle={`أفضل المختارات من فئة ${product.category}`}
+         />
       </div>
 
       <StickyCartBar product={product} />
     </div>
-  );
 }
 
 import Link from "next/link";

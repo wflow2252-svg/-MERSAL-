@@ -20,9 +20,9 @@ export const metadata = {
     type: "website",
   },
   icons: {
-    icon: "/icon.png",
+    icon: "/icon-mersal.png",
     shortcut: "/favicon.ico",
-    apple: "/icon.png",
+    apple: "/icon-mersal.png",
   },
 };
 

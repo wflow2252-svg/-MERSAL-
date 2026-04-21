@@ -46,6 +46,13 @@ const ROLES: Record<string, string> = {
   ADMIN:            "مدير",
 };
 
+const ROLE_PERMISSIONS: Record<string, TabId[]> = {
+  ADMIN: ["overview", "approvals", "users", "vendors", "categories", "employees", "orders", "payments", "delivery", "shipping", "finance", "settings", "inventory", "drivers"],
+  PACKING: ["orders", "inventory"],
+  SHIPPING: ["orders", "drivers"],
+  CUSTOMER_SERVICE: ["overview", "approvals", "orders", "users"],
+};
+
 // ── Shipping Label Component ───────────────────────────
 function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) {
   const handlePrint = () => window.print();
@@ -165,7 +172,23 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
 // ── Main Component ─────────────────────────────────────
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
+  const userRole = (session?.user as any)?.role || "CUSTOMER";
+
   const [activeTab, setActiveTab] = useState<TabId>("overview");
+
+  // تصحيح التبويب الافتراضي بناءً على الدور
+  useEffect(() => {
+    if (userRole !== "ADMIN" && userRole !== "CUSTOMER") {
+      const allowed = ROLE_PERMISSIONS[userRole] || [];
+      if (allowed.length > 0 && !allowed.includes(activeTab)) {
+        setActiveTab(allowed[0]);
+      }
+    }
+  }, [userRole, activeTab]);
+
+  const filteredNavItems = NAV_ITEMS.filter(item => 
+    ROLE_PERMISSIONS[userRole === "ADMIN" ? "ADMIN" : userRole]?.includes(item.id)
+  );
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [printOrder, setPrintOrder] = useState<any>(null);
@@ -547,7 +570,7 @@ export default function AdminDashboard() {
         </div>
 
         <nav className="flex-grow px-4 space-y-1">
-          {NAV_ITEMS.map(item => (
+          {filteredNavItems.map(item => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
@@ -571,7 +594,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <p className="text-xs font-bold">{session?.user?.name}</p>
-              <p className="text-[9px] text-[#F29124] uppercase font-black">Super Admin</p>
+              <p className="text-[9px] text-[#F29124] uppercase font-black">{ROLES[userRole] || userRole}</p>
             </div>
           </div>
         </div>
@@ -749,8 +772,9 @@ export default function AdminDashboard() {
                             <span className="material-symbols-rounded text-sm">print</span>
                             ورقة الشحن
                           </button>
-                          {/* Status actions */}
-                          {order.status === "PENDING_APPROVAL" && (
+
+                          {/* Status actions - Role based */}
+                          {order.status === "PENDING_APPROVAL" && (["ADMIN", "CUSTOMER_SERVICE"].includes(userRole)) && (
                             <>
                               <button
                                 disabled={actionLoading === order.id}
@@ -760,13 +784,13 @@ export default function AdminDashboard() {
                               <button disabled={actionLoading === order.id} onClick={() => handleOrderStatus(order.id, "REJECTED")} className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold">رفض</button>
                             </>
                           )}
-                          {order.status === "APPROVED" && (
+                          {order.status === "APPROVED" && (["ADMIN", "PACKING"].includes(userRole)) && (
                             <button disabled={actionLoading === order.id} onClick={() => handleOrderStatus(order.id, "PACKING")} className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-xs font-bold">بدء التعبئة</button>
                           )}
-                          {order.status === "PACKING" && (
+                          {order.status === "PACKING" && (["ADMIN", "SHIPPING"].includes(userRole)) && (
                             <button disabled={actionLoading === order.id} onClick={() => handleOrderStatus(order.id, "SHIPPED")} className="px-3 py-1.5 bg-purple-500 text-white rounded-lg text-xs font-bold">تم الشحن</button>
                           )}
-                          {order.status === "SHIPPED" && (
+                          {order.status === "SHIPPED" && (["ADMIN", "SHIPPING"].includes(userRole)) && (
                             <>
                               <button 
                                 onClick={() => setTrackingOrder(order)}
@@ -826,6 +850,7 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                   ))}
+
                   {!loading && orders.length === 0 && (
                     <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
                       <span className="material-symbols-rounded text-5xl text-gray-300">shopping_bag</span>
@@ -1032,20 +1057,22 @@ export default function AdminDashboard() {
             {/* ── 7. EMPLOYEES ── */}
             {activeTab === "employees" && (
               <motion.div key="employees" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-                {/* Add Form */}
-                <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-                  <h3 className="font-black text-[#021D24] mb-4">تعيين موظف جديد</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <input value={newEmployee.name} onChange={e => setNewEmployee(p => ({...p, name: e.target.value}))} className="input-mersal" placeholder="الاسم الكامل" />
-                    <input value={newEmployee.email} onChange={e => setNewEmployee(p => ({...p, email: e.target.value}))} className="input-mersal" placeholder="البريد الإلكتروني" type="email" />
-                    <select value={newEmployee.role} onChange={e => setNewEmployee(p => ({...p, role: e.target.value}))} className="input-mersal">
-                      {Object.entries(ROLES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-                    </select>
-                    <button onClick={handleAddEmployee} disabled={actionLoading === "emp"} className="btn-primary disabled:opacity-50">
-                      تعيين +
-                    </button>
+                {/* Add Form - ADMIN ONLY */}
+                {userRole === "ADMIN" && (
+                  <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                    <h3 className="font-black text-[#021D24] mb-4">تعيين موظف جديد</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                      <input value={newEmployee.name} onChange={e => setNewEmployee(p => ({...p, name: e.target.value}))} className="input-mersal" placeholder="الاسم الكامل" />
+                      <input value={newEmployee.email} onChange={e => setNewEmployee(p => ({...p, email: e.target.value}))} className="input-mersal" placeholder="البريد الإلكتروني" type="email" />
+                      <select value={newEmployee.role} onChange={e => setNewEmployee(p => ({...p, role: e.target.value}))} className="input-mersal">
+                        {Object.entries(ROLES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                      </select>
+                      <button onClick={handleAddEmployee} disabled={actionLoading === "emp"} className="btn-primary disabled:opacity-50">
+                        تعيين +
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Employees List */}
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -1076,7 +1103,9 @@ export default function AdminDashboard() {
                             </span>
                           </td>
                           <td className="px-5 py-4">
-                            <button onClick={() => handleDeleteEmployee(emp.id)} className="text-xs text-red-500 font-bold hover:underline">حذف</button>
+                            {userRole === "ADMIN" && (
+                              <button onClick={() => handleDeleteEmployee(emp.id)} className="text-xs text-red-500 font-bold hover:underline">حذف</button>
+                            )}
                           </td>
                         </tr>
                       ))}

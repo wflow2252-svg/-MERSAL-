@@ -406,15 +406,44 @@
 
 /* ── Print — ورقة الشحن ──────────────────────────────── */
 @media print {
-  body > *:not(#shipping-label-print) {
-    display: none !important;
+  /* إخفاء كل شيء بشكل افتراضي */
+  body * {
+    visibility: hidden;
   }
+  
+  /* إظهار ورقة الشحن وكل ما بداخلها فقط */
+  #shipping-label-print,
+  #shipping-label-print * {
+    visibility: visible;
+  }
+
+  /* تحديد موقع الورقة في أعلى الصفحة */
   #shipping-label-print {
-    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 210mm; /* A4 width or custom label width */
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none !important;
   }
+
+  /* إلغاء الـ modal background والطبقات الشفافة */
+  .fixed.inset-0.z-\[999\] {
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+
+  /* التأكد من طباعة الألوان والخلفيات */
   * {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* إخفاء أي أزرار أو هوامش إضافية */
+  .print-hidden, .print\:hidden {
+    display: none !important;
   }
 }
 

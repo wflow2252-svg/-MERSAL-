@@ -58,14 +58,14 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
   const handlePrint = () => window.print();
 
   return (
-    <div className="fixed inset-0 z-[999] bg-black/60 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[999] bg-black/60 flex items-center justify-center p-4 print:bg-transparent print:p-0" onClick={onClose}>
       <div
         id="shipping-label-print"
-        className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden"
+        className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden print:shadow-none print:rounded-none print:w-full print:max-w-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-[#021D24] text-white p-5 flex items-center justify-between">
+        <div className="bg-[#021D24] text-white p-5 flex items-center justify-between print:bg-[#021D24] print:!text-white">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
               <span className="material-symbols-rounded text-[#1089A4]">local_shipping</span>
@@ -88,9 +88,9 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
           </div>
 
           {/* Customer Info */}
-          <div className="space-y-2 bg-blue-50 rounded-lg p-4 border border-blue-100">
+          <div className="space-y-2 bg-blue-50 rounded-lg p-4 border border-blue-100 print:bg-blue-50 print:border-blue-100">
             <p className="text-xs font-black text-[#1089A4] uppercase tracking-wider mb-3">📍 بيانات العميل</p>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
                 <span className="text-gray-400 block">الاسم</span>
                 <strong>{order.customerName || order.customer?.name || "—"}</strong>
@@ -122,15 +122,33 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
           <div className="space-y-1 border-b pb-3">
             <p className="text-xs font-black text-gray-500 uppercase tracking-wider mb-2">📦 محتوى الطلب</p>
             {order.items?.map((item: any, i: number) => (
-              <div key={i} className="flex justify-between text-xs">
+              <div key={i} className="flex justify-between text-xs py-1 border-b border-gray-50 last:border-0">
                 <span>{item.product?.title}</span>
                 <span className="font-bold">× {item.quantity}</span>
               </div>
             ))}
           </div>
 
+          {/* Logistics (New Fields) */}
+          {(order.driver || order.estimatedDays) && (
+            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100 text-[10px]">
+              {order.driver && (
+                <div>
+                  <span className="text-gray-400 block">المندوب</span>
+                  <p className="font-bold">{order.driver.name}</p>
+                </div>
+              )}
+              {order.estimatedDays && (
+                <div className="text-left">
+                  <span className="text-gray-400 block">الوصول المتوقع</span>
+                  <p className="font-bold">{order.estimatedDays} أيام</p>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Total */}
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center pt-2">
             <div>
               <p className="text-xs text-gray-400">طريقة الدفع</p>
               <p className="font-bold text-sm">{order.paymentMethod === "COD" ? "💵 عند الاستلام" : "🏦 تحويل بنكي"}</p>
@@ -142,10 +160,15 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
           </div>
 
           {order.notes && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-xs">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-[10px] print:bg-yellow-50">
               <span className="font-bold text-yellow-700">ملاحظة العميل: </span>{order.notes}
             </div>
           )}
+        </div>
+
+        {/* Footer for paper */}
+        <div className="hidden print:block text-center pt-10 border-t border-dashed mt-10">
+          <p className="text-[10px] text-gray-400 italic">شكراً لتسوقكم من مرسال — mersal.com</p>
         </div>
 
         {/* Print Button */}

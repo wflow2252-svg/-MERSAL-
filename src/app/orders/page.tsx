@@ -190,13 +190,4 @@ export default function OrdersPage() {
     </div>
   );
 }
-ow-lg shadow-[#1089A4]/20 hover:scale-105 active:scale-95 transition-all">تتبع الشحنة</button>
-                  </div>
-               </div>
-             ))
-           )}
-        </div>
-      </div>
-    </div>
-  );
-}
+

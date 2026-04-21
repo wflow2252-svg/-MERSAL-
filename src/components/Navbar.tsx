@@ -70,12 +70,8 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <div className="relative w-11 h-11">
-              <Image src="/icon-mersal.png" alt="مرسال" fill className="object-contain" priority />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-black text-white tracking-tighter leading-none">مـرسـال</span>
-              <span className="text-[10px] text-white/70 font-bold tracking-widest uppercase">Mersal</span>
+            <div className="relative w-14 h-14">
+              <Image src="/navbar-logo.png" alt="مرسال" fill className="object-contain" priority />
             </div>
           </Link>
 

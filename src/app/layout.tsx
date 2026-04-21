@@ -47,7 +47,7 @@ export default async function RootLayout({
           </Suspense>
           
           <div className="flex flex-col min-h-screen">
-             <div className="pt-32">
+             <div className="pt-24">
                 <Breadcrumbs />
              </div>
              
@@ -55,9 +55,7 @@ export default async function RootLayout({
                 {children}
              </main>
 
-             <div className="mt-32">
-                <Footer />
-             </div>
+             <Footer />
           </div>
           
           {/* Scroll to top button */}

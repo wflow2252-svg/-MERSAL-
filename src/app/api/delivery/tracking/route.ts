@@ -1,35 +1,86 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/db";
 
-const prisma = new PrismaClient();
-
-// PATCH — تحديث موقع المندوب
+// PATCH — تحديث موقع المندوب GPS
 export async function PATCH(req: Request) {
-  const { orderId, lat, lng } = await req.json();
-  if (!orderId || lat === undefined || lng === undefined) {
-    return NextResponse.json({ error: "بيانات الموقع ناقصة" }, { status: 400 });
+  try {
+    const { orderId, lat, lng } = await req.json();
+
+    if (!orderId || lat === undefined || lng === undefined) {
+      return NextResponse.json(
+        { error: "بيانات الموقع ناقصة — orderId و lat و lng مطلوبة" },
+        { status: 400 }
+      );
+    }
+
+    const order = await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        trackingLat: parseFloat(lat),
+        trackingLng: parseFloat(lng),
+      },
+      select: {
+        id: true,
+        status: true,
+        trackingLat: true,
+        trackingLng: true,
+      },
+    });
+
+    return NextResponse.json({ success: true, order });
+  } catch (error: any) {
+    console.error("Tracking PATCH error:", error);
+    return NextResponse.json(
+      { error: "فشل تحديث الموقع: " + error.message },
+      { status: 500 }
+    );
   }
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { trackingLat: lat, trackingLng: lng },
-  });
-  return NextResponse.json({ success: true });
 }
 
-// GET — جلب موقع المندوب الحالي
+// GET — جلب موقع المندوب الحالي وبيانات الطلب
 export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const orderId = searchParams.get("orderId");
-  if (!orderId) return NextResponse.json({ error: "orderId مطلوب" }, { status: 400 });
+  try {
+    const { searchParams } = new URL(req.url);
+    const orderId = searchParams.get("orderId");
 
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
-    select: {
-      id: true, status: true,
-      trackingLat: true, trackingLng: true, trackingNumber: true,
-      city: true, district: true, street: true,
-      customerName: true, phone: true,
-    },
-  });
-  return NextResponse.json(order);
+    if (!orderId) {
+      return NextResponse.json(
+        { error: "orderId مطلوب" },
+        { status: 400 }
+      );
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: {
+        id: true,
+        status: true,
+        trackingLat: true,
+        trackingLng: true,
+        trackingNumber: true,
+        city: true,
+        district: true,
+        street: true,
+        customerName: true,
+        phone: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!order) {
+      return NextResponse.json(
+        { error: "الطلب غير موجود" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(order);
+  } catch (error: any) {
+    console.error("Tracking GET error:", error);
+    return NextResponse.json(
+      { error: "فشل جلب بيانات التتبع: " + error.message },
+      { status: 500 }
+    );
+  }
 }

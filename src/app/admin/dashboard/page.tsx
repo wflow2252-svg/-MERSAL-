@@ -77,100 +77,104 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
         dir="rtl"
       >
         {/* Print Content Area (thermal receipt style) */}
-        <div className="p-3 text-[10px] font-medium text-black leading-tight bg-white h-full relative">
+        <div className="p-5 text-[12px] font-medium text-black leading-normal bg-white h-full relative border-2 border-black">
           
           {/* Header - Forced LTR to ensure Logo is strictly on the Left */}
-          <div className="flex justify-between items-center border-b-2 border-black pb-2 mb-2" dir="ltr">
+          <div className="flex justify-between items-start border-b-4 border-black pb-4 mb-4" dir="ltr">
             {/* Left: Logo */}
-            <div className="w-1/2 flex flex-col items-start pl-1">
-               <Image src="/logo.png" alt="Morsall" width={80} height={40} className="object-contain" />
+            <div className="w-1/2 flex flex-col items-start pl-2 pt-4">
+               <Image src="/logo.png" alt="Morsall" width={100} height={50} className="object-contain" />
             </div>
-            {/* Right: Barcode & Order */}
-            <div className="text-right w-1/2 flex flex-col items-end border-l-2 border-black pr-2">
-               {/* Faux Barcode */}
-               <div className="font-mono text-xs tracking-widest bg-black text-white px-1 text-center font-bold w-full">
-                 ||| | || |  ||| | ||
-               </div>
-               <p className="mt-1 text-[9px] font-bold">ORDER ID: {order.id?.slice(-12).toUpperCase()}</p>
+            {/* Right: Order ID */}
+            <div className="text-right w-1/2 flex flex-col items-end pr-2 pt-2">
+               <p className="text-[12px] font-black uppercase tracking-wider">Mersal Logistics</p>
+               <p className="text-[14px] font-black mt-2">ID: {order.id?.slice(-12).toUpperCase()}</p>
             </div>
           </div>
 
-          <div className="flex justify-between text-[8px] font-bold border-b border-black pb-1 mb-1">
+          <div className="flex justify-between text-[10px] font-black border-b-2 border-black pb-2 mb-4">
              <span>المشغل المعتمد: مرسال</span>
-             <span dir="ltr">{new Date(order.createdAt).toLocaleDateString("en-GB")}</span>
+             <span dir="ltr" className="font-mono">{new Date(order.createdAt).toLocaleDateString("en-GB")}</span>
           </div>
 
           {/* Sender / Receiver Grid */}
-          <div className="grid grid-cols-2 border-b-2 border-black pb-2 mb-2 bg-gray-50 print:bg-white">
-             <div className="border-l border-black pl-2 space-y-1">
-                <div className="flex gap-1 text-[8px]"><span className="text-gray-500 w-8">من:</span> <strong>الخرطوم</strong></div>
-                <div className="flex gap-1"><span className="text-gray-500 text-[8px] w-8">المرسل:</span> <strong>Mersall Hub</strong></div>
+          <div className="grid grid-cols-2 border-b-2 border-black pb-4 mb-4 bg-gray-50/50 print:bg-white">
+             <div className="border-l-2 border-black pl-4 space-y-2">
+                <div className="flex gap-2 text-[10px] items-center"><span className="text-gray-500 font-bold w-12">من:</span> <strong className="text-sm">الخرطوم</strong></div>
+                <div className="flex gap-2 items-center"><span className="text-gray-500 font-bold text-[10px] w-12">المرسل:</span> <strong className="text-sm">Mersall Hub</strong></div>
              </div>
-             <div className="pr-2 space-y-1">
-                <div className="flex gap-1 text-[8px]"><span className="text-gray-500 w-8">إلى:</span> <strong>{order.city}</strong></div>
-                <div className="flex gap-1"><span className="text-gray-500 text-[8px] w-8">المستلم:</span> <strong>{order.customerName || order.customer?.name}</strong></div>
+             <div className="pr-4 space-y-2">
+                <div className="flex gap-2 text-[10px] items-center"><span className="text-gray-500 font-bold w-12">إلى:</span> <strong className="text-sm">{order.city}</strong></div>
+                <div className="flex gap-2 items-center"><span className="text-gray-500 font-bold text-[10px] w-12">المستلم:</span> <strong className="text-sm">{order.customerName || order.customer?.name}</strong></div>
              </div>
           </div>
 
           {/* Addresses */}
-          <div className="grid grid-cols-2 border-b border-black pb-2 mb-2">
-            <div className="border-l border-black pl-2">
-              <p className="text-[7px] text-gray-500 mb-0.5">العنوان التفصيلي للمرسل:</p>
-              <p className="text-[8px] font-bold">الخرطوم - مركز معالجة طلبات مرسال</p>
+          <div className="grid grid-cols-2 border-b-2 border-black pb-4 mb-4">
+            <div className="border-l-2 border-black pl-4">
+              <p className="text-[9px] text-gray-500 font-bold mb-1 uppercase tracking-tighter">عنوان المرسل:</p>
+              <p className="text-[11px] font-black leading-tight">الخرطوم - مركز معالجة طلبات مرسال</p>
             </div>
-            <div className="pr-2">
-              <p className="text-[7px] text-gray-500 mb-0.5">العنوان التفصيلي للمستلم:</p>
-              <p className="text-[8px] font-bold leading-relaxed">{`${order.street || ''}، ${order.district || ''}، ${order.city}`}</p>
-              <p className="font-mono text-[9px] mt-1" dir="ltr">{order.phone}</p>
+            <div className="pr-4">
+              <p className="text-[9px] text-gray-500 font-bold mb-1 uppercase tracking-tighter">عنوان المستلم:</p>
+              <p className="text-[12px] font-black leading-relaxed mb-2">{`${order.street || ''}، ${order.district || ''}، ${order.city}`}</p>
+              <p className="font-mono text-[14px] font-black bg-black text-white px-2 py-0.5 w-max rounded" dir="ltr">{order.phone}</p>
             </div>
           </div>
 
           {/* Financials & Packages Grid */}
-          <div className="border-b-2 border-black pb-2 mb-2 uppercase">
-             <div className="grid grid-cols-2 text-[9px] mb-1">
-                <div className="border-l border-black text-center"><span className="text-gray-500 text-[7px] block">قيمة التحصيل (SAR)</span><strong className="text-sm">{order.paymentMethod === "COD" ? `ج.س ${order.totalAmount}` : "0 ج.س"}</strong></div>
-                <div className="text-center"><span className="text-gray-500 text-[7px] block">نوع الدفع</span><strong className="text-[10px]">{order.paymentMethod === "COD" ? "دفع عند الاستلام" : "مدفوع مسبقاً"}</strong></div>
+          <div className="border-b-4 border-black pb-4 mb-4">
+             <div className="grid grid-cols-2 mb-3">
+                <div className="border-l-2 border-black text-center py-2 bg-gray-50 print:bg-white">
+                  <span className="text-gray-500 text-[10px] font-bold block mb-1">قيمة التحصيل</span>
+                  <strong className="text-2xl font-black">{order.paymentMethod === "COD" ? `${order.totalAmount} ج.س` : "0 ج.س"}</strong>
+                </div>
+                <div className="text-center py-2">
+                  <span className="text-gray-500 text-[10px] font-bold block mb-1">نوع الدفع</span>
+                  <strong className="text-lg font-black">{order.paymentMethod === "COD" ? "الدفع عند الاستلام" : "مدفوع مسبقاً"}</strong>
+                </div>
              </div>
-             <div className="grid grid-cols-4 text-center text-[8px] border-t border-black pt-1">
-                 <div className="border-l border-black">
-                    <span className="text-gray-500 text-[7px] block">الوزن</span> 1 KG
+             <div className="grid grid-cols-4 text-center text-[10px] border-t-2 border-black pt-2 font-black">
+                 <div className="border-l-2 border-black">
+                    <span className="text-gray-400 text-[9px] block">الوزن</span> 1 KG
                  </div>
-                 <div className="border-l border-black">
-                    <span className="text-gray-500 text-[7px] block">القطعة</span> {order.items?.length || 1}
+                 <div className="border-l-2 border-black">
+                    <span className="text-gray-400 text-[9px] block">القطع</span> {order.items?.length || 1}
                  </div>
-                 <div className="border-l border-black">
-                    <span className="text-gray-500 text-[7px] block">طرد</span> 1/1
+                 <div className="border-l-2 border-black">
+                    <span className="text-gray-400 text-[9px] block">طرد</span> 1/1
                  </div>
                  <div>
-                    <span className="text-gray-500 text-[7px] block">المندوب</span> {order.driver?.name || "—"}
+                    <span className="text-gray-400 text-[9px] block">الخدمة</span> سريع
                  </div>
              </div>
           </div>
 
           {/* Contents */}
-          <div className="min-h-[30mm]">
-             <p className="text-[8px] text-gray-500 mb-1 border-b border-black pb-0.5 w-max">محتوى الطرد:</p>
-             <div className="flex flex-col gap-1">
+          <div className="min-h-[40mm]">
+             <p className="text-[10px] font-black mb-2 border-b-2 border-black pb-1 w-max">محتويات الشحنة:</p>
+             <div className="flex flex-col gap-2">
                 {order.items?.map((item: any, i: number) => (
-                  <span key={i} className="font-bold text-[8px]">
-                     {item.quantity}x {item.product?.title?.substring(0, 30)}
+                  <span key={i} className="font-black text-[12px] flex items-center gap-2">
+                     <span className="w-6 h-6 rounded bg-black text-white flex items-center justify-center text-[10px] shrink-0">{item.quantity}</span>
+                     {item.product?.title}
                   </span>
                 ))}
              </div>
              {order.notes && (
-               <div className="mt-2 pt-1 border-t border-dashed border-gray-400">
-                  <span className="text-[7px] text-gray-500">الملاحظات: </span>
-                  <span className="text-[8px] font-bold">{order.notes}</span>
+               <div className="mt-4 pt-2 border-t-2 border-dashed border-black">
+                  <span className="text-[10px] text-gray-500 font-bold">ملاحظات العميل: </span>
+                  <p className="text-[11px] font-black mt-1 leading-normal italic">{order.notes}</p>
                </div>
              )}
           </div>
 
           {/* UID Footer */}
-          <div className="absolute bottom-2 left-0 w-full text-center">
-             <div className="font-mono text-center mb-1 font-bold text-xs" dir="ltr">
+          <div className="absolute bottom-4 left-0 w-full text-center border-t-2 border-black pt-2">
+             <div className="font-mono text-center mb-1 font-black text-lg" dir="ltr">
                 * {order.id?.slice(-8).toUpperCase()} *
              </div>
-             <p className="text-[6px] tracking-widest uppercase">M E R S A L L   L O G I S T I C S</p>
+             <p className="text-[10px] tracking-[0.3em] font-black uppercase">M E R S A L L   L O G I S T I C S</p>
           </div>
         </div>
       </div>

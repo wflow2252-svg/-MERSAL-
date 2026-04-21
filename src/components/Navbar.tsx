@@ -72,12 +72,12 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <div className="relative w-[200px] h-12">
+            <div className="relative w-24 h-24 -my-4">
               <Image 
-                src="/logo-final.png" 
-                alt="مرسال - اتسوق بثقة" 
+                src="/icon-mersal.png" 
+                alt="مرسال" 
                 fill 
-                className="object-contain" 
+                className="object-contain brightness-0 invert" 
                 priority 
               />
             </div>

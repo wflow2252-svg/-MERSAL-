@@ -8,6 +8,8 @@ import StickyCartBar from "@/components/product/StickyCartBar";
 import RelatedUpsell from "@/components/product/RelatedUpsell";
 import ProductCard from "@/components/ProductCard";
 
+import PurchaseBox from "@/components/product/PurchaseBox";
+
 export default function ProductPage() {
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "iphone-15-pm";
@@ -16,9 +18,9 @@ export default function ProductPage() {
   const vendorUpsells = getVendorUpsells(product.vendor, product.id);
 
   return (
-    <div className="min-h-screen bg-muted/20 pb-44">
+    <div className="min-h-screen bg-white pb-44" dir="rtl">
       {/* Breadcrumbs - Dynamic */}
-      <div className="max-w-[1920px] mx-auto px-6 md:px-12 py-10 flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-[#021D24]/20 pt-44">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-10 flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-[#021D24]/20 pt-44">
          <Link href="/" className="hover:text-[#1089A4] transition-colors cursor-pointer">الرئيسية</Link>
          <span className="material-symbols-rounded text-sm">chevron_left</span>
          <Link href={`/category/${product.categoryId}`} className="hover:text-[#1089A4] transition-colors cursor-pointer">{product.category}</Link>
@@ -26,20 +28,26 @@ export default function ProductPage() {
          <span className="text-[#021D24]">{product.title}</span>
       </div>
 
-      <div className="max-w-[1920px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-20">
-        {/* Gallery Pillar */}
-        <div className="lg:col-span-7">
-           <ProductGallery images={[product.image]} />
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        {/* Pillar 1: Purchase Box (Left/Sticky) */}
+        <div className="lg:col-span-3 order-3 lg:order-1">
+           <PurchaseBox product={product} />
         </div>
 
-        {/* Info Pillar */}
-        <div className="lg:col-span-5">
+        {/* Pillar 2: Info Deep-Dive (Middle) */}
+        <div className="lg:col-span-5 lg:order-2 order-2">
            <ProductDetails product={product} />
+        </div>
+
+        {/* Pillar 3: Gallery (Right) */}
+        <div className="lg:col-span-4 lg:order-3 order-1">
+           <ProductGallery images={[product.image]} />
         </div>
       </div>
 
       {/* Synthesis Section: Related & Upsell */}
-      <div className="max-w-[1920px] mx-auto px-6 md:px-12 mt-32 space-y-32">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 mt-32 space-y-32">
          {/* Motta Deep-Dive: Frequently Bought Together (Same Store Bundle) */}
          <RelatedUpsell mainProduct={product} upsellProducts={vendorUpsells} />
 

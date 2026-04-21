@@ -20,8 +20,11 @@ export const metadata = {
     type: "website",
   },
   icons: {
-    icon: "/icon-mersal.png",
-    shortcut: "/favicon.ico",
+    icon: [
+      { url: "/icon-mersal.png", sizes: "32x32" },
+      { url: "/icon-mersal.png", sizes: "192x192" },
+    ],
+    shortcut: "/icon-mersal.png",
     apple: "/icon-mersal.png",
   },
 };

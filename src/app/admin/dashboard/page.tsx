@@ -1440,7 +1440,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <button onClick={handleExportExcel} className="px-4 py-2 bg-green-600 text-white font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-green-700 transition">
+                    <button onClick={() => handleExportExcel()} className="px-4 py-2 bg-green-600 text-white font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-green-700 transition">
                       <span className="material-symbols-rounded text-sm">download</span>
                       تصدير Excel
                     </button>

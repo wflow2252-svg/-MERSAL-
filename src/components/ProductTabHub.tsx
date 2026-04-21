@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const tabProducts: Record<string, any[]> = {

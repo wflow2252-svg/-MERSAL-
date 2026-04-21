@@ -699,7 +699,7 @@ export default function AdminDashboard() {
                 {/* Pending Vendors */}
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                   <div className="p-5 border-b flex items-center justify-between">
-                    <h3 className="font-black text-[#021D24]">موافقة الموردين</h3>
+                    <h3 className="font-black text-[#021D24]">موافقة المتاجر</h3>
                     <span className="bg-orange-100 text-orange-600 text-xs font-black px-3 py-1 rounded-full">{pendingVendors.length}</span>
                   </div>
                   <div className="divide-y">

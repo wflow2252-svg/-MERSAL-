@@ -35,7 +35,7 @@ export async function GET() {
       'تاريخ الطلب': order.createdAt.toLocaleDateString('ar-EG'),
       'حالة الطلب': order.status,
       // Aggregating vendors involved
-      'الموردين': Array.from(new Set(order.items.map(item => item.vendor.storeName))).join(', ')
+      'المتاجر': Array.from(new Set(order.items.map(item => item.vendor.storeName))).join(', ')
     }));
 
     // Generate Excel

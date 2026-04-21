@@ -15,7 +15,7 @@ const NAV_CATS = [
   { label: "المنزل والمطبخ", href: "/category/home",      icon: "kitchen" },
   { label: "الجمال والعناية",href: "/category/beauty",    icon: "face" },
   { label: "العروض 🔥",       href: "/offers",            icon: "bolt" },
-  { label: "كبار الموردين",  href: "/top-vendors",        icon: "storefront" },
+  { label: "كبار المتاجر",  href: "/top-vendors",        icon: "storefront" },
   { label: "ابدأ تجارتك",    href: "/vendor/register",   icon: "add_business" },
 ];
 

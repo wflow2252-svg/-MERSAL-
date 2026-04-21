@@ -31,7 +31,7 @@ export async function GET() {
 
     return NextResponse.json({
       stats: [
-        { label: "إجمالي الموردين", value: totalVendors.toString(), icon: "groups", color: "bg-gradient-to-br from-purple-600 to-purple-800" },
+        { label: "إجمالي المتاجر", value: totalVendors.toString(), icon: "groups", color: "bg-gradient-to-br from-purple-600 to-purple-800" },
         { label: "مبيعات المنصة", value: `${salesAmount.toLocaleString()} ج.س`, icon: "payments", color: "bg-gradient-to-br from-[#1089A4] to-[#086F85]" },
         { label: "صافي أرباح الموقع", value: `${netProfit.toLocaleString()} ج.س`, icon: "trending_up", color: "bg-gradient-to-br from-[#021D24] to-[#010D11]" },
       ],

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useSession, signOut } from "next-auth/react";
 import { useCart } from "@/lib/CartContext";
+import { useWishlist } from "@/lib/WishlistContext";
 import { useRouter } from "next/navigation";
 
 const NAV_CATS = [
@@ -22,6 +23,7 @@ const NAV_CATS = [
 export default function Navbar() {
   const { data: session, status } = useSession();
   const { cartCount } = useCart();
+  const { favorites, compareList } = useWishlist();
   const [searchQuery, setSearchQuery] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
@@ -178,6 +180,32 @@ export default function Navbar() {
                 </div>
               )}
             </div>
+
+            {/* Compare (Hidden on Small) */}
+            <Link href="/compare" className="hidden xl:flex items-end gap-1 hover:ring-1 ring-white/30 rounded px-2 py-1 transition-all relative">
+              <div className="relative">
+                <span className="material-symbols-rounded text-2xl text-white">compare_arrows</span>
+                {compareList.length > 0 && (
+                  <span className="absolute -top-1 -left-1 min-w-[16px] h-4 bg-[#108DB2] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 border border-white/20">
+                    {compareList.length}
+                  </span>
+                )}
+              </div>
+              <span className="text-[12px] font-black pb-0.5">المقارنة</span>
+            </Link>
+
+            {/* Favorites */}
+            <Link href="/wishlist" className="hidden lg:flex items-end gap-1 hover:ring-1 ring-white/30 rounded px-2 py-1 transition-all relative">
+              <div className="relative">
+                <span className="material-symbols-rounded text-2xl text-white">favorite</span>
+                {favorites.length > 0 && (
+                  <span className="absolute -top-1 -left-1 min-w-[16px] h-4 bg-[#F29124] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 border border-white/20">
+                    {favorites.length}
+                  </span>
+                )}
+              </div>
+              <span className="text-[12px] font-black pb-0.5">المفضلة</span>
+            </Link>
 
             {/* Orders */}
             <Link href="/orders" className="hidden lg:flex flex-col hover:ring-1 ring-white/30 rounded px-2 py-1 transition-all text-right">

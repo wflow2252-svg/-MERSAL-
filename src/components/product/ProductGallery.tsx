@@ -4,30 +4,27 @@ import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-export default function ProductGallery() {
+export default function ProductGallery({ images }: { images: string[] }) {
   const [activeImage, setActiveImage] = useState(0);
   
-  const images = [
-    "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=1200", // Natural Titanium
-    "https://images.unsplash.com/photo-1695048132717-57356598822d?auto=format&fit=crop&q=80&w=1200", // Side View
-    "https://images.unsplash.com/photo-1695048132808-0444399e557f?auto=format&fit=crop&q=80&w=1200", // Detail View
-    "https://images.unsplash.com/photo-1695048133137-4d9f67a26f03?auto=format&fit=crop&q=80&w=1200", // Box
+  const displayImages = images.length > 0 ? images : [
+    "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=1200"
   ];
 
   return (
     <div className="flex flex-col-reverse lg:flex-row gap-6 md:gap-8">
       {/* Thumbnails Sidebar */}
       <div className="flex lg:flex-col gap-4 md:gap-5 lg:w-28 overflow-x-auto lg:overflow-y-visible py-2 md:py-3 lg:py-0 no-scrollbar">
-        {images.map((img, i) => (
+        {displayImages.map((img, i) => (
           <button
             key={i}
             onClick={() => setActiveImage(i)}
             className={cn(
               "w-20 h-20 md:w-24 md:h-24 flex-shrink-0 bg-white rounded-2xl border-2 transition-all p-1.5 overflow-hidden group/thumb",
-              activeImage === i ? "border-primary shadow-lg shadow-primary/10 scale-105" : "border-border/50 opacity-60 hover:opacity-100"
+              activeImage === i ? "border-[#1089A4] shadow-lg shadow-[#1089A4]/10 scale-105" : "border-border/50 opacity-60 hover:opacity-100"
             )}
           >
-            <div className="relative w-full h-full rounded-xl overflow-hidden bg-muted">
+            <div className="relative w-full h-full rounded-xl overflow-hidden bg-muted font-heading">
                <Image 
                 src={img} 
                 alt={`Thumbnail ${i + 1}`} 
@@ -40,9 +37,9 @@ export default function ProductGallery() {
       </div>
 
       {/* Main Image View */}
-      <div className="flex-grow aspect-square md:aspect-auto md:h-[600px] bg-muted rounded-[2.5rem] md:rounded-[3rem] relative overflow-hidden group cursor-zoom-in border-4 border-white shadow-elite-lg min-h-[350px]">
+      <div className="flex-grow aspect-square md:aspect-auto md:h-[600px] bg-muted rounded-[2.5rem] md:rounded-[3rem] relative overflow-hidden group cursor-zoom-in border-4 border-white shadow-xl min-h-[350px]">
         <Image 
-          src={images[activeImage]} 
+          src={displayImages[activeImage]} 
           alt="Product Main Image" 
           fill 
           className="object-cover group-hover:scale-105 transition-transform duration-1000"
@@ -52,7 +49,7 @@ export default function ProductGallery() {
         
         {/* Hover zoom decoration */}
         <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 bg-white/90 backdrop-blur-md px-5 py-2.5 md:px-6 md:py-3 rounded-2xl text-[11px] md:text-[12px] font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all shadow-xl shadow-black/5 border border-border/50 flex items-center gap-2 md:gap-3">
-           <span className="material-symbols-rounded text-md md:text-lg text-primary">zoom_in</span> اضغط لمشاهدة التفاصيل
+           <span className="material-symbols-rounded text-md md:text-lg text-[#1089A4]">zoom_in</span> اضغط لمشاهدة التفاصيل
         </div>
       </div>
     </div>

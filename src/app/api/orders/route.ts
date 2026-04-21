@@ -101,7 +101,7 @@ export async function POST(req: Request) {
     const totalAmount = (subtotal || 0) + (shippingCost || 0);
 
     // ── Create the order ─────────────────────────────────
-    const order = await prisma.order.create({
+    const order = await (prisma.order as any).create({
       data: {
         customerId,
         customerName: name || (session?.user as any)?.name || "",
@@ -155,7 +155,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "يجب تسجيل الدخول" }, { status: 401 });
     }
 
-    const orders = await prisma.order.findMany({
+    const orders = await (prisma.order as any).findMany({
       where: { customerId },
       orderBy: { createdAt: "desc" },
       include: {

@@ -14,7 +14,7 @@ export async function PATCH(req: Request) {
       );
     }
 
-    const order = await prisma.order.update({
+    const order = await (prisma.order as any).update({
       where: { id: orderId },
       data: {
         trackingLat: Number(lat),
@@ -51,7 +51,7 @@ export async function GET(req: Request) {
       );
     }
 
-    const order = await prisma.order.findUnique({
+    const order = await (prisma.order as any).findUnique({
       where: { id: orderId },
       select: {
         id: true,

@@ -3,168 +3,122 @@
 import Link from "next/link";
 import Image from "next/image";
 
-const exploreLinks = [
-  { label: "المتجر العام",    href: "/shop" },
-  { label: "عروض السيادة",   href: "/offers" },
-  { label: "أحدث الإضافات",  href: "/new" },
-  { label: "كبار الموردين",  href: "/top-vendors" },
-];
-
-const supportLinks = [
-  { label: "تواصل مباشر",    href: "/contact" },
-  { label: "مركز المساعدة",  href: "/faq" },
-  { label: "سياسة الخصوصية", href: "/privacy" },
-  { label: "اتفاقية الخدمة", href: "/terms" },
-];
-
-const socials = [
-  { id: "facebook",  icon: "facebook",  href: "#" },
-  { id: "twitter",   icon: "twit",      href: "#" },
-  { id: "instagram", icon: "instagram", href: "#" },
-  { id: "youtube",   icon: "smart_display", href: "#" },
+const COLS = [
+  {
+    title: "تعرف على مرسال",
+    links: [
+      { label: "من نحن",            href: "/about" },
+      { label: "وظائف",             href: "/careers" },
+      { label: "أخبار مرسال",       href: "/news" },
+      { label: "شراكات استراتيجية", href: "/partners" },
+    ],
+  },
+  {
+    title: "اربح معنا",
+    links: [
+      { label: "ابدأ تجارتك — بع على مرسال", href: "/vendor/register" },
+      { label: "برنامج التوصيل",   href: "/delivery-jobs" },
+      { label: "المسوقون بالعمولة", href: "/affiliates" },
+      { label: "استثمر في مرسال",  href: "/invest" },
+    ],
+  },
+  {
+    title: "طرق الدفع لدينا",
+    links: [
+      { label: "الدفع عند الاستلام", href: "/payment/cod" },
+      { label: "التحويل البنكي",      href: "/payment/bank" },
+      { label: "الدفع الإلكتروني",   href: "/payment/online" },
+      { label: "مرسال ريوارد",        href: "/rewards" },
+    ],
+  },
+  {
+    title: "المساعدة",
+    links: [
+      { label: "مركز المساعدة",     href: "/faq" },
+      { label: "إرجاع واسترداد",    href: "/returns" },
+      { label: "تتبع طلبك",         href: "/track" },
+      { label: "تواصل معنا",        href: "/contact" },
+    ],
+  },
 ];
 
 export default function Footer() {
   return (
-    <footer className="bg-[#011116] text-white relative border-t border-white/5 overflow-hidden" dir="rtl">
+    <footer dir="rtl" className="mt-12">
 
-      {/* ── Newsletter Banner ── */}
-      <div className="responsive-container relative z-30 -translate-y-1/2">
-        <div className="bg-gradient-to-l from-[#1089A4]/10 to-[#021D24] p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] border border-white/5 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#1089A4]/5 blur-[80px] rounded-full pointer-events-none" />
-          <div className="flex flex-col gap-1 text-center lg:text-right relative z-10 flex-none">
-            <h3 className="text-xl md:text-3xl font-black font-heading tracking-tight text-white">
-              انضم إلى مجتمع النخبة
-            </h3>
-            <p className="text-white/20 text-[8px] md:text-[9px] font-black uppercase tracking-[0.4em]">
-              عروض حصرية • تحديثات فورية
-            </p>
-          </div>
-          <div className="w-full lg:w-[50%] flex flex-col sm:flex-row gap-3 relative z-10">
-            <input
-              type="email"
-              placeholder="بريدك الإلكتروني..."
-              className="flex-grow bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-5 py-3.5 md:px-6 md:py-4 text-[11px] font-bold text-white outline-none focus:border-[#F29124] transition-all placeholder:text-white/10 text-right"
-            />
-            <button className="bg-[#F29124] text-[#021D24] px-7 py-3.5 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-[11px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 flex-none shadow-lg">
-              اشترك
-              <span className="material-symbols-rounded text-lg">arrow_left</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* ── Back to top ── */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="w-full bg-[#1A3340] hover:bg-[#1089A4] text-white text-xs font-bold py-3 transition-colors"
+      >
+        العودة إلى أعلى الصفحة ↑
+      </button>
 
-      {/* ── Main Footer Grid ── */}
-      <div className="responsive-container relative z-10 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 mb-16">
+      {/* ── Main footer ── */}
+      <div className="bg-[#021D24] text-white pt-10 pb-6">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
 
-          {/* Col 1: Brand */}
-          <div className="lg:col-span-5 flex flex-col items-center lg:items-end gap-6 text-center lg:text-right">
-            <Link href="/" className="flex items-center gap-4 group">
-              <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-white p-2 md:p-2.5 shadow-xl group-hover:rotate-6 transition-all flex-none">
-                <Image src="/logo.jpg" alt="Morsall" fill className="object-contain" />
-              </div>
-              <div className="flex flex-col text-right">
-                <span className="text-xl md:text-2xl font-black tracking-tighter uppercase font-heading text-white leading-none">Morsall</span>
-                <span className="text-[8px] md:text-[9px] text-[#F29124] font-black uppercase tracking-[0.4em] mt-1">Premium Sovereignty</span>
-              </div>
-            </Link>
-
-            <p className="text-white/20 text-[12px] md:text-[13px] leading-[1.8] font-medium max-w-sm">
-              مرسال ليست مجرد متجر، هي تجسيد للسيادة التجارية في السودان. ننتقي النخبة لنقدمها للنخبة.
-            </p>
-
-            {/* Social Icons */}
-            <div className="flex gap-2.5 mt-2">
-              {[
-                { label: "Facebook",  icon: "language", href: "#" },
-                { label: "Twitter",   icon: "tag",      href: "#" },
-                { label: "Instagram", icon: "photo_camera", href: "#" },
-                { label: "YouTube",   icon: "smart_display", href: "#" },
-              ].map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center hover:bg-[#1089A4] transition-all group/s"
-                >
-                  <span className="material-symbols-rounded text-[14px] md:text-base text-white/20 group-hover/s:text-white transition-colors">{s.icon}</span>
-                </a>
-              ))}
+          {/* Logo + tagline */}
+          <div className="flex items-center gap-4 mb-8 border-b border-white/10 pb-8">
+            <div className="relative w-12 h-12 bg-white rounded-lg p-2">
+              <Image src="/logo.jpg" alt="مرسال" fill className="object-contain" />
+            </div>
+            <div>
+              <p className="text-lg font-black text-white">مرسال | MERSAL</p>
+              <p className="text-xs text-[#F29124] font-bold">اتسوّق بثقة — نوصّل لبابك في السودان 🇸🇩</p>
             </div>
           </div>
 
-          {/* Col 2: Links */}
-          <div className="lg:col-span-4 grid grid-cols-2 gap-8 text-right">
-             <div className="flex flex-col gap-5 md:gap-6">
-                <h4 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-[#1089A4]">استكشاف</h4>
-                <ul className="space-y-2 md:space-y-3">
-                  {exploreLinks.map((l) => (
+          {/* Link columns */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+            {COLS.map(col => (
+              <div key={col.title}>
+                <h4 className="text-xs font-black text-white mb-4 uppercase tracking-wider">{col.title}</h4>
+                <ul className="space-y-2.5">
+                  {col.links.map(l => (
                     <li key={l.href}>
-                      <Link href={l.href} className="text-white/25 text-[10px] md:text-[11px] font-bold hover:text-white transition-all uppercase tracking-wider">{l.label}</Link>
+                      <Link href={l.href} className="text-xs text-white/40 hover:text-white transition-colors leading-relaxed">
+                        {l.label}
+                      </Link>
                     </li>
                   ))}
                 </ul>
-             </div>
-             <div className="flex flex-col gap-5 md:gap-6">
-                <h4 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-[#F29124]">الدعم</h4>
-                <ul className="space-y-2 md:space-y-3">
-                  {supportLinks.map((l) => (
-                    <li key={l.href}>
-                      <Link href={l.href} className="text-white/25 text-[10px] md:text-[11px] font-bold hover:text-white transition-all uppercase tracking-wider">{l.label}</Link>
-                    </li>
-                  ))}
-                </ul>
-             </div>
-          </div>
-
-          {/* Col 3: CTA */}
-          <div className="lg:col-span-3">
-             <Link
-                href="/vendor/register"
-                className="group flex flex-col gap-4 p-6 md:p-7 bg-white/5 border border-white/5 rounded-[1.5rem] md:rounded-[2rem] hover:bg-white/10 transition-all text-right w-full"
-             >
-                <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-[#1089A4]/20 flex items-center justify-center text-[#1089A4] group-hover:scale-110 transition-transform">
-                   <span className="material-symbols-rounded text-lg md:text-xl">add_business</span>
-                </div>
-                <div>
-                   <h4 className="text-white font-black text-sm md:text-md">سجل كمورد</h4>
-                   <p className="text-white/20 text-[9px] md:text-[10px] uppercase font-bold tracking-widest mt-1">ابدأ رحلتك النخبوية اليوم</p>
-                </div>
-             </Link>
-          </div>
-
-        </div>
-
-
-
-        {/* ── Legal Bar ── */}
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
-            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 text-center">
-              © 2024 MORSALL ELITE MARKET. ALL RIGHTS RESERVED.
-            </p>
-            <div className="hidden sm:block h-3 w-px bg-white/10" />
-            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F29124]/40">
-              Powered by Elite Sovereignty Engine
-            </p>
-          </div>
-
-          {/* Payment / Security badges */}
-          <div className="flex items-center gap-4">
-            <span className="text-[8px] text-white/15 font-black uppercase tracking-widest hidden lg:block">SECURE:</span>
-            {["lock", "verified_user", "shield", "security"].map((ic) => (
-              <div key={ic} className="w-9 h-7 bg-white/5 rounded-lg border border-white/8 flex items-center justify-center hover:bg-white/10 transition-all">
-                <span className="material-symbols-rounded text-[13px] text-white/20">{ic}</span>
               </div>
             ))}
+          </div>
+
+          {/* Divider */}
+          <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+
+            {/* Legal */}
+            <div className="flex flex-wrap items-center gap-4 text-[10px] text-white/30 font-bold">
+              <Link href="/privacy" className="hover:text-white transition-colors">سياسة الخصوصية</Link>
+              <span>|</span>
+              <Link href="/terms" className="hover:text-white transition-colors">شروط الاستخدام</Link>
+              <span>|</span>
+              <Link href="/cookies" className="hover:text-white transition-colors">سياسة الكوكيز</Link>
+              <span>|</span>
+              <span>© 2026 مرسال — جميع الحقوق محفوظة</span>
+            </div>
+
+            {/* Security badges */}
+            <div className="flex items-center gap-2">
+              {["lock", "verified_user", "shield", "payment"].map(ic => (
+                <div key={ic} className="w-8 h-7 bg-white/5 rounded border border-white/10 flex items-center justify-center">
+                  <span className="material-symbols-rounded text-[13px] text-[#F29124]/60">{ic}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Background glow effects */}
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#1089A4]/5 blur-[120px] rounded-full pointer-events-none translate-x-1/4 translate-y-1/4" />
-      <div className="absolute top-[30%] left-[-5%] w-[350px] h-[350px] bg-[#F29124]/5 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-100vh] left-0 w-full h-[100vh] bg-[#011116] pointer-events-none" />
+      {/* ── Bottom band (like Amazon) ── */}
+      <div className="bg-[#011116] text-center py-3">
+        <p className="text-[10px] text-white/20 font-bold">
+          Powered by Mersal Tech — Sudan's #1 E-Commerce Platform 🇸🇩
+        </p>
+      </div>
     </footer>
   );
 }

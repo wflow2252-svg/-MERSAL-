@@ -1,125 +1,168 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-export default function HeroSection() {
-  const [activeSlide, setActiveSlide] = useState(0);
+const SLIDES = [
+  {
+    bg: "from-[#021D24] to-[#031F2C]",
+    tag: "🔥 عرض لفترة محدودة",
+    title: "اتسوّق بثقة",
+    subtitle: "نوصّل لبابك في السودان",
+    desc: "آلاف المنتجات من موردين موثوقين — توصيل سريع لكل أنحاء السودان",
+    cta: "تسوّق الآن",
+    ctaHref: "/shop",
+    sub: "ابدأ تجارتك مع مرسال",
+    subHref: "/vendor/register",
+    img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800",
+    badge: "جديد وصل الآن",
+  },
+  {
+    bg: "from-[#0C3547] to-[#021D24]",
+    tag: "📦 توصيل خلال 24 ساعة",
+    title: "إلكترونيات",
+    subtitle: "بأفضل الأسعار في السودان",
+    desc: "موبايلات، لابتوبات، إكسسوارات — كل ما تحتاج بضغطة زر",
+    cta: "استعرض الإلكترونيات",
+    ctaHref: "/category/electronics",
+    sub: "اكتشف المزيد",
+    subHref: "/shop",
+    img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800",
+    badge: "خصم يصل 40%",
+  },
+  {
+    bg: "from-[#2C1810] to-[#021D24]",
+    tag: "👗 أزياء السودان",
+    title: "الموضة الجديدة",
+    subtitle: "وصلت لمرسال",
+    desc: "أحدث صيحات الأزياء من أفضل الموردين في السودان",
+    cta: "تسوّق الأزياء",
+    ctaHref: "/category/fashion",
+    sub: "عرض كل الملابس",
+    subHref: "/shop",
+    img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800",
+    badge: "مجموعة جديدة",
+  },
+];
 
-  const heroImages = [
-    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=1400", // Headphones 
-    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=1400", // Watch
-    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=1400", // High End Sneaker
-  ];
+export default function HeroSection() {
+  const [active, setActive] = useState(0);
+  const [transitioning, setTransitioning] = useState(false);
+
+  // Auto-slide
+  useEffect(() => {
+    const t = setInterval(() => changeSlide((active + 1) % SLIDES.length), 5000);
+    return () => clearInterval(t);
+  }, [active]);
+
+  const changeSlide = (idx: number) => {
+    setTransitioning(true);
+    setTimeout(() => { setActive(idx); setTransitioning(false); }, 250);
+  };
+
+  const s = SLIDES[active];
 
   return (
-    <section className="bg-background pt-40 pb-20 overflow-hidden relative">
-      
-      {/* Background Atmosphere Layers */}
-      <div className="absolute top-[10%] right-[-10%] w-[600px] h-[600px] bg-primary/5 blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-secondary/5 blur-[150px] rounded-full pointer-events-none" />
+    <section className="w-full mt-[96px]" dir="rtl">
 
-      <div className="responsive-container relative z-10">
-         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-            
-            {/* The Sovereign Canvas */}
-            <div className="flex-1 space-y-6 md:space-y-8 text-right order-2 lg:order-1 mt-6 lg:mt-0">
-               <div className="inline-flex items-center gap-3 md:gap-4 bg-primary/5 border border-primary/10 rounded-xl md:rounded-2xl px-4 py-2 md:px-5 md:py-2.5">
-                  <span className="relative flex h-2 w-2 md:h-2.5 md:w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-secondary"></span>
-                  </span>
-                  <span className="text-[10px] md:text-[12px] font-bold text-primary uppercase tracking-[0.2em]">الإصدار النخبوي حصرياً</span>
-               </div>
-               
-               <h1 className="text-4xl md:text-7xl xl:text-8xl font-black tracking-tight text-foreground leading-[1.15] md:leading-[1.1] font-heading pr-2 md:pr-0">
-                  سيادة <br />
-                  <span className="text-secondary relative block mt-1 md:mt-2">
-                    التسوق.
-                  </span>
-               </h1>
-               
-               <p className="text-md md:text-xl text-foreground/60 font-medium max-w-xl ml-auto leading-[1.6] md:leading-[1.7] px-2 md:px-0">
-                  متجر مرسال يتجاوز مفهوم التجارة التقليدية، ليقدم لك تجربة تسوق غامرة تعكس شموخ وتفرد علامتك التجارية في السودان.
-               </p>
-               
-               <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-5 justify-end pt-4 md:pt-6 px-2 md:px-0">
-                  <Link href="/shop" className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 rounded-xl md:rounded-2xl bg-primary text-white font-bold text-xs md:text-sm uppercase tracking-widest hover:bg-accent hover:shadow-xl transition-all flex items-center justify-center gap-4 group">
-                     اكتشف النخبة <span className="material-symbols-rounded group-hover:-translate-x-2 transition-transform">arrow_back</span>
-                  </Link>
-                  <Link href="/vendor/register" className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 rounded-xl md:rounded-2xl bg-white border-2 border-border text-foreground font-bold text-xs md:text-sm uppercase tracking-widest hover:border-primary transition-all text-center">
-                     انضم كمورد
-                  </Link>
-               </div>
-               
-               <div className="flex items-center justify-end gap-6 md:gap-10 pt-8 md:pt-10 border-t border-border mt-8 md:mt-10 mx-2 md:mx-0">
-                  <div className="text-right">
-                     <span className="block text-2xl md:text-3xl font-black text-primary mb-0.5 md:mb-1">2.4k+</span>
-                     <span className="text-[10px] md:text-[11px] text-foreground/40 font-bold uppercase tracking-widest">منتج فاخر</span>
-                  </div>
-                  <div className="w-px h-8 md:h-10 bg-border" />
-                  <div className="text-right">
-                     <span className="block text-2xl md:text-3xl font-black text-primary mb-0.5 md:mb-1">99%</span>
-                     <span className="text-[10px] md:text-[11px] text-foreground/40 font-bold uppercase tracking-widest">رضا العملاء</span>
-                  </div>
-               </div>
+      {/* ── MAIN HERO BANNER ─────────────────────────────── */}
+      <div className={cn("relative h-[320px] md:h-[420px] lg:h-[480px] bg-gradient-to-l overflow-hidden transition-all duration-500", s.bg)}>
+
+        {/* Background image */}
+        <div className={cn("absolute inset-0 transition-opacity duration-500", transitioning ? "opacity-0" : "opacity-100")}>
+          <Image
+            src={s.img}
+            alt={s.title}
+            fill
+            className="object-cover opacity-20 mix-blend-overlay"
+            priority
+          />
+        </div>
+
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-l from-[#021D24]/30 via-transparent to-[#021D24]/80" />
+
+        {/* Content */}
+        <div className={cn("absolute inset-0 flex items-center max-w-[1600px] mx-auto px-6 lg:px-12 transition-all duration-300", transitioning ? "opacity-0 translate-x-4" : "opacity-100 translate-x-0")}>
+          <div className="max-w-2xl">
+            <span className="inline-block bg-[#F29124] text-white text-xs font-black px-3 py-1 rounded mb-4">
+              {s.tag}
+            </span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-2">
+              {s.title} <span className="text-[#F29124]">{s.subtitle}</span>
+            </h1>
+            <p className="text-sm md:text-base text-white/70 mb-6 max-w-lg">{s.desc}</p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href={s.ctaHref}
+                className="bg-[#F29124] hover:bg-[#D97B10] text-white px-6 py-3 rounded font-black text-sm transition-colors inline-flex items-center gap-2"
+              >
+                {s.cta}
+                <span className="material-symbols-rounded text-base">arrow_back</span>
+              </Link>
+              <Link
+                href={s.subHref}
+                className="bg-white/10 hover:bg-white/20 backdrop-blur text-white border border-white/30 px-6 py-3 rounded font-bold text-sm transition-colors"
+              >
+                {s.sub}
+              </Link>
             </div>
+          </div>
+        </div>
 
-            {/* The Levitating Showcase */}
-            <div className="flex-1 w-full relative order-1 lg:order-2 px-2 md:px-0">
-               <div className="relative w-full md:w-[85%] mx-auto lg:mr-auto lg:ml-0 aspect-[4/5] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden group shadow-elite-xl">
-                  <Image 
-                     src={heroImages[activeSlide]} 
-                     alt="Hero Showcase" 
-                     fill 
-                     className="object-cover scale-105 group-hover:scale-100 transition-transform duration-[2s] ease-out-expo" 
-                     priority 
-                  />
-                  
-                  {/* Floating Action Badge - Adjusted for mobile position */}
-                  <div className="absolute top-6 left-6 md:top-10 md:left-10 w-16 h-16 md:w-24 md:h-24 bg-white/10 backdrop-blur-3xl rounded-full border border-white/20 flex flex-col items-center justify-center text-white rotate-12 group-hover:rotate-0 transition-transform duration-700 shadow-2xl z-20">
-                     <span className="text-md md:text-2xl font-black">جديد</span>
-                     <span className="text-[7px] md:text-[9px] uppercase tracking-widest font-bold">وصل الآن</span>
-                  </div>
+        {/* Badge top-left */}
+        <div className="absolute top-6 left-6 bg-[#F29124] text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg">
+          {s.badge}
+        </div>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-transparent flex flex-col justify-end p-6 md:p-10">
-                     <div className="bg-white/10 backdrop-blur-3xl border border-white/10 p-6 md:p-12 rounded-2xl md:rounded-3xl flex justify-between items-end translate-y-4 md:translate-y-0 md:opacity-0 group-hover:md:opacity-100 group-hover:translate-y-0 transition-all duration-700 delay-100">
-                        <div className="text-right">
-                           <h3 className="text-white font-black text-lg md:text-xl mb-1">أحدث الإصدارات</h3>
-                           <p className="text-white/60 text-[11px] md:text-[13px] font-medium max-w-[200px] md:max-w-none">متوفرة الآن للطلب المسبق بالتشفير السيادي.</p>
-                        </div>
-                        <button className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center text-primary hover:bg-secondary hover:text-white hover:scale-110 transition-all shadow-xl">
-                           <span className="material-symbols-rounded text-lg md:text-xl">east</span>
-                        </button>
-                     </div>
-                  </div>
-               </div>
-               
-               {/* Controls - Adjusted for mobile padding */}
-               <div className="absolute -left-2 md:-left-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 md:gap-4 z-30">
-                  {heroImages.map((_, i) => (
-                     <button 
-                        key={i} 
-                        onClick={() => setActiveSlide(i)}
-                        className={cn(
-                           "flex items-center justify-center rounded-full transition-all duration-500 bg-white shadow-lg border border-border",
-                           activeSlide === i ? "w-10 h-10 md:w-12 md:h-12" : "w-7 h-7 md:w-8 md:h-8 hover:w-9 hover:h-9 md:hover:w-10 md:hover:h-10"
-                        )}
-                     >
-                        <span className={cn(
-                           "w-2 md:w-2.5 h-2 md:h-2.5 rounded-full transition-all duration-500",
-                           activeSlide === i ? "bg-secondary scale-100" : "bg-primary/20 scale-75"
-                        )} />
-                     </button>
-                  ))}
-               </div>
-            </div>
+        {/* Slide indicators */}
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+          {SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => changeSlide(i)}
+              className={cn("h-1.5 rounded-full transition-all duration-300", i === active ? "w-8 bg-[#F29124]" : "w-4 bg-white/30")}
+            />
+          ))}
+        </div>
 
-         </div>
+        {/* Arrow Navigation */}
+        <button
+          onClick={() => changeSlide((active - 1 + SLIDES.length) % SLIDES.length)}
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full border border-white/20 flex items-center justify-center transition-all"
+        >
+          <span className="material-symbols-rounded">chevron_right</span>
+        </button>
+        <button
+          onClick={() => changeSlide((active + 1) % SLIDES.length)}
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full border border-white/20 flex items-center justify-center transition-all"
+        >
+          <span className="material-symbols-rounded">chevron_left</span>
+        </button>
       </div>
+
+      {/* ── FEATURE STRIPS (Amazon-style deal banners) ──── */}
+      <div className="bg-[#F3F4F6] border-b border-gray-200">
+        <div className="max-w-[1600px] mx-auto px-4 lg:px-6 py-3 grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { icon: "local_shipping", text: "شحن سريع", sub: "خلال 24–48 ساعة" },
+            { icon: "verified",       text: "موردون موثوقون", sub: "معتمدون من مرسال" },
+            { icon: "payments",       text: "دفع آمن",   sub: "عند الاستلام أو تحويل" },
+            { icon: "support_agent",  text: "دعم 24/7",  sub: "فريقنا دايماً معاك" },
+          ].map((f, i) => (
+            <div key={i} className="flex items-center gap-3 bg-white rounded-lg p-3 shadow-sm">
+              <span className="material-symbols-rounded text-2xl text-[#1089A4]">{f.icon}</span>
+              <div>
+                <p className="text-xs font-black text-[#021D24]">{f.text}</p>
+                <p className="text-[10px] text-gray-400">{f.sub}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
     </section>
   );
 }
-

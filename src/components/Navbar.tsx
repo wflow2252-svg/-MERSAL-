@@ -1,169 +1,267 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useCart } from "@/lib/CartContext";
 import { useRouter } from "next/navigation";
 
-const categories = [
-  { name: "الإلكترونيات والموبايل", icon: "smartphone", id: "electronics" },
-  { name: "الأزياء والملابس", icon: "checkroom", id: "fashion" },
-  { name: "المنزل والمطبخ", icon: "kitchen", id: "home" },
-  { name: "الجمال والعناية", icon: "face", id: "beauty" },
-  { name: "أحدث العروض", icon: "bolt", id: "offers" }
+const NAV_CATS = [
+  { label: "كل الأقسام",     href: "/shop",              icon: "menu" },
+  { label: "الإلكترونيات",   href: "/category/electronics", icon: "smartphone" },
+  { label: "الأزياء",        href: "/category/fashion",   icon: "checkroom" },
+  { label: "المنزل والمطبخ", href: "/category/home",      icon: "kitchen" },
+  { label: "الجمال والعناية",href: "/category/beauty",    icon: "face" },
+  { label: "العروض 🔥",       href: "/offers",            icon: "bolt" },
+  { label: "كبار الموردين",  href: "/top-vendors",        icon: "storefront" },
+  { label: "ابدأ تجارتك",    href: "/vendor/register",   icon: "add_business" },
 ];
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const { cartCount } = useCart();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isCatOpen, setIsCatOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showCategories, setShowCategories] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-
   const isAdmin = (session?.user as any)?.role === "ADMIN";
   const isAuthenticated = status === "authenticated";
 
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
+    if (searchQuery.trim()) router.push(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
   };
 
+  // Click outside to close menus
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 30);
-    window.addEventListener("scroll", handleScroll);
-
-    // Core Initialization (IP Tracking + Maintenance Check)
-    const initializeSession = async () => {
-      if (isAuthenticated) {
-        try {
-          // 1. Track IP safely
-          fetch("/api/user/track", { method: "POST" });
-
-          // 2. Maintenance Check
-          const res = await fetch("/api/admin/settings");
-          if (res.ok) {
-            const data = await res.json();
-            if (data.settings?.maintenanceMode && !isAdmin) {
-              const isExceptionPage = window.location.pathname === "/login" || window.location.pathname === "/maintenance";
-              if (!isExceptionPage) {
-                window.location.href = "/maintenance";
-              }
-            }
-          }
-        } catch (e) {
-          console.error("Session Init Error:", e);
-        }
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false);
       }
     };
-    
-    initializeSession();
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
-    return () => window.removeEventListener("scroll", handleScroll);
+  // IP tracking + maintenance check
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetch("/api/user/track", { method: "POST" }).catch(() => {});
+    fetch("/api/admin/settings")
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.settings?.maintenanceMode && !isAdmin) {
+          const p = window.location.pathname;
+          if (p !== "/login" && p !== "/maintenance") window.location.href = "/maintenance";
+        }
+      })
+      .catch(() => {});
   }, [isAuthenticated, isAdmin]);
 
   return (
-    <header className="w-full fixed top-0 left-0 z-[100] font-sans flex justify-center mt-6 transition-all duration-700 pointer-events-none">
-      
-      {/* Floating Island Navigation */}
-      <div className={cn(
-        "bg-white/95 backdrop-blur-3xl transition-all duration-700 overflow-visible pointer-events-auto",
-        isScrolled 
-           ? "w-[95%] md:w-[85%] rounded-[3rem] py-3 shadow-[0_40px_80px_rgba(3,141,177,0.15)] border border-primary/10 mt-2" 
-           : "w-[98%] md:w-[95%] rounded-[3rem] py-4 shadow-2xl border border-transparent"
-      )}>
-        <div className="px-3 md:px-12 flex items-center justify-between gap-2 md:gap-16">
-          
-          {/* Logo & Branding */}
-          <Link href="/" className="flex items-center gap-2 md:gap-4 group/logo shrink-0">
-            <div className="relative w-9 h-9 md:w-16 md:h-16 group-hover/logo:scale-105 transition-transform duration-500">
-               <Image src="/logo.jpg" alt="Logo" fill className="object-contain" priority />
+    <header className="w-full fixed top-0 left-0 z-[100] flex flex-col" dir="rtl">
+
+      {/* ── TOP BAR (Amazon dark header) ─────────────────── */}
+      <div className="bg-[#021D24] text-white">
+        <div className="max-w-[1600px] mx-auto px-3 lg:px-6 h-14 flex items-center gap-2 lg:gap-4">
+
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 shrink-0 group">
+            <div className="relative w-9 h-9 bg-white rounded p-1">
+              <Image src="/logo.jpg" alt="مرسال" fill className="object-contain" priority />
             </div>
-            <div className="hidden sm:flex flex-col">
-               <span className="text-lg md:text-2xl font-black text-primary tracking-tighter leading-none font-heading uppercase">Morsall</span>
-            </div>
+            <span className="hidden sm:block text-lg font-black text-white tracking-tight leading-none">
+              مرسال
+              <span className="block text-[9px] text-[#F29124] font-bold tracking-widest">MERSAL</span>
+            </span>
           </Link>
 
-          {/* Search Bar - Responsive */}
-          <form onSubmit={handleSearch} className="flex-grow max-w-[120px] xs:max-w-[200px] sm:max-w-[350px] md:max-w-[550px] relative group/search mx-0.5 md:mx-0">
-             <div className="flex items-center bg-muted/40 md:bg-muted/30 rounded-2xl p-0.5 md:p-1.5 border border-primary/5 group-focus-within/search:bg-white group-focus-within/search:shadow-xl transition-all duration-500">
-                <div 
-                   className="relative flex-none hidden md:block" // Hidden on mobile to save space
-                   onMouseEnter={() => setIsCatOpen(true)}
-                   onMouseLeave={() => setIsCatOpen(false)}
-                >
-                   <button type="button" className="flex items-center gap-2 bg-white text-primary/40 px-5 py-3 rounded-xl font-bold text-[9px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm">
-                      <span className="material-symbols-rounded text-md">apps</span>
-                   </button>
-                   
-                   {/* Categories Dropdown */}
-                   <div className={cn(
-                     "absolute top-[130%] right-0 w-[240px] bg-white/95 backdrop-blur-3xl shadow-2xl border border-primary/5 py-4 rounded-2xl transition-all duration-500 origin-top z-50",
-                     isCatOpen ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-4 pointer-events-none"
-                   )}>
-                      <div className="px-6 mb-4">
-                         <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-primary/20">التصنيفات النخبوية</h4>
-                      </div>
-                      <div className="space-y-1">
-                        {categories.map((cat) => (
-                           <Link key={cat.id} href={`/category/${cat.id}`} className="flex items-center gap-4 px-6 py-2.5 hover:bg-muted text-primary/60 hover:text-primary transition-all group/item mx-2 rounded-xl">
-                              <span className="material-symbols-rounded text-lg text-secondary/40 group-hover/item:text-secondary transition-colors">{cat.icon}</span>
-                              <span className="text-[11px] font-bold">{cat.name}</span>
-                           </Link>
-                        ))}
-                      </div>
-                   </div>
-                </div>
-                <input 
-                   type="text" 
-                   value={searchQuery}
-                   onChange={(e) => setSearchQuery(e.target.value)}
-                   placeholder="ابحث..." 
-                   className="flex-grow px-1 md:px-6 bg-transparent outline-none text-[8px] sm:text-[10px] md:text-[11px] font-bold text-primary placeholder:text-primary/30 text-right min-w-0" 
-                />
-                <button type="submit" className="bg-primary text-white w-7 h-7 md:w-11 md:h-11 rounded-lg md:rounded-xl flex items-center justify-center hover:bg-secondary transition-all mr-0.5 md:mr-1 shadow-lg shadow-primary/10 flex-none scale-90 md:scale-100">
-                   <span className="material-symbols-rounded text-[10px] md:text-lg">search</span>
-                </button>
-             </div>
+          {/* Deliver to */}
+          <Link href="/delivery" className="hidden lg:flex flex-col shrink-0 hover:ring-1 ring-white/30 rounded px-2 py-1 transition-all cursor-pointer">
+            <span className="text-[10px] text-white/50 font-medium">التوصيل إلى</span>
+            <span className="text-[12px] font-black flex items-center gap-1">
+              <span className="material-symbols-rounded text-sm text-[#F29124]">location_on</span>
+              الخرطوم
+            </span>
+          </Link>
+
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} className="flex-grow flex items-stretch rounded-lg overflow-hidden border-2 border-[#F29124] transition-all focus-within:border-[#FFB35A]">
+            {/* Category select */}
+            <select className="hidden md:block bg-gray-100 text-gray-700 text-[11px] font-bold px-3 border-l border-gray-200 outline-none cursor-pointer min-w-[120px]">
+              <option>كل الأقسام</option>
+              <option>الإلكترونيات</option>
+              <option>الأزياء</option>
+              <option>المنزل</option>
+              <option>الجمال</option>
+            </select>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="ابحث في مرسال..."
+              className="flex-grow bg-white text-gray-900 px-4 text-sm outline-none placeholder:text-gray-400 text-right"
+            />
+            <button
+              type="submit"
+              className="bg-[#F29124] text-white px-4 lg:px-5 flex items-center justify-center hover:bg-[#D97B10] transition-colors"
+            >
+              <span className="material-symbols-rounded text-xl">search</span>
+            </button>
           </form>
 
-          {/* User & Actions Hub */}
-          <div className="flex items-center gap-1 md:gap-5 flex-none relative pr-1">
-             {isAuthenticated ? (
-               <div className="flex items-center gap-1 md:gap-4">
-                 <Link href="/profile" className="relative group flex items-center justify-center w-8 h-8 md:w-12 md:h-12">
-                   <div className="w-full h-full rounded-full bg-muted text-primary/40 group-hover:bg-primary group-hover:text-white transition-all overflow-hidden border-2 border-transparent group-hover:border-secondary flex items-center justify-center">
-                     {session?.user?.image ? (
-                       <Image src={session.user.image} alt="Profile" width={48} height={48} className="object-cover w-full h-full" />
-                     ) : <span className="material-symbols-rounded text-md md:text-xl group-hover:scale-110 transition-transform">person</span>}
-                   </div>
-                 </Link>
-                 
-                 {isAdmin && (
-                   <Link href="/admin/dashboard" className="flex items-center justify-center w-8 h-8 md:w-12 md:h-12 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all">
-                     <span className="material-symbols-rounded text-md md:text-xl">admin_panel_settings</span>
-                   </Link>
-                 )}
-               </div>
-             ) : (
-               <Link href="/login" className="flex items-center justify-center w-8 h-8 md:w-12 md:h-12 rounded-full bg-muted text-primary/40 hover:bg-primary hover:text-white transition-all border border-primary/5 relative">
-                  <span className="material-symbols-rounded text-md md:text-xl">person</span>
-               </Link>
-             )}
+          {/* Right actions */}
+          <div className="flex items-center gap-1 lg:gap-3 shrink-0" ref={menuRef}>
 
-             <Link href="/cart" className="relative group flex items-center justify-center w-9 h-9 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-primary text-white shadow-xl shadow-primary/20 hover:scale-105 transition-all">
-                <span className="material-symbols-rounded text-md md:text-[21px]">shopping_bag</span>
-                <span className="absolute -top-1 -right-1 bg-secondary text-white text-[8px] md:text-[10px] font-bold w-4 h-4 md:w-6 md:h-6 rounded-full flex items-center justify-center border-2 border-white shadow-lg font-inter">{cartCount}</span>
-             </Link>
+            {/* Language */}
+            <button className="hidden lg:flex flex-col hover:ring-1 ring-white/30 rounded px-2 py-1 transition-all text-right">
+              <span className="text-[10px] text-white/50">اللغة</span>
+              <span className="text-[12px] font-black">عربي 🇸🇩</span>
+            </button>
+
+            {/* Account */}
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(p => !p)}
+                className="flex flex-col hover:ring-1 ring-white/30 rounded px-2 py-1 transition-all text-right"
+              >
+                <span className="text-[10px] text-white/50">
+                  {isAuthenticated ? `أهلاً، ${session?.user?.name?.split(" ")[0]}` : "تسجيل الدخول"}
+                </span>
+                <span className="text-[12px] font-black flex items-center gap-0.5">
+                  الحساب
+                  <span className="material-symbols-rounded text-sm">expand_more</span>
+                </span>
+              </button>
+
+              {/* Dropdown */}
+              {showUserMenu && (
+                <div className="absolute left-0 top-full mt-2 w-52 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden z-50 text-right">
+                  {isAuthenticated ? (
+                    <>
+                      <div className="px-4 py-3 bg-[#021D24] text-white">
+                        <p className="text-xs font-black">{session?.user?.name}</p>
+                        <p className="text-[10px] text-white/40">{session?.user?.email}</p>
+                      </div>
+                      <Link href="/profile" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-sm font-bold text-gray-700 border-b">
+                        <span className="material-symbols-rounded text-base text-[#1089A4]">person</span>
+                        ملفي الشخصي
+                      </Link>
+                      <Link href="/orders" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-sm font-bold text-gray-700 border-b">
+                        <span className="material-symbols-rounded text-base text-[#1089A4]">shopping_bag</span>
+                        طلباتي
+                      </Link>
+                      {isAdmin && (
+                        <Link href="/admin/dashboard" className="flex items-center gap-3 px-4 py-3 hover:bg-orange-50 text-sm font-bold text-[#D97B10] border-b">
+                          <span className="material-symbols-rounded text-base">admin_panel_settings</span>
+                          لوحة التحكم
+                        </Link>
+                      )}
+                      <button
+                        onClick={() => signOut()}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 text-sm font-bold text-red-500"
+                      >
+                        <span className="material-symbols-rounded text-base">logout</span>
+                        تسجيل الخروج
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/login" className="flex items-center justify-center gap-2 mx-3 my-3 bg-[#F29124] text-white py-2 rounded-lg font-bold text-sm">
+                        <span className="material-symbols-rounded text-base">login</span>
+                        تسجيل الدخول
+                      </Link>
+                      <p className="text-center text-xs text-gray-500 pb-3">
+                        بداية جديدة؟ <Link href="/register" className="text-[#1089A4] font-bold hover:underline">سجّل حساباً</Link>
+                      </p>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Orders */}
+            <Link href="/orders" className="hidden lg:flex flex-col hover:ring-1 ring-white/30 rounded px-2 py-1 transition-all text-right">
+              <span className="text-[10px] text-white/50">المبيعات</span>
+              <span className="text-[12px] font-black">والطلبات</span>
+            </Link>
+
+            {/* Cart */}
+            <Link href="/cart" className="relative flex items-end gap-1 hover:ring-1 ring-white/30 rounded px-2 py-1 transition-all">
+              <div className="relative">
+                <span className="material-symbols-rounded text-3xl text-white">shopping_cart</span>
+                <span className="absolute -top-1 -left-1 min-w-[20px] h-5 bg-[#F29124] text-white text-[10px] font-black rounded-full flex items-center justify-center px-1">
+                  {cartCount}
+                </span>
+              </div>
+              <span className="hidden lg:block text-[12px] font-black pb-0.5">السلة</span>
+            </Link>
           </div>
         </div>
-
       </div>
+
+      {/* ── SECONDARY NAV BAR ─────────────────────────────── */}
+      <div className="bg-[#1A3340] text-white">
+        <div className="max-w-[1600px] mx-auto px-3 lg:px-6 flex items-center gap-1 overflow-x-auto scrollbar-none h-10">
+
+          {/* Hamburger "All" */}
+          <button
+            onClick={() => setShowCategories(p => !p)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded font-black text-xs shrink-0 hover:bg-white/10 transition-colors"
+          >
+            <span className="material-symbols-rounded text-base">menu</span>
+            كل الأقسام
+          </button>
+
+          {/* Nav links */}
+          {NAV_CATS.slice(1).map(cat => (
+            <Link
+              key={cat.href}
+              href={cat.href}
+              className="px-3 py-1 text-xs font-bold whitespace-nowrap hover:bg-white/10 rounded transition-colors shrink-0"
+            >
+              {cat.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Full categories panel */}
+        {showCategories && (
+          <div
+            className="fixed inset-0 z-40 bg-black/50"
+            onClick={() => setShowCategories(false)}
+          >
+            <div
+              className="w-64 bg-[#021D24] h-full shadow-2xl p-4 text-white"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-black text-sm">Hello, {session?.user?.name?.split(" ")[0] || "Guest"}</h3>
+                <button onClick={() => setShowCategories(false)} className="text-white/40 hover:text-white">
+                  <span className="material-symbols-rounded">close</span>
+                </button>
+              </div>
+              <div className="space-y-1">
+                {NAV_CATS.map(cat => (
+                  <Link
+                    key={cat.href}
+                    href={cat.href}
+                    onClick={() => setShowCategories(false)}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition-colors text-sm font-bold"
+                  >
+                    <span className="material-symbols-rounded text-[#F29124] text-base">{cat.icon}</span>
+                    {cat.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
     </header>
   );
 }

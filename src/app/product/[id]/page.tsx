@@ -7,8 +7,8 @@ import ProductDetails from "@/components/product/ProductDetails";
 import StickyCartBar from "@/components/product/StickyCartBar";
 import RelatedUpsell from "@/components/product/RelatedUpsell";
 import ProductCard from "@/components/ProductCard";
-
 import PurchaseBox from "@/components/product/PurchaseBox";
+import ProductSpecs from "@/components/product/ProductSpecs";
 
 export default function ProductPage() {
   const params = useParams();
@@ -46,8 +46,12 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* Synthesis Section: Related & Upsell */}
+      {/* Synthesis Section: Specs, Related & Upsell */}
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 mt-32 space-y-32">
+         {/* Technical Specifications Section */}
+         <ProductSpecs product={product} />
+
+         {/* Motta Deep-Dive: Frequently Bought Together (Same Store Bundle) */}
          {/* Motta Deep-Dive: Frequently Bought Together (Same Store Bundle) */}
          <RelatedUpsell mainProduct={product} upsellProducts={vendorUpsells} />
 

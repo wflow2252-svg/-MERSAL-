@@ -1,14 +1,5 @@
 "use client"
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-
-interface AddProductModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";

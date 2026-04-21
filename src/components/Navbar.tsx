@@ -72,7 +72,7 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <div className="relative w-16 h-16">
+            <div className="relative w-24 h-24 -my-4">
               <Image 
                 src="/icon-mersal.png" 
                 alt="مرسال" 

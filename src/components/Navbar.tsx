@@ -70,8 +70,12 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <div className="relative w-14 h-14">
-              <Image src="/navbar-logo.png" alt="مرسال" fill className="object-contain" priority />
+            <div className="relative w-11 h-11">
+              <Image src="/icon-mersal.png" alt="مرسال" fill className="object-contain" priority />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl font-black text-white tracking-tighter leading-none">مـرسـال</span>
+              <span className="text-[10px] text-white/70 font-bold tracking-widest uppercase">Mersal</span>
             </div>
           </Link>
 
@@ -200,7 +204,7 @@ export default function Navbar() {
       </div>
 
       {/* ── SECONDARY NAV BAR ─────────────────────────────── */}
-      <div className="bg-[#0E7694] text-white border-t border-white/10">
+      <div className="bg-[#F89522] text-white border-t border-white/10">
         <div className="max-w-[1600px] mx-auto px-3 lg:px-6 flex items-center gap-1 overflow-x-auto scrollbar-none h-10">
 
           {/* Hamburger "All" */}

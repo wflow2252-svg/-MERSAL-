@@ -26,7 +26,7 @@ export default function StoreShowcase() {
               </h2>
            </div>
            <Link href="/stores" className="bg-white border-4 border-white text-[#021D24] px-14 py-6 rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] shadow-xl hover:bg-[#021D24] hover:text-white transition-all duration-700">
-              استكشف كافة الموردين
+              استكشف كافة المتاجر
            </Link>
         </div>
 

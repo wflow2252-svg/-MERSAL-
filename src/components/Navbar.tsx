@@ -64,8 +64,8 @@ export default function Navbar() {
   return (
     <header className="w-full fixed top-0 left-0 z-[100] flex flex-col" dir="rtl">
 
-      {/* ── TOP BAR (ORANGE) ─────────────────────────── */}
-      <div className="bg-[#F89522] text-white shadow-md">
+      {/* ── TOP BAR (RED) ─────────────────────────── */}
+      <div className="bg-[#CB2E26] text-white shadow-md">
         <div className="max-w-[1600px] mx-auto px-3 lg:px-6 h-14 flex items-center gap-2 lg:gap-4">
 
           {/* Logo */}

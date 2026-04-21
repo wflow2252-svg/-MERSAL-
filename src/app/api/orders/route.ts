@@ -60,7 +60,25 @@ export async function POST(req: Request) {
     const productMap = Object.fromEntries(dbProducts.map(p => [p.id, p]));
 
     // Fetch a fallback product in case of demo items added from frontend
-    const fallbackProduct = await prisma.product.findFirst({ select: { id: true, vendorId: true } });
+    let fallbackProduct = await prisma.product.findFirst({ select: { id: true, vendorId: true } });
+
+    // If completely empty DB, dynamically generate a fallback product to satisfy foreign key constraints
+    if (!fallbackProduct) {
+      const someVendor = await prisma.vendor.findFirst({ select: { id: true } });
+      if (someVendor) {
+        fallbackProduct = await prisma.product.create({
+          data: {
+            title: "منتج تجريبي للطلبات",
+            description: "تم إنشاؤه تلقائياً لدعم الطلبات التجريبية",
+            price: items?.[0]?.price || 15000,
+            stock: 999,
+            vendorId: someVendor.id,
+            status: "APPROVED"
+          },
+          select: { id: true, vendorId: true }
+        });
+      }
+    }
 
     const finalItems = items.map((item: any) => {
       const dbProduct = productMap[item.productId];

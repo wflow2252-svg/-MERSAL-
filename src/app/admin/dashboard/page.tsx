@@ -83,7 +83,7 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
           <div className="flex justify-between items-start border-b-4 border-black pb-4 mb-4" dir="ltr">
             {/* Left: Combined Logo (Icon + Text) */}
             <div className="w-1/2 flex flex-col items-start pl-2 pt-2">
-               <Image src="/logo.png" alt="Mersall" width={180} height={90} className="object-contain" />
+               <Image src="/logo.png" alt="Mersall" width={140} height={70} className="object-contain" />
             </div>
             {/* Right: Order ID (Clear and Large) */}
             <div className="text-right w-1/2 flex flex-col items-end pr-4 pt-4">

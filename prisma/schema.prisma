@@ -141,6 +141,8 @@ model Order {
   updatedAt         DateTime    @updatedAt
   customer          User        @relation(fields: [customerId], references: [id])
   items             OrderItem[]
+  driverId          String?
+  driver            DeliveryDriver? @relation(fields: [driverId], references: [id])
 }
 
 model OrderItem {
@@ -209,4 +211,14 @@ model ShippingProvider {
   baseUrl   String   // رابط الـ API
   isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model DeliveryDriver {
+  id          String   @id @default(cuid())
+  name        String
+  phone       String
+  vehicleType String   // e.g. MOTORCYCLE, CAR, VAN
+  isActive    Boolean  @default(true)
+  orders      Order[]
+  createdAt   DateTime @default(now())
 }

@@ -11,7 +11,7 @@ import Link from "next/link";
 type TabId =
   | "overview" | "approvals" | "users" | "vendors"
   | "categories" | "employees" | "orders" | "payments"
-  | "delivery" | "shipping" | "finance" | "settings" | "inventory";
+  | "delivery" | "shipping" | "finance" | "settings" | "inventory" | "drivers";
 
 const NAV_ITEMS: { id: TabId; icon: string; label: string }[] = [
   { id: "overview",    icon: "dashboard_customize",  label: "التحكم" },
@@ -22,6 +22,7 @@ const NAV_ITEMS: { id: TabId; icon: string; label: string }[] = [
   { id: "categories",  icon: "category",              label: "الأقسام" },
   { id: "inventory",   icon: "inventory_2",           label: "المنتجات" },
   { id: "employees",   icon: "badge",                 label: "الموظفون" },
+  { id: "drivers",     icon: "sports_motorsports",    label: "المناديب" },
   { id: "payments",    icon: "payments",              label: "طرق الدفع" },
   { id: "delivery",    icon: "local_shipping",        label: "مناطق التوصيل" },
   { id: "shipping",    icon: "settings_input_antenna",label: "شركة الشحن" },
@@ -168,6 +169,10 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [printOrder, setPrintOrder] = useState<any>(null);
+  const [assigningDriver, setAssigningDriver] = useState<any>(null); // { orderId, status }
+  const [selectedDriverId, setSelectedDriverId] = useState(""); 
+  const [trackingOrder, setTrackingOrder] = useState<any>(null); // الطلب الجاري تتبعه حالياً
+
 
   // Data states
   const [stats, setStats] = useState<any[]>([]);
@@ -181,6 +186,7 @@ export default function AdminDashboard() {
   const [inventoryProducts, setInventoryProducts] = useState<any[]>([]);
   const [inventorySearch, setInventorySearch] = useState("");
   const [employees, setEmployees] = useState<any[]>([]);
+  const [drivers, setDrivers] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [orderStatus, setOrderStatus] = useState("ALL");
   const [orderSearch, setOrderSearch] = useState("");
@@ -193,6 +199,7 @@ export default function AdminDashboard() {
 
   // Form states
   const [newEmployee, setNewEmployee] = useState({ name: "", email: "", role: "PACKING" });
+  const [newDriver, setNewDriver] = useState({ name: "", phone: "", vehicleType: "مواتر (دباب)" });
   const [newZone, setNewZone] = useState({ name: "", city: "", fee: "" });
   const [newCategory, setNewCategory] = useState({ name: "", icon: "📦" });
   const [newProvider, setNewProvider] = useState({ name: "", apiKey: "", baseUrl: "" });
@@ -239,6 +246,10 @@ export default function AdminDashboard() {
         const r = await fetch("/api/admin/employees");
         if (r.ok) setEmployees(await r.json());
       }
+      if (activeTab === "drivers") {
+        const r = await fetch("/api/admin/drivers");
+        if (r.ok) setDrivers(await r.json());
+      }
       if (activeTab === "orders") {
         const params = new URLSearchParams();
         if (orderStatus !== "ALL") params.set("status", orderStatus);
@@ -282,6 +293,21 @@ export default function AdminDashboard() {
     if (!session) return;
     fetchData();
   }, [activeTab, session, fetchData]);
+
+  // Live Tracking Interval
+  useEffect(() => {
+    if (!trackingOrder) return;
+    const interval = setInterval(async () => {
+      try {
+        const r = await fetch(`/api/delivery/tracking?orderId=${trackingOrder.id}`);
+        if (r.ok) {
+          const freshOrder = await r.json();
+          setTrackingOrder(freshOrder);
+        }
+      } catch (err) {}
+    }, 10000); // 10 seconds refresh
+    return () => clearInterval(interval);
+  }, [trackingOrder]);
 
   // ── Actions ──
   const handleExportExcel = async () => {
@@ -367,9 +393,28 @@ export default function AdminDashboard() {
   };
 
   const handleOrderStatus = async (id: string, status: string) => {
+    if (status === "SHIPPED") {
+      setAssigningDriver({ orderId: id, status });
+      return;
+    }
     setActionLoading(id);
     await fetch("/api/admin/orders", { method: "PATCH", body: JSON.stringify({ id, status }) });
     setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
+    setActionLoading(null);
+  };
+
+  const submitDriverAssignment = async () => {
+    if (!assigningDriver || !selectedDriverId) return;
+    const { orderId, status } = assigningDriver;
+    setActionLoading(orderId);
+    await fetch("/api/admin/drivers"); // Just to ensure they are fetched if not yet
+    await fetch("/api/admin/orders", { 
+      method: "PATCH", 
+      body: JSON.stringify({ id: orderId, status, driverId: selectedDriverId }) 
+    });
+    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status, driverId: selectedDriverId } : o));
+    setAssigningDriver(null);
+    setSelectedDriverId("");
     setActionLoading(null);
   };
 
@@ -388,6 +433,23 @@ export default function AdminDashboard() {
   const handleDeleteEmployee = async (id: string) => {
     await fetch("/api/admin/employees", { method: "DELETE", body: JSON.stringify({ id }) });
     setEmployees(prev => prev.filter(e => e.id !== id));
+  };
+
+  const handleAddDriver = async () => {
+    if (!newDriver.name || !newDriver.phone) return;
+    setActionLoading("driver");
+    const r = await fetch("/api/admin/drivers", { method: "POST", body: JSON.stringify(newDriver) });
+    if (r.ok) {
+      const data = await r.json();
+      setDrivers(prev => [data, ...prev]);
+      setNewDriver({ name: "", phone: "", vehicleType: "مواتر (دباب)" });
+    }
+    setActionLoading(null);
+  };
+
+  const handleDeleteDriver = async (id: string) => {
+    await fetch("/api/admin/drivers", { method: "DELETE", body: JSON.stringify({ id }) });
+    setDrivers(prev => prev.filter(d => d.id !== id));
   };
 
   const handleAddZone = async () => {
@@ -705,10 +767,38 @@ export default function AdminDashboard() {
                             <button disabled={actionLoading === order.id} onClick={() => handleOrderStatus(order.id, "SHIPPED")} className="px-3 py-1.5 bg-purple-500 text-white rounded-lg text-xs font-bold">تم الشحن</button>
                           )}
                           {order.status === "SHIPPED" && (
-                            <button disabled={actionLoading === order.id} onClick={() => handleOrderStatus(order.id, "DELIVERED")} className="px-3 py-1.5 bg-green-600 text-white rounded-lg text-xs font-bold">تم التسليم</button>
+                            <>
+                              <button 
+                                onClick={() => setTrackingOrder(order)}
+                                className="px-3 py-1.5 bg-sky-500 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-lg shadow-sky-500/20"
+                              >
+                                <span className="material-symbols-rounded text-sm">near_me</span>
+                                تتبع المندوب
+                              </button>
+                              <button disabled={actionLoading === order.id} onClick={() => handleOrderStatus(order.id, "DELIVERED")} className="px-3 py-1.5 bg-green-600 text-white rounded-lg text-xs font-bold">تم التسليم</button>
+                            </>
                           )}
                         </div>
                       </div>
+
+                      {/* Driver Assigned Alert */}
+                      {order.driver && (
+                        <div className="mx-4 mt-3 p-3 bg-sky-50 rounded-xl border border-sky-100 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-[#1089A4] text-white flex items-center justify-center">
+                              <span className="material-symbols-rounded text-sm">sports_motorsports</span>
+                            </div>
+                            <div>
+                              <p className="text-[10px] text-sky-400 font-bold uppercase">المندوب القائم بالتوصيل</p>
+                              <p className="text-xs font-black text-[#021D24]">{order.driver.name} ({order.driver.vehicleType})</p>
+                            </div>
+                          </div>
+                          <a href={`tel:${order.driver.phone}`} className="text-xs font-bold text-[#1089A4] hover:underline flex items-center gap-1">
+                            <span className="material-symbols-rounded text-xs">phone</span>
+                            اتصال بالمندوب
+                          </a>
+                        </div>
+                      )}
 
                       {/* Customer & Items */}
                       <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1333,6 +1423,252 @@ export default function AdminDashboard() {
               </motion.div>
             )}
 
+            {/* ── 14. DRIVERS ── */}
+            {activeTab === "drivers" && (
+              <motion.div key="drivers" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm space-y-4">
+                  <h3 className="font-black text-[#021D24] text-lg">إضافة مندوب جديد</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input
+                      type="text"
+                      placeholder="اسم المندوب"
+                      className="input-mersal"
+                      value={newDriver.name}
+                      onChange={e => setNewDriver({ ...newDriver, name: e.target.value })}
+                    />
+                    <input
+                      type="text"
+                      placeholder="رقم الهاتف"
+                      className="input-mersal"
+                      value={newDriver.phone}
+                      onChange={e => setNewDriver({ ...newDriver, phone: e.target.value })}
+                    />
+                    <select
+                      className="input-mersal"
+                      value={newDriver.vehicleType}
+                      onChange={e => setNewDriver({ ...newDriver, vehicleType: e.target.value })}
+                    >
+                      <option value="مواتر (دباب)">مواتر (دباب)</option>
+                      <option value="سيارة صغيرة">سيارة صغيرة</option>
+                      <option value="بوكس / ترحيل">بوكس / ترحيل</option>
+                      <option value="دفار">دفار</option>
+                    </select>
+                  </div>
+                  <button
+                    onClick={handleAddDriver}
+                    disabled={actionLoading === "driver"}
+                    className="btn-primary w-full py-3"
+                  >
+                    {actionLoading === "driver" ? "جاري الإضافة..." : "حفظ بيانات المندوب"}
+                  </button>
+                </div>
+
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                  <div className="p-4 border-b font-black text-[#021D24]">قائمة المناديب المسجلين</div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-sm">
+                      <thead className="bg-gray-50 text-gray-400 text-xs uppercase font-bold">
+                        <tr>
+                          <th className="px-6 py-4">المندوب</th>
+                          <th className="px-6 py-4">رقم الهاتف</th>
+                          <th className="px-6 py-4">المركبة</th>
+                          <th className="px-6 py-4">طلبات نشطة</th>
+                          <th className="px-6 py-4">رابط التوصيل</th>
+                          <th className="px-6 py-4 text-center">إجراءات</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y">
+                        {drivers.map(d => (
+                          <tr key={d.id} className="hover:bg-gray-50 transition-colors">
+                            <td className="px-6 py-4">
+                              <div className="font-bold text-[#021D24]">{d.name}</div>
+                              <div className="text-[10px] text-gray-400 font-mono">{d.id}</div>
+                            </td>
+                            <td className="px-6 py-4 font-mono">{d.phone}</td>
+                            <td className="px-6 py-4">
+                              <span className="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600 font-bold">{d.vehicleType}</span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="font-black text-[#1089A4]">{d._count?.orders || 0}</span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <button
+                                onClick={() => {
+                                  const url = `${window.location.origin}/delivery/${d.id}`;
+                                  navigator.clipboard.writeText(url);
+                                  alert("تم نسخ رابط المندوب! يمكنك إرساله له الآن.");
+                                }}
+                                className="text-[#1089A4] hover:underline flex items-center gap-1 font-bold"
+                              >
+                                <span className="material-symbols-rounded text-sm">content_copy</span>
+                                نسخ الرابط
+                              </button>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                              <button
+                                onClick={() => { if(confirm("حذف المندوب؟")) handleDeleteDriver(d.id) }}
+                                className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition"
+                              >
+                                <span className="material-symbols-rounded">delete</span>
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {drivers.length === 0 && (
+                      <div className="text-center py-12 text-gray-400 font-bold">لا يوجد مناديب مسجلين حالياً</div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+          </AnimatePresence>
+
+          {/* ── Live Tracking Modal (Radar View) ── */}
+          <AnimatePresence>
+            {trackingOrder && (
+              <div className="fixed inset-0 z-[550] flex items-center justify-center p-4 bg-[#021D24]/90 backdrop-blur-md">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
+                  animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden border border-white/20"
+                >
+                  <div className="bg-[#021D24] p-6 text-white relative">
+                    <button 
+                      onClick={() => setTrackingOrder(null)}
+                      className="absolute left-6 top-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition"
+                    >
+                      <span className="material-symbols-rounded">close</span>
+                    </button>
+                    
+                    <div className="flex flex-col items-center text-center pt-4">
+                      <div className="w-16 h-16 bg-[#F29124]/20 rounded-full flex items-center justify-center mb-4 relative">
+                        <span className="material-symbols-rounded text-4xl text-[#F29124] animate-pulse">radar</span>
+                        <span className="absolute inset-0 rounded-full border-2 border-[#F29124] animate-ping opacity-20"></span>
+                      </div>
+                      <h2 className="text-2xl font-black italic uppercase tracking-tighter">رادار المتابعة الحية</h2>
+                      <p className="text-[#1089A4] text-xs font-bold mt-1 uppercase tracking-widest">Live Delivery Intelligence</p>
+                    </div>
+                  </div>
+
+                  <div className="p-1 bg-gray-100">
+                    {trackingOrder.trackingLat && trackingOrder.trackingLng ? (
+                      <div className="relative h-[400px] w-full rounded-[2rem] overflow-hidden bg-gray-200">
+                        <iframe 
+                          title="Driver Location"
+                          width="100%" 
+                          height="100%" 
+                          frameBorder="0" 
+                          scrolling="no" 
+                          marginHeight={0} 
+                          marginWidth={0} 
+                          src={`https://www.openstreetmap.org/export/embed.html?bbox=${trackingOrder.trackingLng - 0.005}%2C${trackingOrder.trackingLat - 0.005}%2C${trackingOrder.trackingLng + 0.005}%2C${trackingOrder.trackingLat + 0.005}&layer=mapnik&marker=${trackingOrder.trackingLat}%2C${trackingOrder.trackingLng}`}
+                        ></iframe>
+                        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur p-4 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-4">
+                          <div className="w-10 h-10 bg-[#1089A4] rounded-xl flex items-center justify-center text-white">
+                            <span className="material-symbols-rounded">local_shipping</span>
+                          </div>
+                          <div>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase">المندوب حالياً في</p>
+                            <p className="text-sm font-black text-[#021D24]">{trackingOrder.city} — {trackingOrder.district}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="h-[400px] flex flex-col items-center justify-center text-center p-10 bg-gray-50 rounded-[2rem]">
+                        <span className="material-symbols-rounded text-7xl text-gray-200 mb-4 animate-bounce">location_off</span>
+                        <h3 className="text-xl font-bold text-gray-400">لا توجد إشارة GPS حالياً</h3>
+                        <p className="text-sm text-gray-300 mt-2">المندوب لم يقم بتفعيل بث الموقع من هاتفه بعد، أو قد يكون في منطقة تغطية ضعيفة.</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-8 flex items-center justify-between gap-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center border text-[#021D24]">
+                        <span className="material-symbols-rounded">person</span>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-400 font-bold">اسم المندوب</p>
+                        <p className="font-black text-[#021D24]">{trackingOrder.driver?.name || "مندوب مرسال"}</p>
+                      </div>
+                    </div>
+
+                    <a 
+                      href={`https://www.google.com/maps/search/?api=1&query=${trackingOrder.trackingLat},${trackingOrder.trackingLng}`}
+                      target="_blank"
+                      className="px-6 py-3 bg-[#021D24] text-white rounded-2xl text-xs font-black flex items-center gap-2 hover:bg-[#1089A4] transition shadow-xl shadow-[#021D24]/20"
+                    >
+                      <span className="material-symbols-rounded text-sm">map</span>
+                      Google Maps ↗
+                    </a>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
+
+          {/* ── Driver Assignment Modal ── */}
+          <AnimatePresence>
+            {assigningDriver && (
+              <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+                >
+                  <div className="bg-[#021D24] p-6 text-white text-center">
+                    <span className="material-symbols-rounded text-5xl text-[#F29124] mb-2">sports_motorsports</span>
+                    <h2 className="text-xl font-black">تعيين مندوب للتوصيل</h2>
+                    <p className="text-white/60 text-sm mt-1">اختر المندوب الذي سيقوم بتوصيل الطلب رقم: {assigningDriver.orderId.slice(-8)}</p>
+                  </div>
+                  
+                  <div className="p-6 space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-gray-400 block px-1">اختر المندوب المتاح</label>
+                      <select 
+                        className="input-mersal w-full"
+                        value={selectedDriverId}
+                        onChange={e => setSelectedDriverId(e.target.value)}
+                      >
+                        <option value="">-- اختر المندوب --</option>
+                        {drivers.map(d => (
+                          <option key={d.id} value={d.id}>
+                            {d.name} ({d.vehicleType})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {drivers.length === 0 && (
+                      <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-xs text-center font-bold">
+                        تنبيه: لا يوجد مناديب مسجلين. توجه لتبويب "المناديب" لإضافة مندوب أولاً.
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 pt-2">
+                      <button 
+                        onClick={() => { setAssigningDriver(null); setSelectedDriverId(""); }}
+                        className="flex-1 py-3 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition"
+                      >
+                        إلغاء
+                      </button>
+                      <button 
+                        disabled={!selectedDriverId || actionLoading === assigningDriver.orderId}
+                        onClick={submitDriverAssignment}
+                        className="flex-1 py-3 bg-[#F29124] text-white font-black rounded-xl shadow-lg shadow-[#F29124]/20 hover:bg-[#d98120] transition disabled:opacity-50"
+                      >
+                        {actionLoading === assigningDriver.orderId ? "جاري الحفظ..." : "تأكيد الشحن"}
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            )}
           </AnimatePresence>
         </div>
       </main>

@@ -91,7 +91,7 @@ export default function ProductCard({ id, title, price, image, vendor, location,
           </p>
         </Link>
 
-        <p className="text-[10px] text-[#1089A4] font-bold mb-0.5 truncate">{vendor}</p>
+        <p className="text-[10px] text-[#1089A4] font-bold mb-0.5 truncate">يباع بواسطة {vendor}</p>
 
         {location && (
           <p className="text-[10px] text-gray-400 flex items-center gap-0.5 mb-1">

@@ -69,13 +69,13 @@ export default function Navbar() {
         <div className="max-w-[1600px] mx-auto px-3 lg:px-6 h-14 flex items-center gap-2 lg:gap-4">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="relative w-10 h-10">
+          <Link href="/" className="flex items-center gap-3 shrink-0 group">
+            <div className="relative w-11 h-11">
               <Image src="/icon-mersal.png" alt="مرسال" fill className="object-contain" priority />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-black text-white tracking-tighter leading-none">مـرسـال</span>
-              <span className="text-[9px] text-white/70 font-bold tracking-widest uppercase">Mersal</span>
+              <span className="text-[10px] text-white/70 font-bold tracking-widest uppercase">Mersal</span>
             </div>
           </Link>
 
@@ -142,7 +142,7 @@ export default function Navbar() {
                 <div className="absolute left-0 top-full mt-2 w-52 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden z-50 text-right">
                   {isAuthenticated ? (
                     <>
-                      <div className="px-4 py-3 bg-[#021D24] text-white">
+                      <div className="px-4 py-3 bg-[#108DB2] text-white">
                         <p className="text-xs font-black">{session?.user?.name}</p>
                         <p className="text-[10px] text-white/40">{session?.user?.email}</p>
                       </div>
@@ -204,7 +204,7 @@ export default function Navbar() {
       </div>
 
       {/* ── SECONDARY NAV BAR ─────────────────────────────── */}
-      <div className="bg-[#1A3340] text-white">
+      <div className="bg-[#0E7694] text-white border-t border-white/10">
         <div className="max-w-[1600px] mx-auto px-3 lg:px-6 flex items-center gap-1 overflow-x-auto scrollbar-none h-10">
 
           {/* Hamburger "All" */}
@@ -235,7 +235,7 @@ export default function Navbar() {
             onClick={() => setShowCategories(false)}
           >
             <div
-              className="w-64 bg-[#021D24] h-full shadow-2xl p-4 text-white"
+              className="w-64 bg-[#108DB2] h-full shadow-2xl p-4 text-white"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-4">

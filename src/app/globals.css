@@ -417,16 +417,24 @@
     visibility: visible;
   }
 
-  /* تحديد موقع الورقة في أعلى الصفحة */
+  @page {
+    size: 100mm 150mm;
+    margin: 0;
+  }
+
+  /* تحديد موقع الورقة في أعلى الصفحة لتناسب أبعاد البوليصة */
   #shipping-label-print {
     position: absolute;
     left: 0;
     top: 0;
-    width: 210mm; /* A4 width or custom label width */
+    width: 100mm; 
+    height: 150mm;
+    max-height: 150mm;
     margin: 0;
     padding: 0;
     border: none;
     box-shadow: none !important;
+    overflow: hidden;
   }
 
   /* إلغاء الـ modal background والطبقات الشفافة */

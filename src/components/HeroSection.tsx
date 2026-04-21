@@ -7,17 +7,17 @@ import { cn } from "@/lib/utils";
 
 const SLIDES = [
   {
-    bg: "from-[#021D24] to-[#031F2C]",
-    tag: "🔥 عرض لفترة محدودة",
-    title: "اتسوّق بثقة",
-    subtitle: "نوصّل لبابك في السودان",
-    desc: "آلاف المنتجات من موردين موثوقين — توصيل سريع لكل أنحاء السودان",
-    cta: "تسوّق الآن",
-    ctaHref: "/shop",
-    sub: "ابدأ تجارتك مع مرسال",
+    bg: "from-[#F29124]/90 to-[#D97B10]",
+    tag: "📢 مساحة إعلانية",
+    title: "أعـلـن هـنـا",
+    subtitle: "احجز مساحتك",
+    desc: "عزز مبيعاتك واعرض منتجاتك لآلاف الزوار يومياً على منصة مرسال.",
+    cta: "تواصل معنا للإعلان",
+    ctaHref: "/contact",
+    sub: "تفاصيل الباقات",
     subHref: "/vendor/register",
-    img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800",
-    badge: "جديد وصل الآن",
+    img: "https://images.unsplash.com/photo-1557838923-2985c318be48?auto=format&fit=crop&q=80&w=1200",
+    badge: "مميز",
   },
   {
     bg: "from-[#0C3547] to-[#021D24]",

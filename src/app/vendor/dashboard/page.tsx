@@ -23,7 +23,7 @@ export default function VendorDashboard() {
         <div className="px-10 mb-16">
           <div className="flex items-center gap-4 group">
             <div className="relative w-12 h-12 overflow-hidden rounded-2xl bg-white p-2 shadow-2xl ring-4 ring-white/10">
-              <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
+              <Image src="/logo.png" alt="Logo" fill className="object-contain" />
             </div>
             <div className="flex flex-col">
               <span className="font-black text-xl tracking-tighter uppercase leading-none text-[#1089A4] font-heading">Mersal</span>

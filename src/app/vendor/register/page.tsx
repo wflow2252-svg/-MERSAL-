@@ -18,6 +18,8 @@ export default function VendorRegister() {
     phone: "",
     storeName: "",
     storeCity: "الخرطوم",
+    shippingModel: "MERSAL_HANDLES",
+    subscriptionPlan: "BASIC",
     bankStatementUrl: "placeholder_url",
     commercialRegUrl: "",
   });
@@ -139,13 +141,44 @@ export default function VendorRegister() {
                      <option>ود مدني</option>
                    </select>
                 </div>
+                
+                {/* Shipping Model Selection */}
+                <div className="space-y-1.5 pt-2">
+                   <label className="block text-[9px] md:text-[10px] font-black text-[#1089A4] uppercase tracking-[0.2em] mr-2 mb-2">نموذج الشحن والتخزين</label>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <button 
+                        onClick={() => setFormData({...formData, shippingModel: "MERSAL_HANDLES"})}
+                        className={cn("p-4 border-2 rounded-xl text-right transition-all", formData.shippingModel === "MERSAL_HANDLES" ? "border-[#1089A4] bg-sky-50" : "border-gray-200 hover:border-gray-300")}
+                      >
+                         <h4 className="text-sm font-black text-[#021D24] mb-1">المتجر مع التخزين</h4>
+                         <p className="text-[10px] text-gray-500">نقوم بتخزين منتجاتك وتغليفها وتوصيلها للعميل بالكامل.</p>
+                      </button>
+                      <button 
+                        onClick={() => setFormData({...formData, shippingModel: "VENDOR_PACKS"})}
+                        className={cn("p-4 border-2 rounded-xl text-right transition-all", formData.shippingModel === "VENDOR_PACKS" ? "border-[#F29124] bg-orange-50" : "border-gray-200 hover:border-gray-300")}
+                      >
+                         <h4 className="text-sm font-black text-[#021D24] mb-1">المتجر فقط</h4>
+                         <p className="text-[10px] text-gray-500">أنت تقوم بتجهيز الطلب، ونحن نرسل المندوب لاستلامه فقط.</p>
+                      </button>
+                   </div>
+                </div>
+
+                {/* Subscription Packages */}
+                <div className="space-y-1.5 pt-2">
+                   <label className="block text-[9px] md:text-[10px] font-black text-[#1089A4] uppercase tracking-[0.2em] mr-2">باقة الاشتراك</label>
+                   <select value={formData.subscriptionPlan} onChange={(e) => setFormData({...formData, subscriptionPlan: e.target.value})} className="input-field cursor-pointer bg-white border-2 border-gray-200">
+                     <option value="BASIC">الباقة الأساسية (مجانية - عمولة 5%)</option>
+                     <option value="PRO">باقة برو (15,000 ج.س شهرياً - بدون عمولة)</option>
+                     <option value="ELITE">باقة النخبة المخصصة (للمتاجر الكبرى)</option>
+                   </select>
+                </div>
               </div>
               <div className="flex gap-4 mt-10 md:mt-12">
                 <button onClick={prevStep} className="flex-1 py-4 md:py-5 text-[9px] md:text-[10px] font-black text-primary/30 hover:text-[#021D24] uppercase tracking-widest transition-all">خلف</button>
                 <button 
                   onClick={nextStep}
-                  disabled={!formData.storeName}
-                  className="flex-[2] btn-primary py-5 md:py-6 disabled:opacity-30 flex items-center justify-center gap-4 text-xs md:text-sm"
+                  disabled={!formData.storeName || !formData.shippingModel}
+                  className="flex-[2] btn-primary py-5 md:py-6 disabled:opacity-30 flex items-center justify-center gap-4 text-xs md:text-sm bg-[#021D24]"
                 >
                   التالي: التوثيق <ArrowLeft className="w-5 h-5" />
                 </button>

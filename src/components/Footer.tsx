@@ -60,8 +60,8 @@ export default function Footer() {
 
           {/* Logo + tagline */}
           <div className="flex items-center gap-4 mb-8 border-b border-white/10 pb-8">
-            <div className="relative w-12 h-12 bg-white rounded-lg p-2">
-              <Image src="/logo.jpg" alt="مرسال" fill className="object-contain" />
+            <div className="relative w-14 h-14">
+              <Image src="/logo.png" alt="مرسال" fill className="object-contain" />
             </div>
             <div>
               <p className="text-lg font-black text-white">مرسال | MERSAL</p>

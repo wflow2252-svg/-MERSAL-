@@ -73,21 +73,49 @@ export default function ProductTabHub() {
           </div>
         </div>
 
-        {/* ── Banner ad row (Amazon-style) ── */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* ── Advertisement Banner Row ── */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
           {[
-            { bg: "#021D24", text: "اتسوّق بثقة — الدفع عند الاستلام متاح", icon: "payments",       href: "/payment", btn: "اعرف أكثر" },
-            { bg: "#1089A4", text: "وصّل لك في 24 ساعة داخل الخرطوم",       icon: "local_shipping",  href: "/delivery", btn: "تفاصيل التوصيل" },
-            { bg: "#F29124", text: "ابدأ تجارتك مع مرسال — مجاناً",          icon: "store",           href: "/vendor/register", btn: "سجّل متجرك" },
+            { 
+               bg: "from-[#021D24] to-[#1089A4]", 
+               title: "مساحة إعلانية لمتجرك", 
+               desc: "أبرز منتجاتك أمام آلاف الزوار", 
+               icon: "campaign", 
+               href: "/contact", 
+               img: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=600" 
+            },
+            { 
+               bg: "from-[#F29124] to-[#D97B10]", 
+               title: "عرض لفترة محدودة؟", 
+               desc: "أعلن هنا عن أحدث التخفيضات", 
+               icon: "local_offer", 
+               href: "/contact", 
+               img: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=600"
+            },
+            { 
+               bg: "from-[#2C1810] to-[#4A2F25]", 
+               title: "منتجك الجديد", 
+               desc: "احجز مساحتك الآن للترويج", 
+               icon: "storefront", 
+               href: "/vendor/register",
+               img: "https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&q=80&w=600"
+            },
           ].map((b, i) => (
-            <div key={i} className="rounded-lg p-5 flex items-center justify-between gap-4 text-white" style={{ background: b.bg }}>
-              <div>
-                <p className="text-sm font-black mb-2">{b.text}</p>
-                <Link href={b.href} className="inline-block bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-4 py-1.5 rounded transition-colors">
-                  {b.btn}
-                </Link>
-              </div>
-              <span className="material-symbols-rounded text-4xl opacity-50">{b.icon}</span>
+            <div key={i} className={`relative overflow-hidden rounded-xl p-6 text-white min-h-[140px] flex items-end shadow-md transition-all hover:shadow-xl bg-gradient-to-l ${b.bg} group cursor-pointer`}>
+               {/* Background image overlay */}
+               <div className="absolute inset-0 z-0">
+                  <Image src={b.img} alt={b.title} fill className="object-cover opacity-20 group-hover:opacity-30 transition-opacity mix-blend-overlay" />
+               </div>
+               {/* Content */}
+               <div className="relative z-10 w-full flex items-center justify-between">
+                  <div>
+                    <h3 className="font-black text-base md:text-lg mb-1 drop-shadow-md">{b.title}</h3>
+                    <p className="text-[10px] md:text-xs text-white/90 font-bold max-w-[80%]">{b.desc}</p>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/30">
+                     <span className="material-symbols-rounded block">{b.icon}</span>
+                  </div>
+               </div>
             </div>
           ))}
         </div>

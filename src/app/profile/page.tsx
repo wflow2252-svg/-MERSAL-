@@ -156,7 +156,7 @@ export default function ProfilePage() {
                     className="relative shrink-0"
                  >
                     <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-[8px] md:border-[12px] border-white/10 shadow-2xl overflow-hidden relative z-20">
-                       <Image src={session.user?.image || "/logo.jpg"} alt={session.user?.name || ""} fill className="object-cover" />
+                       <Image src={session.user?.image || "/logo.png"} alt={session.user?.name || ""} fill className="object-cover" />
                     </div>
                     <div className="absolute -bottom-2 right-1/2 translate-x-1/2 md:translate-x-0 md:right-0 bg-secondary text-white p-3 md:p-5 rounded-2xl md:rounded-3xl shadow-2xl z-30 border-4 border-[#010103]">
                        <span className="material-symbols-rounded text-xl md:text-3xl">workspace_premium</span>

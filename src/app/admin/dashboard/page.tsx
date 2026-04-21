@@ -43,6 +43,7 @@ const ROLES: Record<string, string> = {
   PACKING:          "مسؤول التغليف",
   SHIPPING:         "مسؤول الشحن",
   CUSTOMER_SERVICE: "خدمة العملاء",
+  INVENTORY:        "أمين المخزون",
   ADMIN:            "مدير",
 };
 
@@ -51,11 +52,8 @@ const ROLE_PERMISSIONS: Record<string, TabId[]> = {
   PACKING: ["orders", "inventory"],
   SHIPPING: ["orders", "drivers"],
   CUSTOMER_SERVICE: ["overview", "approvals", "orders", "users"],
+  INVENTORY: ["inventory", "categories", "vendors"],
 };
-
-// ── Shipping Label Component ───────────────────────────
-function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) {
-  const handlePrint = () => window.print();
 
 // ── Shipping Label Component ───────────────────────────
 function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) {
@@ -65,129 +63,113 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
     <div className="fixed inset-0 z-[999] bg-black/60 flex items-center justify-center p-4 print:bg-white print:p-0 print:block" onClick={onClose}>
       <div
         id="shipping-label-print"
-        className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden print:shadow-none print:rounded-none print:w-[100mm] print:mx-auto print:border"
+        className="bg-white max-w-[100mm] w-full min-h-[150mm] mx-auto overflow-hidden print:w-[100mm] print:h-[150mm] print:overflow-hidden print:mx-auto border print:border-none shadow-2xl print:shadow-none"
         onClick={(e) => e.stopPropagation()}
         dir="rtl"
       >
-        {/* Header */}
-        <div className="bg-[#021D24] text-white p-5 flex items-center justify-between print:bg-[#021D24] print:!text-white border-b print:border-black">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center print:border print:border-black">
-              <span className="material-symbols-rounded text-[#1089A4]">local_shipping</span>
+        {/* Print Content Area (thermal receipt style) */}
+        <div className="p-3 text-[10px] font-medium text-black leading-tight bg-white h-full relative">
+          
+          {/* Header */}
+          <div className="flex justify-between items-center border-b-2 border-black pb-2 mb-2">
+            <div className="text-left w-1/2">
+               {/* Faux Barcode */}
+               <div className="font-mono text-xs tracking-widest bg-black text-white px-1 mt-1 text-center font-bold absolute top-0 left-0">
+                 ||| | || |  ||| | ||
+               </div>
+               <p className="mt-5 text-[9px] font-bold">{order.id?.slice(-12).toUpperCase()}</p>
             </div>
-            <div>
-              <p className="font-black text-sm">مرسال | MERSAL</p>
-              <p className="text-[10px] text-white/50">ورقة الشحن الإلكترونية</p>
+            <div className="w-1/2 flex flex-col items-center border-r-2 border-black">
+               <Image src="/logo.png" alt="Morsall" width={80} height={40} className="object-contain" />
+               <p className="font-bold uppercase text-[9px] mt-1 tracking-widest">morsall</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-white/50 hover:text-white print:hidden">
-            <span className="material-symbols-rounded">close</span>
-          </button>
+
+          <div className="flex justify-between text-[8px] font-bold border-b border-black pb-1 mb-1">
+             <span>المشغل المعتمد: مرسال</span>
+             <span dir="ltr">{new Date(order.createdAt).toLocaleDateString("en-GB")}</span>
+          </div>
+
+          {/* Sender / Receiver Grid */}
+          <div className="grid grid-cols-2 border-b-2 border-black pb-2 mb-2 bg-gray-50 print:bg-white">
+             <div className="border-l border-black pl-2 space-y-1">
+                <div className="flex gap-1 text-[8px]"><span className="text-gray-500 w-8">من:</span> <strong>الخرطوم</strong></div>
+                <div className="flex gap-1"><span className="text-gray-500 text-[8px] w-8">المرسل:</span> <strong>Mersall Hub</strong></div>
+             </div>
+             <div className="pr-2 space-y-1">
+                <div className="flex gap-1 text-[8px]"><span className="text-gray-500 w-8">إلى:</span> <strong>{order.city}</strong></div>
+                <div className="flex gap-1"><span className="text-gray-500 text-[8px] w-8">المستقبل:</span> <strong>{order.customerName || order.customer?.name}</strong></div>
+             </div>
+          </div>
+
+          {/* Addresses */}
+          <div className="grid grid-cols-2 border-b border-black pb-2 mb-2">
+            <div className="border-l border-black pl-2">
+              <p className="text-[7px] text-gray-500 mb-0.5">العنوان التفصيلي للمرسل:</p>
+              <p className="text-[8px] font-bold">الخرطوم - مركز معالجة طلبات مرسال</p>
+            </div>
+            <div className="pr-2">
+              <p className="text-[7px] text-gray-500 mb-0.5">العنوان التفصيلي للمستلم:</p>
+              <p className="text-[8px] font-bold leading-relaxed">{`${order.street}، ${order.district}، ${order.city}`}</p>
+              <p className="font-mono text-[9px] mt-1" dir="ltr">{order.phone}</p>
+            </div>
+          </div>
+
+          {/* Financials & Packages Grid */}
+          <div className="border-b-2 border-black pb-2 mb-2 uppercase pb-2">
+             <div className="grid grid-cols-2 text-[9px] mb-1">
+                <div className="border-l border-black text-center"><span className="text-gray-500 text-[7px] block">قيمة التحصيل (SAR)</span><strong className="text-sm">{order.paymentMethod === "COD" ? `ج.س ${order.totalAmount}` : "0 ج.س"}</strong></div>
+                <div className="text-center"><span className="text-gray-500 text-[7px] block">نوع الدفع</span><strong className="text-[10px]">{order.paymentMethod === "COD" ? "دفع عند الاستلام" : "مدفوع مسبقاً"}</strong></div>
+             </div>
+             <div className="grid grid-cols-4 text-center text-[8px] border-t border-black pt-1">
+                 <div className="border-l border-black">
+                    <span className="text-gray-500 text-[7px] block">الوزن</span> 1 KG
+                 </div>
+                 <div className="border-l border-black">
+                    <span className="text-gray-500 text-[7px] block">الكمية</span> {order.items?.length || 1}
+                 </div>
+                 <div className="border-l border-black">
+                    <span className="text-gray-500 text-[7px] block">محاولات</span> 0
+                 </div>
+                 <div>
+                    <span className="text-gray-500 text-[7px] block">المندوب</span> {order.driver?.name || "—"}
+                 </div>
+             </div>
+          </div>
+
+          {/* Contents */}
+          <div className="min-h-[30mm]">
+             <p className="text-[8px] text-gray-500 mb-1 border-b border-black pb-0.5 w-max">محتوى الطرد:</p>
+             <div className="flex flex-wrap gap-1">
+                {order.items?.map((item: any, i: number) => (
+                  <span key={i} className="bg-gray-100 px-1 py-0.5 rounded-sm font-bold text-[7px] border border-gray-300 print:border-black uppercase">
+                     {item.quantity}x {item.product?.title?.substring(0, 20)}
+                  </span>
+                ))}
+             </div>
+             {order.notes && (
+               <div className="mt-2 pt-1 border-t border-dashed border-gray-400">
+                  <span className="text-[7px] text-gray-500">الملاحظات: </span>
+                  <span className="text-[8px] font-bold">{order.notes}</span>
+               </div>
+             )}
+          </div>
+
+          {/* Barcode Footer */}
+          <div className="absolute bottom-2 left-0 w-full text-center">
+             <div className="font-mono text-center mb-1 font-bold text-xs">
+                | || | ||| | ||| || | 
+             </div>
+             <p className="text-[6px] tracking-widest uppercase">M E R S A L L   L O G I S T I C S</p>
+          </div>
         </div>
 
-        <div className="p-6 space-y-5 text-sm font-medium">
-          {/* Order Info */}
-          <div className="flex justify-between items-center text-xs text-gray-500 border-b border-dashed pb-3">
-            <span>رقم الطلب: <strong className="text-[#021D24] text-sm">#{order.id?.slice(-8).toUpperCase()}</strong></span>
-            <span>{new Date(order.createdAt).toLocaleDateString("ar-EG")}</span>
-          </div>
-
-          {/* Customer Info */}
-          <div className="space-y-3 bg-gray-50 rounded-lg p-4 border border-gray-100 print:bg-gray-50 print:border-gray-300">
-            <p className="text-xs font-black text-[#1089A4] uppercase mb-4 border-b pb-1">📍 بيانات التوصيل</p>
-            
-            <div className="flex flex-wrap gap-y-4">
-              <div className="w-1/2">
-                <span className="text-[10px] text-gray-400 block mb-0.5">اسم المستلم</span>
-                <strong className="text-sm">{order.customerName || order.customer?.name || "—"}</strong>
-              </div>
-              <div className="w-1/2">
-                <span className="text-[10px] text-gray-400 block mb-0.5">رقم الهاتف</span>
-                <strong className="text-sm" dir="ltr">{order.phone}</strong>
-              </div>
-              <div className="w-full">
-                <span className="text-[10px] text-gray-400 block mb-0.5">العنوان بالتفصيل</span>
-                <strong className="text-sm">{order.city} — {order.district} — {order.street}</strong>
-              </div>
-              <div className="w-full">
-                <span className="text-[10px] text-gray-400 block mb-0.5">البريد الإلكتروني</span>
-                <p className="text-xs">{order.customerEmail || order.customer?.email || "—"}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Items */}
-          <div className="space-y-2 pb-3">
-            <p className="text-xs font-black text-gray-500 uppercase mb-2">📦 محتويات الطرد</p>
-            <div className="border rounded-lg overflow-hidden">
-               {order.items?.map((item: any, i: number) => (
-                <div key={i} className="flex justify-between items-center text-xs p-2 border-b last:border-0 bg-white">
-                  <span className="max-w-[70%]">{item.product?.title}</span>
-                  <span className="font-bold bg-gray-100 px-2 py-0.5 rounded">× {item.quantity}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Logistics */}
-          {(order.driver || order.estimatedDays) && (
-            <div className="flex bg-sky-50/50 p-3 rounded-lg border border-sky-100 text-[10px] gap-6">
-              {order.driver && (
-                <div>
-                  <span className="text-gray-400 block">المندوب القائم بالتوصيل</span>
-                  <p className="font-bold text-sm text-[#021D24]">{order.driver.name}</p>
-                </div>
-              )}
-              {order.estimatedDays && (
-                <div className="mr-auto text-left">
-                  <span className="text-gray-400 block">الوصول المتوقع</span>
-                  <p className="font-bold text-sm text-[#1089A4]">{order.estimatedDays} أيام</p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Summary & Payment */}
-          <div className="flex justify-between items-end border-t-2 border-dashed pt-4">
-            <div>
-              <p className="text-xs text-gray-400 mb-1">طريقة الدفع</p>
-              <span className="px-3 py-1 bg-gray-100 rounded-full font-bold text-xs">
-                {order.paymentMethod === "COD" ? "💵 عند الاستلام" : "🏦 تحويل بنكي"}
-              </span>
-            </div>
-            <div className="text-left">
-              <p className="text-xs text-gray-400 mb-1">المبلغ الإجمالي</p>
-              <p className="font-black text-xl text-[#021D24]">{order.totalAmount?.toLocaleString()} <small className="text-[10px] font-normal">ج.س</small></p>
-            </div>
-          </div>
-
-          {order.notes && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-[10px]">
-              <span className="font-bold text-yellow-700">ملاحظات العميل: </span>{order.notes}
-            </div>
-          )}
-        </div>
-
-        {/* Footer for paper */}
-        <div className="hidden print:block text-center py-6 bg-gray-50 border-t border-gray-200">
-          <p className="text-[10px] text-gray-400 italic">هذه الورقة تم إنشاؤها عبر منصة مرسال — mersal.com</p>
-        </div>
-
-        {/* Print Button */}
-        <div className="p-4 bg-gray-50 border-t flex gap-3 print:hidden">
-          <button
-            onClick={handlePrint}
-            className="flex-1 bg-[#021D24] text-white py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2"
-          >
-            <span className="material-symbols-rounded text-sm">print</span>
-            طباعة الورقة
+        {/* Action Buttons (Hidden on Print) */}
+        <div className="absolute bottom-[-60px] left-0 w-full flex gap-2 print:hidden pb-4 px-4 bg-black/60 pt-4 rounded-b-xl border-t border-white/20">
+          <button onClick={handlePrint} className="flex-1 bg-[#1089A4] text-white py-2 rounded-lg font-bold text-xs shadow-lg flex items-center justify-center gap-1">
+            <span className="material-symbols-rounded text-sm">print</span> طباعة
           </button>
-          <button
-            onClick={onClose}
-            className="px-4 py-2.5 border border-gray-200 rounded-lg font-bold text-sm text-gray-500"
-          >
-            إغلاق
-          </button>
+          <button onClick={onClose} className="bg-white/10 text-white px-4 py-2 rounded-lg font-bold text-xs hover:bg-white/20">إغلاق</button>
         </div>
       </div>
     </div>
@@ -363,10 +345,12 @@ export default function AdminDashboard() {
   }, [trackingOrder]);
 
   // ── Actions ──
-  const handleExportExcel = async () => {
+  const handleExportExcel = async (dataOrType?: any[]) => {
     try {
-      const XLSX = await import("xlsx");
-      const exportData = inventoryProducts.map(p => ({
+      const { exportToExcel } = await import("@/lib/excel");
+      const dataToExport = dataOrType || inventoryProducts;
+      
+      const exportData = dataToExport.map((p: any) => ({
         "معرف المنتج (ID)": p.id,
         "اسم المنتج": p.title,
         "تاريخ الإضافة": new Date(p.createdAt).toLocaleDateString('ar-EG'),
@@ -376,10 +360,8 @@ export default function AdminDashboard() {
         "اسم البائع": p.vendor?.storeName || "—",
         "القسم": p.category?.name || "—"
       }));
-      const worksheet = XLSX.utils.json_to_sheet(exportData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "المنتجات والمخزون");
-      XLSX.writeFile(workbook, `مرسال_المخزون_${new Date().toISOString().slice(0,10)}.xlsx`);
+      
+      exportToExcel(exportData, "مرسال_المخزون");
     } catch (err) {
       alert("حدث خطأ أثناء تصدير الملف.");
     }
@@ -390,22 +372,16 @@ export default function AdminDashboard() {
     if (!file) return;
     setActionLoading("import_excel");
     try {
-      const XLSX = await import("xlsx");
-      const reader = new FileReader();
-      reader.onload = async (evt) => {
-        const bstr = evt.target?.result;
-        const workbook = XLSX.read(bstr, { type: "binary" });
-        const wsname = workbook.SheetNames[0];
-        const ws = workbook.Sheets[wsname];
-        const data = XLSX.utils.sheet_to_json(ws);
-        
-        const formattedData = data.map((row: any) => ({
-          id: row["معرف المنتج (ID)"],
-          title: row["اسم المنتج"],
-          price: row["السعر الحالي (ج.س)"],
-          stock: row["الكمية المتوفرة (Stock)"],
-          status: row["الحالة"]
-        })).filter(p => !!p.id);
+      const { importFromExcel } = await import("@/lib/excel");
+      const data = await importFromExcel(file);
+      
+      const formattedData = data.map((row: any) => ({
+        id: row["معرف المنتج (ID)"],
+        title: row["اسم المنتج"],
+        price: row["السعر الحالي (ج.س)"],
+        stock: row["الكمية المتوفرة (Stock)"],
+        status: row["الحالة"]
+        })).filter((p: any) => !!p.id);
 
         if (formattedData.length > 0) {
           const res = await fetch("/api/admin/inventory", {
@@ -421,8 +397,6 @@ export default function AdminDashboard() {
           }
         }
         setActionLoading(null);
-      };
-      reader.readAsBinaryString(file);
     } catch (err) {
       alert("فشل قراءة ومسح الملف.");
       setActionLoading(null);
@@ -610,8 +584,8 @@ export default function AdminDashboard() {
       {/* ── Sidebar ── */}
       <aside className="hidden lg:flex w-72 bg-[#021D24] text-white flex-col pt-28 shadow-2xl z-20 overflow-y-auto">
         <div className="px-6 mb-8 flex flex-col items-center gap-4 text-center">
-          <div className="relative w-20 h-20 rounded-2xl bg-white p-3 shadow-lg border border-white/10">
-            <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
+          <div className="relative w-24 h-24 mb-2">
+            <Image src="/logo.png" alt="Logo" fill className="object-contain" />
           </div>
           <div>
             <span className="font-black text-2xl text-[#1089A4] tracking-tight block">مـرسـال</span>

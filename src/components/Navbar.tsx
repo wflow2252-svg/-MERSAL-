@@ -70,8 +70,8 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="relative w-9 h-9 bg-white rounded p-1">
-              <Image src="/logo.jpg" alt="مرسال" fill className="object-contain" priority />
+            <div className="relative w-10 h-10">
+              <Image src="/logo.png" alt="مرسال" fill className="object-contain" priority />
             </div>
             <span className="hidden sm:block text-lg font-black text-white tracking-tight leading-none">
               مرسال

@@ -193,10 +193,9 @@ export default function LoginPage() {
                 <motion.div 
                    whileHover={{ rotate: 360, scale: 1.1 }}
                    transition={{ duration: 1, ease: "circInOut" }}
-                   className="w-20 h-20 bg-white rounded-[1.5rem] p-4 flex items-center justify-center shadow-elite-xl relative"
+                   className="w-24 h-24 flex items-center justify-center relative"
                 >
-                   <Image src="/logo.jpg" alt="Logo" width={80} height={80} className="object-contain" />
-                   <div className="absolute inset-0 rounded-[2rem] border-2 border-primary/20 animate-pulse" />
+                   <Image src="/logo.png" alt="Logo" width={96} height={96} className="object-contain" />
                 </motion.div>
                 <div className="flex flex-col">
                    <RevealText text="MORSALL" className="text-3xl font-black text-white tracking-[-0.05em] h-8" />

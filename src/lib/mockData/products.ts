@@ -17,6 +17,7 @@ export interface Product {
   colors?: { name: string; hex: string }[];
   sizes?: string[];
   otherOffers?: { vendor: string; price: number; rating: number }[];
+  brand?: string;
 }
 
 export const MOCK_PRODUCTS: Product[] = [

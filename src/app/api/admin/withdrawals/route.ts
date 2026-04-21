@@ -18,7 +18,7 @@ export async function GET() {
       orderBy: { createdAt: 'desc' }
     });
 
-    return NextResponse.json(withdrawals.map(w => ({
+    return NextResponse.json(withdrawals.map((w: any) => ({
       id: w.id,
       vendor: w.vendor.storeName,
       amount: w.amount,

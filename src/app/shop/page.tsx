@@ -35,12 +35,12 @@ export default async function ShopPage(props: {
     take: 48,
   });
 
-  const products = dbProducts.map(p => ({
+  const products = dbProducts.map((p: any) => ({
     id: p.id,
     title: p.title,
     price: p.price,
     vendor: p.vendor.storeName,
-    location: p.vendor.location ?? "",
+    vendorLocation: p.vendor.location ?? "",
     image: p.images?.split(",")[0] || "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&q=80&w=800",
     badge: p.purchaseCount > 5 ? "الأكثر مبيعاً" : undefined,
   }));
@@ -100,7 +100,7 @@ export default async function ShopPage(props: {
           {/* Products Grid */}
           {products.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
-              {products.map(p => (
+              {products.map((p: any) => (
                 <ProductCard key={p.id} {...p} />
               ))}
             </div>

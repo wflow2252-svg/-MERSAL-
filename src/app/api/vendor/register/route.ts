@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     }
 
     // 3. Create Vendor Profile and update User Role
-    const vendor = await prisma.$transaction(async (tx) => {
+    const vendor = await prisma.$transaction(async (tx: any) => {
       // Update User
       await tx.user.update({
         where: { id: user.id },

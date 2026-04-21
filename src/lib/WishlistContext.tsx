@@ -21,7 +21,9 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const savedFavs = localStorage.getItem('mersal_favorites');
     const savedCompare = localStorage.getItem('mersal_compare');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedFavs) setFavorites(JSON.parse(savedFavs));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedCompare) setCompareList(JSON.parse(savedCompare));
   }, []);
 

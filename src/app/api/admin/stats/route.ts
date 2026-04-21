@@ -36,7 +36,7 @@ export async function GET() {
         { label: "صافي أرباح الموقع", value: `${netProfit.toLocaleString()} ج.س`, icon: "trending_up", color: "bg-gradient-to-br from-[#021D24] to-[#010D11]" },
       ],
       pendingWithdrawals: totalWithdrawals,
-      pendingVendors: pendingVendorsList.map(v => ({
+      pendingVendors: pendingVendorsList.map((v: any) => ({
         id: v.id,
         name: v.user?.name || "بدون اسم",
         store: v.storeName,

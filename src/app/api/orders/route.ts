@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       })
       : [];
 
-    const productMap = Object.fromEntries(dbProducts.map(p => [p.id, p]));
+    const productMap = Object.fromEntries(dbProducts.map((p: any) => [p.id, p]));
 
     // Fetch a fallback product in case of demo items added from frontend
     let fallbackProduct = await prisma.product.findFirst({ select: { id: true, vendorId: true } });

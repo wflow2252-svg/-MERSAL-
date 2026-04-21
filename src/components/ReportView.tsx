@@ -89,7 +89,7 @@ export default function ReportView({ title, subtitle, data, columns }: ReportVie
       {/* Report Footer */}
       <div className="px-10 py-6 bg-muted/10 text-center border-t border-border">
         <p className="text-[10px] font-bold text-foreground/30">
-          تم إنشاء هذا التقرير آلياً بواسطة نظام مرسال "Mersal Dashboard" - جميع الحقوق محفوظة {new Date().getFullYear()}
+          تم إنشاء هذا التقرير آلياً بواسطة نظام مرسال &quot;Mersal Dashboard&quot; - جميع الحقوق محفوظة {new Date().getFullYear()}
         </p>
       </div>
     </div>

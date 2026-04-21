@@ -9,9 +9,9 @@ interface RelatedUpsellProps {
 }
 
 export default function RelatedUpsell({ mainProduct, upsellProducts }: RelatedUpsellProps) {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>(() => upsellProducts.map(p => p.id));
   
-  // Initialize with all upsells selected for maximum impact
+  // Update selection if upsellProducts changes externally
   useEffect(() => {
     setSelectedIds(upsellProducts.map(p => p.id));
   }, [upsellProducts]);

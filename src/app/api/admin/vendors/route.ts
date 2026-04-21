@@ -20,7 +20,7 @@ export async function GET() {
       orderBy: { createdAt: 'desc' }
     });
 
-    return NextResponse.json(vendors.map(v => ({
+    return NextResponse.json(vendors.map((v: any) => ({
       id: v.id,
       name: v.storeName,
       owner: v.user?.name || "بدون اسم",

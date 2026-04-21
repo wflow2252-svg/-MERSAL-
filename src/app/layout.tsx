@@ -7,16 +7,16 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import ScrollToTop from "@/components/ScrollToTop";
 
 export const metadata = {
-  title: "Mersal Elite | Luxury Marketplace & Vendor Hub",
-  description: "Experience the world-class marketplace for elite products, luxury vendors, and a seamless shopping journey in Sudan and beyond.",
-  keywords: ["Mersal", "Elite", "Luxury Marketplace", "Sudan Shopping", "Premium Vendors", "Bento Design"],
-  authors: [{ name: "Mersal Team" }],
+  title: "مرسال | اتسوّق بثقة — نوصّل لبابك في السودان",
+  description: "مرسال منصة التجارة الإلكترونية الأولى في السودان — آلاف المنتجات، توصيل سريع، ودفع آمن.",
+  keywords: ["مرسال", "تسوق", "السودان", "توصيل", "الخرطوم", "منتجات", "متجر إلكتروني"],
+  authors: [{ name: "فريق مرسال" }],
   openGraph: {
-    title: "Mersal Elite | The Gold Standard of Shopping",
-    description: "Discover curated luxury products from top-tier vendors in an elite, high-fidelity digital marketplace.",
+    title: "مرسال | ابدأ تجارتك أو اتسوّق الآن",
+    description: "آلاف المنتجات من موردين موثوقين — توصيل لكل أنحاء السودان.",
     url: "https://morsall.com",
-    siteName: "Mersal Elite",
-    locale: "ar_SA",
+    siteName: "مرسال",
+    locale: "ar_SD",
     type: "website",
   },
   icons: {
@@ -36,7 +36,8 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Inter:wght@400;700;900&display=swap" rel="stylesheet" />
+        {/* JF Flat — الخط العربي الرسمي للمنصة */}
+        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
       </head>
       <body>

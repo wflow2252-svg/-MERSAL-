@@ -69,14 +69,16 @@ model Vendor {
   userId           String       @unique
   storeName        String
   storeDescription String?
-  bankStatementUrl String
+  bankStatementUrl String?
   commercialRegUrl String?
   status           String       @default("PENDING")
-  commissionType   String       @default("PERCENTAGE") // PERCENTAGE, FIXED, SUBSCRIPTION
+  commissionType   String       @default("PERCENTAGE")
   commissionRate   Float        @default(10.0)
   fixedFee         Float        @default(0.0)
   subscriptionFee  Float        @default(0.0)
-  location         String
+  location         String?
+  shippingModel    String       @default("VENDOR_PACKS") // VENDOR_PACKS | MERSAL_HANDLES
+  phone            String?
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
   orderItems       OrderItem[]
@@ -113,20 +115,32 @@ model Category {
 }
 
 model Order {
-  id            String      @id @default(cuid())
-  customerId    String
-  status        String      @default("PENDING")
-  totalAmount   Float
-  shippingCost  Float
-  paymentMethod String
-  city          String
-  district      String
-  street        String
-  phone         String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  customer      User        @relation(fields: [customerId], references: [id])
-  items         OrderItem[]
+  id                String      @id @default(cuid())
+  customerId        String
+  status            String      @default("PENDING_APPROVAL")
+  // Statuses: PENDING_APPROVAL | APPROVED | PACKING | SHIPPED | DELIVERED | REJECTED
+  totalAmount       Float
+  shippingCost      Float       @default(0)
+  paymentMethod     String      // COD | BANK_TRANSFER
+  city              String
+  district          String
+  street            String
+  phone             String
+  customerEmail     String?
+  customerName      String?
+  notes             String?     // ملاحظات العميل
+  // Payment verification
+  paymentScreenshot String?     // رابط صورة الإيصال
+  paymentVerified   Boolean     @default(false)
+  paymentNote       String?     // ملاحظة الـ AI
+  // Tracking
+  trackingLat       Float?      // موقع المندوب
+  trackingLng       Float?
+  trackingNumber    String?     // رقم تتبع شركة الشحن
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  customer          User        @relation(fields: [customerId], references: [id])
+  items             OrderItem[]
 }
 
 model OrderItem {
@@ -136,6 +150,8 @@ model OrderItem {
   vendorId    String
   quantity    Int
   priceAtTime Float
+  size        String?
+  color       String?
   vendor      Vendor  @relation(fields: [vendorId], references: [id])
   product     Product @relation(fields: [productId], references: [id])
   order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
@@ -157,4 +173,40 @@ model Settings {
   platformCommission Float   @default(10.0)
   maintenanceMode    Boolean @default(false)
   maintenanceMessage String  @default("هناك خطأ تقني يجري إصلاحه")
+  // Payment Settings
+  codEnabled         Boolean @default(true)
+  codExtraFee        Float   @default(2000)
+  codCitiesOnly      String  @default("الخرطوم") // مدن الدفع عند الاستلام
+  bankTransferEnabled Boolean @default(true)
+  bankName           String  @default("")
+  bankAccountNumber  String  @default("")
+  bankAccountName    String  @default("")
+}
+
+// ── New Models ──────────────────────────────────────────
+
+model Employee {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  role      String   // PACKING | SHIPPING | CUSTOMER_SERVICE | ADMIN
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model DeliveryZone {
+  id       String  @id @default(cuid())
+  name     String  // اسم المنطقة (شمبات، بحري...)
+  city     String  // المدينة (الخرطوم، أم درمان...)
+  fee      Float   // رسوم التوصيل بالجنيه السوداني
+  isActive Boolean @default(true)
+}
+
+model ShippingProvider {
+  id        String   @id @default(cuid())
+  name      String   // اسم الشركة
+  apiKey    String   // API Key المشفّرة
+  baseUrl   String   // رابط الـ API
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
 }

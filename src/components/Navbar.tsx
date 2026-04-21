@@ -66,14 +66,20 @@ export default function Navbar() {
   return (
     <header className="w-full fixed top-0 left-0 z-[100] flex flex-col" dir="rtl">
 
-      {/* ── TOP BAR (RED) ─────────────────────────── */}
-      <div className="bg-[#CB2E26] text-white shadow-md">
+      {/* ── TOP BAR (DARK PREMIUM) ─────────────────────────── */}
+      <div className="bg-[#041D24] text-white shadow-md border-b border-white/5">
         <div className="max-w-[1600px] mx-auto px-3 lg:px-6 h-14 flex items-center gap-2 lg:gap-4">
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <div className="relative w-16 h-16">
-              <Image src="/icon-mersal.png" alt="مرسال" fill className="object-contain" priority />
+              <Image 
+                src="/icon-mersal.png" 
+                alt="مرسال" 
+                fill 
+                className="object-contain brightness-0 invert" 
+                priority 
+              />
             </div>
           </Link>
 
@@ -87,7 +93,7 @@ export default function Navbar() {
           </Link>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex-grow flex items-stretch rounded-lg overflow-hidden border-2 border-[#108DB2] transition-all focus-within:border-[#0D708E]">
+          <form onSubmit={handleSearch} className="flex-grow flex items-stretch rounded-lg overflow-hidden border-2 border-[#108DB2]/30 transition-all focus-within:border-[#108DB2]">
             {/* Category select */}
             <select className="hidden md:block bg-gray-100 text-gray-700 text-[11px] font-bold px-3 border-l border-gray-200 outline-none cursor-pointer min-w-[120px]">
               <option>كل الأقسام</option>

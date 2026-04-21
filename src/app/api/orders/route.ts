@@ -104,8 +104,8 @@ export async function POST(req: Request) {
     const order = await prisma.order.create({
       data: {
         customerId,
-        customerName: name || session?.user?.name || "",
-        customerEmail: email || session?.user?.email || "",
+        customerName: name || (session?.user as any)?.name || "",
+        customerEmail: email || (session?.user as any)?.email || "",
         phone: phone.trim(),
         city: city.trim(),
         district: (district || city).trim(),

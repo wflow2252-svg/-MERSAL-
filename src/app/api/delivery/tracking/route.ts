@@ -17,8 +17,8 @@ export async function PATCH(req: Request) {
     const order = await prisma.order.update({
       where: { id: orderId },
       data: {
-        trackingLat: parseFloat(lat),
-        trackingLng: parseFloat(lng),
+        trackingLat: Number(lat),
+        trackingLng: Number(lng),
       },
       select: {
         id: true,

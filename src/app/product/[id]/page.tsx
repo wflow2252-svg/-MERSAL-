@@ -1,6 +1,7 @@
 "use client"
 
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import { getProductById, getRelatedProducts, getVendorUpsells } from "@/lib/mockData/products";
 import ProductGallery from "@/components/product/ProductGallery";
 import ProductDetails from "@/components/product/ProductDetails";
@@ -75,7 +76,6 @@ export default function ProductPage() {
 
       <StickyCartBar product={product} />
     </div>
+  );
 }
-
-import Link from "next/link";
 

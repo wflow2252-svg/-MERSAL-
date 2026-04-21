@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
+const db = prisma as any;
+
 // GET — جلب كل الطلبات مع فلترة الحالة
 export async function GET(req: Request) {
   try {
@@ -18,7 +20,7 @@ export async function GET(req: Request) {
       ];
     }
 
-    const orders = await (prisma.order as any).findMany({
+    const orders = await db.order.findMany({
       where,
       orderBy: { createdAt: "desc" },
       include: {
@@ -35,6 +37,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(orders);
   } catch (error: any) {
+    console.error("GET Admin Orders Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -49,14 +52,17 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "id و status مطلوبان" }, { status: 400 });
     }
 
-    const updated = await (prisma.order as any).update({
+    const updateData: any = {
+      status,
+      updatedAt: new Date(),
+    };
+
+    if (trackingNumber) updateData.trackingNumber = trackingNumber;
+    if (driverId) updateData.driverId = driverId;
+
+    const updated = await db.order.update({
       where: { id },
-      data: {
-        status,
-        ...(trackingNumber && { trackingNumber }),
-        ...(driverId && { driverId }),
-        updatedAt: new Date(),
-      },
+      data: updateData,
       include: {
         customer: { select: { name: true, email: true, phone: true } },
         items: {
@@ -70,7 +76,7 @@ export async function PATCH(req: Request) {
     // لو الطلب اتأكد → نحاول نبعت لشركة الشحن تلقائياً
     if (status === "APPROVED") {
       try {
-        const provider = await prisma.shippingProvider.findFirst({ where: { isActive: true } });
+        const provider = await db.shippingProvider.findFirst({ where: { isActive: true } });
         if (provider) {
           await fetch(provider.baseUrl, {
             method: "POST",
@@ -86,8 +92,8 @@ export async function PATCH(req: Request) {
               city: updated.city,
               district: updated.district,
               street: updated.street,
-              items: updated.items.map((i: any) => ({
-                name: i.product.title,
+              items: (updated.items || []).map((i: any) => ({
+                name: i.product?.title || "منتج",
                 qty: i.quantity,
                 price: i.priceAtTime,
               })),
@@ -98,19 +104,23 @@ export async function PATCH(req: Request) {
             if (r.ok) {
               const data = await r.json();
               if (data.trackingNumber) {
-                await (prisma.order as any).update({
+                await db.order.update({
                   where: { id },
                   data: { trackingNumber: data.trackingNumber },
                 });
               }
             }
-          }).catch(() => {}); // الفشل لا يوقف العملية
+          }).catch(() => {});
         }
-      } catch {}
+      } catch (err) {
+        console.error("Shipping Provider Error:", err);
+      }
     }
 
     return NextResponse.json(updated);
   } catch (error: any) {
+    console.error("PATCH Admin Order Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+

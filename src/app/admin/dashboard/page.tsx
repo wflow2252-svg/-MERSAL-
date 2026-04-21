@@ -150,31 +150,38 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
              </div>
           </div>
 
-          {/* Contents */}
-          <div className="min-h-[40mm]">
+          {/* Contents - Dynamic scaling */}
+          <div className="flex-grow min-h-[40mm]">
              <p className="text-[10px] font-black mb-2 border-b-2 border-black pb-1 w-max">محتويات الشحنة:</p>
-             <div className="flex flex-col gap-2">
+             <div className={cn(
+               "flex flex-col gap-1",
+               order.items?.length > 5 ? "text-[9px]" : "text-[12px]"
+             )}>
                 {order.items?.map((item: any, i: number) => (
-                  <span key={i} className="font-black text-[12px] flex items-center gap-2">
-                     <span className="w-6 h-6 rounded bg-black text-white flex items-center justify-center text-[10px] shrink-0">{item.quantity}</span>
-                     {item.product?.title}
+                  <span key={i} className="font-black flex items-center gap-2 border-b border-gray-100 last:border-0 pb-1">
+                     <span className="w-5 h-5 rounded bg-black text-white flex items-center justify-center text-[9px] shrink-0 font-mono">{item.quantity}</span>
+                     <span className="truncate">{item.product?.title}</span>
                   </span>
                 ))}
              </div>
              {order.notes && (
-               <div className="mt-4 pt-2 border-t-2 border-dashed border-black">
-                  <span className="text-[10px] text-gray-500 font-bold">ملاحظات العميل: </span>
-                  <p className="text-[11px] font-black mt-1 leading-normal italic">{order.notes}</p>
+               <div className="mt-2 pt-1 border-t-2 border-dashed border-black/20">
+                  <span className="text-[9px] text-gray-400 font-bold italic">ملاحظات: </span>
+                  <p className="text-[10px] font-bold leading-tight">{order.notes}</p>
                </div>
              )}
           </div>
 
-          {/* UID Footer */}
-          <div className="absolute bottom-4 left-0 w-full text-center border-t-2 border-black pt-2">
-             <div className="font-mono text-center mb-1 font-black text-lg" dir="ltr">
+          {/* UID Footer - Pinned strictly to bottom of 150mm */}
+          <div className="mt-auto border-t-4 border-black pt-2 bg-white pb-1">
+             <div className="font-mono text-center mb-1 font-black text-xl tracking-widest" dir="ltr">
                 * {order.id?.slice(-8).toUpperCase()} *
              </div>
-             <p className="text-[10px] tracking-[0.3em] font-black uppercase">M E R S A L L   L O G I S T I C S</p>
+             <p className="text-[10px] tracking-[0.4em] font-black uppercase text-center">M E R S A L L   L O G I S T I C S</p>
+             <div className="flex justify-between items-center px-4 mt-1 border-t border-black/5 pt-1">
+                <span className="text-[8px] font-bold text-gray-400">Printed via Mersal Hub</span>
+                <span className="text-[8px] font-black uppercase">Standard v2.0</span>
+             </div>
           </div>
         </div>
       </div>

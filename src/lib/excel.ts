@@ -16,8 +16,16 @@ export function exportToExcel(data: any[], fileName: string) {
   // Convert JSON to worksheet
   const ws = XLSX.utils.json_to_sheet(data);
   
-  // Customizing columns widths (simple guess based on keys)
-  const colWidths = Object.keys(data[0] || {}).map(() => ({ wch: 20 }));
+  // Dynamic column widths
+  const keys = Object.keys(data[0] || {});
+  const colWidths = keys.map(key => {
+    let maxLen = key.length;
+    data.forEach(row => {
+      const val = row[key] ? String(row[key]) : "";
+      if (val.length > maxLen) maxLen = val.length;
+    });
+    return { wch: Math.min(Math.max(maxLen + 4, 15), 50) }; // cap between 15 and 50
+  });
   ws['!cols'] = colWidths;
   
   // Apply RTL direction to worksheet if supported by viewer

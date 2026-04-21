@@ -418,29 +418,33 @@
   }
 
   @page {
-    size: 100mm 150mm;
-    margin: 0;
+    size: 100mm 150mm !important;
+    margin: 0 !important;
   }
 
   /* تحديد موقع الورقة في أعلى الصفحة لتناسب أبعاد البوليصة */
   #shipping-label-print {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100mm; 
-    height: 150mm;
-    max-height: 150mm;
-    margin: 0;
-    padding: 0;
-    border: none;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100mm !important; 
+    height: 150mm !important;
+    max-height: 150mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
     box-shadow: none !important;
-    overflow: hidden;
+    overflow: hidden !important;
+    display: block !important;
+    background: white !important;
   }
 
   /* إلغاء الـ modal background والطبقات الشفافة */
   .fixed.inset-0.z-\[999\] {
-    background: transparent !important;
+    background: white !important;
     backdrop-filter: none !important;
+    position: absolute !important;
+    overflow: visible !important;
   }
 
   /* التأكد من طباعة الألوان والخلفيات */

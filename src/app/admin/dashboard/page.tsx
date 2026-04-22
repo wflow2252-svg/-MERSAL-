@@ -618,6 +618,35 @@ export default function AdminDashboard() {
     setDeliveryZones(prev => prev.filter(z => z.id !== id));
   };
 
+  const handleDeleteCategory = async (id: string) => {
+    if (!confirm("هل أنت متأكد من حذف هذا القسم؟")) return;
+    setActionLoading("cat");
+    const r = await fetch("/api/admin/categories", { method: "DELETE", body: JSON.stringify({ id }) });
+    if (r.ok) {
+      setCategories(prev => prev.filter(c => c.id !== id));
+      if (selectedCategory?.id === id) setSelectedCategory(null);
+    }
+    setActionLoading(null);
+  };
+
+  const handleCategoryIconChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setActionLoading("cat_upload");
+    const body = new FormData();
+    body.append("file", file);
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body });
+      const data = await res.json();
+      if (data.url) {
+        setNewCategory(p => ({ ...p, icon: data.url }));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    setActionLoading(null);
+  };
+
   const handleAddCategory = async () => {
     if (!newCategory.name) return;
     setActionLoading("cat");
@@ -625,7 +654,7 @@ export default function AdminDashboard() {
     if (r.ok) {
       const data = await r.json();
       setCategories(prev => [data, ...prev]);
-      setNewCategory({ name: "", icon: "📦" });
+      setNewCategory({ name: "", icon: "" });
     }
     setActionLoading(null);
   };
@@ -1082,10 +1111,24 @@ export default function AdminDashboard() {
                 {/* Add Category */}
                 <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
                   <h3 className="font-black text-[#021D24] mb-4">إضافة قسم جديد</h3>
-                  <div className="flex gap-3">
-                    <input value={newCategory.icon} onChange={e => setNewCategory(p => ({...p, icon: e.target.value}))} className="input-mersal w-20 text-center text-xl" placeholder="📦" />
-                    <input value={newCategory.name} onChange={e => setNewCategory(p => ({...p, name: e.target.value}))} className="input-mersal flex-1" placeholder="اسم القسم مثلاً: ملابس" />
-                    <button onClick={handleAddCategory} disabled={actionLoading === "cat"} className="btn-primary px-6 disabled:opacity-50">
+                  <div className="flex flex-col md:flex-row gap-3 items-center">
+                    <label className="relative cursor-pointer shrink-0">
+                      <div className="w-16 h-16 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50 hover:bg-gray-100 transition-colors">
+                        {newCategory.icon ? (
+                          <Image src={newCategory.icon} alt="icon" fill className="object-cover" />
+                        ) : (
+                          <span className="material-symbols-rounded text-gray-400">add_photo_alternate</span>
+                        )}
+                      </div>
+                      <input type="file" accept="image/*" onChange={handleCategoryIconChange} className="hidden" />
+                      {actionLoading === "cat_upload" && (
+                        <div className="absolute inset-0 bg-white/50 flex items-center justify-center">
+                           <span className="material-symbols-rounded animate-spin">sync</span>
+                        </div>
+                      )}
+                    </label>
+                    <input value={newCategory.name} onChange={e => setNewCategory(p => ({...p, name: e.target.value}))} className="input-mersal flex-1 h-12" placeholder="اسم القسم مثلاً: ملابس" />
+                    <button onClick={handleAddCategory} disabled={actionLoading === "cat"} className="btn-primary px-8 h-12 disabled:opacity-50">
                       إضافة +
                     </button>
                   </div>
@@ -1094,13 +1137,27 @@ export default function AdminDashboard() {
                 {/* Categories Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {categories.map(cat => (
-                    <div key={cat.id} className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer group" onClick={async () => {
-                      const r = await fetch(`/api/admin/categories?id=${cat.id}`);
-                      if (r.ok) setSelectedCategory(await r.json());
-                    }}>
-                      <div className="text-4xl mb-3">{cat.icon || "📦"}</div>
-                      <p className="font-black text-[#021D24]">{cat.name}</p>
-                      <p className="text-xs text-gray-400 mt-1">{cat._count?.products || 0} منتج</p>
+                    <div key={cat.id} className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow relative group">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleDeleteCategory(cat.id); }}
+                        className="absolute top-2 left-2 w-8 h-8 bg-red-50 text-red-500 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 hover:text-white"
+                      >
+                         <span className="material-symbols-rounded text-sm">delete</span>
+                      </button>
+                      <div className="cursor-pointer" onClick={async () => {
+                        const r = await fetch(`/api/admin/categories?id=${cat.id}`);
+                        if (r.ok) setSelectedCategory(await r.json());
+                      }}>
+                        <div className="w-16 h-16 mb-3 rounded-full overflow-hidden relative bg-gray-100 flex items-center justify-center mx-auto text-3xl">
+                          {cat.icon && (cat.icon.startsWith("http") || cat.icon.startsWith("/")) ? (
+                             <Image src={cat.icon} alt={cat.name} fill className="object-cover" />
+                          ) : (
+                             <span>{cat.icon || "📦"}</span>
+                          )}
+                        </div>
+                        <p className="font-black text-[#021D24] text-center">{cat.name}</p>
+                        <p className="text-xs text-gray-400 mt-1 text-center">{cat._count?.products || 0} منتج</p>
+                      </div>
                     </div>
                   ))}
                 </div>

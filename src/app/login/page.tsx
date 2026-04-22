@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -90,7 +90,8 @@ const RevealText = ({ text, className, delay = 0 }: { text: string; className?: 
   );
 };
 
-export default function LoginPage() {
+function LoginContent() {
+  const searchParams = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,6 +104,13 @@ export default function LoginPage() {
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab === "register") {
+      setIsLogin(false);
+    }
+  }, [searchParams]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
@@ -360,3 +368,12 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#01090C] flex items-center justify-center text-white">جاري الفحص...</div>}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+

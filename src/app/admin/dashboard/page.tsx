@@ -285,6 +285,21 @@ export default function AdminDashboard() {
   const [sysSettings, setSysSettings] = useState<any>(null);
   const [admins, setAdmins] = useState<any[]>([]);
 
+  // Orders Filter States
+  const [oContentSearch, setOContentSearch] = useState("");
+  const [oNotesSearch, setONotesSearch] = useState("");
+  const [oStatusFilter, setOStatusFilter] = useState("");
+  const [oTrackingSearch, setOTrackingSearch] = useState("");
+  const [oVendorFilter, setOVendorFilter] = useState("");
+  const [oPackageSearch, setOPackageSearch] = useState("");
+
+  // Inventory Filter States
+  const [pTitleSearch, setPTitleSearch] = useState("");
+  const [pCategoryFilter, setPCategoryFilter] = useState("");
+  const [pVendorSearch, setPVendorSearch] = useState("");
+  const [pStatusFilter, setPStatusFilter] = useState("");
+  const [pIdSearch, setPIdSearch] = useState("");
+
   // Form states
   const [newEmployee, setNewEmployee] = useState({ name: "", email: "", role: "PACKING" });
   const [newDriver, setNewDriver] = useState({ name: "", phone: "", vehicleType: "مواتر (دباب)" });
@@ -694,6 +709,29 @@ export default function AdminDashboard() {
     setActionLoading(null);
   };
 
+  // ── Computations for Filters ──
+  const filteredOrdersArray = orders.filter(o => {
+    if (orderSearch && !o.id?.includes(orderSearch)) return false;
+    if (oContentSearch && !(o.items?.[0]?.product?.title?.toLowerCase()?.includes(oContentSearch.toLowerCase()))) return false;
+    if (oNotesSearch && !o.notes?.toLowerCase()?.includes(oNotesSearch.toLowerCase())) return false;
+    if (oStatusFilter && oStatusFilter !== "الكل" && oStatusFilter !== "قيد المراجعة" && o.status !== oStatusFilter) return false;
+    if (oTrackingSearch && !o.trackingNumber?.toLowerCase()?.includes(oTrackingSearch.toLowerCase())) return false;
+    if (oVendorFilter && oVendorFilter !== "الكل" && !o.customerEmail?.toLowerCase()?.includes(oVendorFilter.toLowerCase())) return false;
+    if (oPackageSearch && !o.id?.toLowerCase()?.includes(oPackageSearch.toLowerCase())) return false;
+    return true;
+  });
+
+  const uniqueCategories = Array.from(new Set(inventoryProducts.map(p => p.category?.name).filter(Boolean)));
+  const filteredInventoryArray = inventoryProducts.filter(p => {
+    if (inventorySearch && !p.title?.toLowerCase()?.includes(inventorySearch.toLowerCase()) && !p.vendor?.storeName?.toLowerCase()?.includes(inventorySearch.toLowerCase())) return false;
+    if (pTitleSearch && !p.title?.toLowerCase()?.includes(pTitleSearch.toLowerCase())) return false;
+    if (pCategoryFilter && pCategoryFilter !== "الكل" && p.category?.name !== pCategoryFilter) return false;
+    if (pVendorSearch && !p.vendor?.storeName?.toLowerCase()?.includes(pVendorSearch.toLowerCase())) return false;
+    if (pStatusFilter && pStatusFilter !== "الكل" && p.status !== pStatusFilter) return false;
+    if (pIdSearch && !p.id?.toLowerCase()?.includes(pIdSearch.toLowerCase())) return false;
+    return true;
+  });
+
   // ── Loading ──
   if (status === "loading" || (loading && !stats.length && activeTab === "overview")) {
     return (
@@ -884,7 +922,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center gap-2">
                        <div className="bg-white border border-gray-200 rounded px-2 py-1.5 flex items-center gap-1">
                           <span className="material-symbols-rounded text-sm text-gray-400">search</span>
-                          <input type="text" placeholder="بحث..." className="bg-transparent outline-none w-24 text-xs" />
+                          <input type="text" value={orderSearch} onChange={e => setOrderSearch(e.target.value)} placeholder="بحث..." className="bg-transparent outline-none w-24 text-xs" />
                        </div>
                        <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-24"><option>تخصيص</option></select>
                        <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-20"><option>الكل</option></select>
@@ -898,7 +936,7 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Table */}
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto min-h-[400px]">
                     <table className="w-full text-center text-xs whitespace-nowrap">
                       <thead className="bg-white text-gray-500 border-b border-gray-200">
                         <tr>
@@ -906,7 +944,7 @@ export default function AdminDashboard() {
                           <th className="p-2 border-l min-w-[120px]">
                              <div className="font-bold mb-1">المحتوى</div>
                              <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <input type="text" value={oContentSearch} onChange={e => setOContentSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
                                 <span className="material-symbols-rounded text-[14px]">search</span>
                              </div>
                           </th>
@@ -914,16 +952,25 @@ export default function AdminDashboard() {
                           <th className="p-2 border-l min-w-[120px]">
                              <div className="font-bold mb-1">ملاحظات خاصة</div>
                              <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <input type="text" value={oNotesSearch} onChange={e => setONotesSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
                                 <span className="material-symbols-rounded text-[14px]">search</span>
                              </div>
                           </th>
                           {/* Status */}
                           <th className="p-2 border-l min-w-[120px]">
                              <div className="font-bold mb-1">الحالة</div>
-                             <div className="bg-blue-50 border border-blue-200 text-blue-600 rounded px-2 py-1 flex items-center justify-between font-bold text-[10px]">
-                                قيد المراجعة <span className="material-symbols-rounded text-[14px] cursor-pointer">close</span>
-                             </div>
+                             {oStatusFilter === "قيد المراجعة" ? (
+                               <div className="bg-blue-50 border border-blue-200 text-blue-600 rounded px-2 py-1 flex items-center justify-between font-bold text-[10px]">
+                                  قيد المراجعة <span className="material-symbols-rounded text-[14px] cursor-pointer" onClick={() => setOStatusFilter("")}>close</span>
+                               </div>
+                             ) : (
+                               <select value={oStatusFilter} onChange={e => setOStatusFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full">
+                                  <option value="">الكل</option>
+                                  <option value="قيد المراجعة">قيد المراجعة</option>
+                                  <option value="REJECTED">ملغاة</option>
+                                  <option value="COMPLETED">مكتمل</option>
+                               </select>
+                             )}
                           </th>
                           {/* Track */}
                           <th className="p-2 border-l">
@@ -933,7 +980,7 @@ export default function AdminDashboard() {
                           <th className="p-2 border-l min-w-[120px]">
                              <div className="font-bold mb-1">رقم الإرسالية</div>
                              <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <input type="text" value={oTrackingSearch} onChange={e => setOTrackingSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
                                 <span className="material-symbols-rounded text-[14px]">search</span>
                              </div>
                           </th>
@@ -948,7 +995,12 @@ export default function AdminDashboard() {
                           {/* Created By */}
                           <th className="p-2 border-l min-w-[140px]">
                              <div className="font-bold mb-1">تم إنشاؤها بواسطة</div>
-                             <select className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full"><option>الكل</option></select>
+                             <select value={oVendorFilter} onChange={e => setOVendorFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full">
+                                <option value="الكل">الكل</option>
+                                {Array.from(new Set(orders.map(o => o.customerEmail).filter(Boolean))).map(email => (
+                                   <option key={email as string} value={email as string}>{email as string}</option>
+                                ))}
+                             </select>
                           </th>
                           {/* Address */}
                           <th className="p-2 border-l min-w-[180px]">
@@ -962,7 +1014,7 @@ export default function AdminDashboard() {
                           <th className="p-2 border-l min-w-[120px]">
                              <div className="font-bold mb-1">رقم الطرد</div>
                              <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <input type="text" value={oPackageSearch} onChange={e => setOPackageSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
                                 <span className="material-symbols-rounded text-[14px]">search</span>
                              </div>
                           </th>
@@ -971,7 +1023,7 @@ export default function AdminDashboard() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
-                        {orders.map((order, i) => (
+                        {filteredOrdersArray.map((order, i) => (
                           <tr key={order.id} onClick={() => toggleOrderSelection(order.id)} className={`transition-colors cursor-pointer ${order.status === 'REJECTED' ? 'bg-[#ffb3b3] hover:bg-[#ffa3a3]' : 'bg-white hover:bg-gray-50'}`}>
                             <td className="p-3 border-l text-gray-400">
                                {order.notes || "—"}
@@ -1591,25 +1643,30 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Table */}
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto min-h-[400px]">
                     <table className="w-full text-center text-xs whitespace-nowrap">
                       <thead className="bg-white text-gray-500 border-b border-gray-200">
                         <tr>
                           <th className="p-2 border-l min-w-[120px]">
                              <div className="font-bold mb-1">المنتج</div>
                              <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <input type="text" value={pTitleSearch} onChange={e => setPTitleSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
                                 <span className="material-symbols-rounded text-[14px]">search</span>
                              </div>
                           </th>
                           <th className="p-2 border-l min-w-[120px]">
                              <div className="font-bold mb-1">القسم</div>
-                             <select className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full"><option>الكل</option></select>
+                             <select value={pCategoryFilter} onChange={e => setPCategoryFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full">
+                                <option value="الكل">الكل</option>
+                                {uniqueCategories.map(cat => (
+                                   <option key={cat as string} value={cat as string}>{cat as string}</option>
+                                ))}
+                             </select>
                           </th>
                           <th className="p-2 border-l min-w-[120px]">
                              <div className="font-bold mb-1">البائع</div>
                              <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <input type="text" value={pVendorSearch} onChange={e => setPVendorSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
                                 <span className="material-symbols-rounded text-[14px]">search</span>
                              </div>
                           </th>
@@ -1621,12 +1678,17 @@ export default function AdminDashboard() {
                           </th>
                           <th className="p-2 border-l min-w-[120px]">
                              <div className="font-bold mb-1">الحالة</div>
-                             <select className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full"><option>الكل</option></select>
+                             <select value={pStatusFilter} onChange={e => setPStatusFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full">
+                                <option value="الكل">الكل</option>
+                                <option value="APPROVED">نشط</option>
+                                <option value="PENDING">بانتظار الموافقة</option>
+                                <option value="REJECTED">مرفوض</option>
+                             </select>
                           </th>
                           <th className="p-2 border-l min-w-[120px]">
                              <div className="font-bold mb-1">معرف المنتج</div>
                              <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <input type="text" value={pIdSearch} onChange={e => setPIdSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
                                 <span className="material-symbols-rounded text-[14px]">search</span>
                              </div>
                           </th>
@@ -1634,7 +1696,7 @@ export default function AdminDashboard() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
-                        {inventoryProducts.map(p => (
+                        {filteredInventoryArray.map(p => (
                           <tr key={p.id} className={`transition-colors cursor-pointer ${p.status === 'REJECTED' ? 'bg-[#ffb3b3] hover:bg-[#ffa3a3]' : 'bg-white hover:bg-gray-50'}`}>
                             <td className="p-3 border-l font-bold text-gray-700 max-w-[200px] truncate">{p.title}</td>
                             <td className="p-3 border-l text-gray-500">{p.category?.name || '—'}</td>

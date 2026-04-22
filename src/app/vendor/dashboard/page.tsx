@@ -187,37 +187,76 @@ export default function VendorDashboard() {
 
           {activeTab === "products" && (
             <div className="space-y-12">
-               <h3 className="font-black text-4xl tracking-tighter text-[#021D24] font-heading">مخزون المنتجات</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {products.map(p => (
-                    <div key={p.id} className="bg-white p-8 rounded-[3rem] border-4 border-white shadow-xl flex items-center gap-6 group relative">
-                       <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-muted border border-border">
-                          <Image src={p.images?.split(",")[0] || "/placeholder.png"} alt={p.title} fill className="object-cover" />
-                       </div>
-                       <div className="flex-grow">
-                          <h4 className="font-black text-lg text-[#021D24] line-clamp-1">{p.title}</h4>
-                          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{p.category?.name || "بدون تصنيف"}</p>
-                          <div className="flex items-center gap-4 mt-3">
-                             <div className="flex flex-col">
-                                <span className="text-[10px] text-gray-300 font-black">السعر</span>
-                                <span className="font-black text-[#1089A4]">{p.price.toLocaleString()} ج.س</span>
-                             </div>
-                             <div className="w-px h-6 bg-gray-100" />
-                             <div className="flex flex-col">
-                                <span className="text-[10px] text-gray-300 font-black">المخزون</span>
-                                <span className="font-bold text-[#021D24]">{p.stock} قطعة</span>
-                             </div>
-                          </div>
-                       </div>
-                       <button 
-                        onClick={() => handleDeleteProduct(p.id)}
-                        className="absolute top-4 left-4 w-10 h-10 bg-red-50 text-red-500 rounded-xl opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-red-500 hover:text-white"
-                       >
-                          <span className="material-symbols-rounded text-lg">delete</span>
-                       </button>
-                    </div>
-                  ))}
+               <div className="flex items-center justify-between">
+                 <h3 className="font-black text-4xl tracking-tighter text-[#021D24] font-heading">مخزون المنتجات</h3>
+                 <button 
+                   onClick={() => setIsModalOpen(true)}
+                   className="hidden md:flex items-center gap-3 bg-[#1089A4] text-white px-8 py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-[#1089A4]/20 hover:scale-105 transition-all active:scale-95 border-b-4 border-black/10"
+                 >
+                   <span className="material-symbols-rounded text-lg">add_box</span>
+                   إضافة منتج جديد
+                 </button>
                </div>
+               {products.length === 0 ? (
+                 <div className="bg-white rounded-[4rem] p-24 text-center border-8 border-white shadow-2xl flex flex-col items-center gap-8 group">
+                    <div className="w-32 h-32 bg-muted rounded-[2.5rem] flex items-center justify-center group-hover:scale-110 transition-all border-4 border-white shadow-inner">
+                       <span className="material-symbols-rounded text-6xl text-gray-300">inventory</span>
+                    </div>
+                    <div className="space-y-2">
+                       <h4 className="text-3xl font-black text-[#021D24]">لا توجد منتجات حالياً</h4>
+                       <p className="text-gray-400 font-bold">ابدأ بإضافة أول منتج لمتجرك الآن!</p>
+                    </div>
+                    <button 
+                      onClick={() => setIsModalOpen(true)}
+                      className="bg-[#1089A4] text-white px-12 py-5 rounded-[2rem] font-black text-xs uppercase tracking-widest shadow-2xl shadow-[#1089A4]/20 hover:scale-105 transition-all active:scale-95 border-b-4 border-black/10"
+                    >
+                      إضافة منتجك الأول
+                    </button>
+                 </div>
+               ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {products.map(p => (
+                      <div key={p.id} className="bg-white p-8 rounded-[3rem] border-4 border-white shadow-xl flex items-center gap-6 group relative">
+                        <div className="flex flex-col gap-6 w-full">
+                          <div className="flex items-center gap-6">
+                            <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-muted border border-border flex-shrink-0">
+                                <Image src={p.images?.split(",")[0] || "/placeholder.png"} alt={p.title} fill className="object-cover" />
+                            </div>
+                            <div className="flex-grow">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h4 className="font-black text-lg text-[#021D24] line-clamp-1">{p.title}</h4>
+                                  <span className={cn(
+                                    "px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-tighter",
+                                    p.status === "PENDING" ? "bg-orange-500/10 text-orange-600 border border-orange-200" : "bg-green-500/10 text-green-600 border border-green-200"
+                                  )}>
+                                    {p.status === "PENDING" ? "قيد المراجعة" : "نشط"}
+                                  </span>
+                                </div>
+                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{p.category?.name || "بدون تصنيف"}</p>
+                                <div className="flex items-center gap-4 mt-3">
+                                  <div className="flex flex-col">
+                                      <span className="text-[10px] text-gray-300 font-black">السعر</span>
+                                      <span className="font-black text-[#1089A4]">{p.price.toLocaleString()} ج.س</span>
+                                  </div>
+                                  <div className="w-px h-6 bg-gray-100" />
+                                  <div className="flex flex-col">
+                                      <span className="text-[10px] text-gray-300 font-black">المخزون</span>
+                                      <span className="font-bold text-[#021D24]">{p.stock} قطعة</span>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => handleDeleteProduct(p.id)}
+                          className="absolute top-4 left-4 w-10 h-10 bg-red-50 text-red-500 rounded-xl opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-red-500 hover:text-white"
+                        >
+                            <span className="material-symbols-rounded text-lg">delete</span>
+                        </button>
+                      </div>
+                    ))}
+                </div>
+               )}
             </div>
           )}
 

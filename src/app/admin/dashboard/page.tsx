@@ -864,114 +864,144 @@ export default function AdminDashboard() {
             {activeTab === "orders" && (
               <motion.div key="orders" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 
-                {/* Advanced Filter / Actions Bar from Image */}
-                <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-4">
-                   <div className="p-4 flex flex-col gap-4">
-                      
-                      {/* Top Row: toggles & import/export */}
-                      <div className="flex justify-end items-center gap-3 w-full">
-                         {/* Import / Export */}
-                         <div className="flex gap-2">
-                            <button onClick={() => document.getElementById('import-orders')?.click()} className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-gray-50 flex items-center gap-1 shadow-sm transition-colors">
-                               <span className="material-symbols-rounded text-sm">upload</span> استيراد
-                            </button>
-                            <button onClick={handleExportOrdersExcel} className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-gray-50 flex items-center gap-1 shadow-sm transition-colors">
-                               <span className="material-symbols-rounded text-sm">download</span> تصدير
-                            </button>
-                            <input type="file" id="import-orders" hidden accept=".xlsx, .xls" onChange={handleImportOrdersExcel} />
-                         </div>
+                {/* Redesigned Orders Table (Matching Mockup) */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden text-xs" dir="rtl">
+                  {/* Top Bar */}
+                  <div className="flex items-center justify-between p-4 border-b">
+                    <div className="flex gap-2">
+                       <button className="bg-[#FF6B6B] text-white px-4 py-2 rounded font-bold hover:bg-red-500 transition-colors">إضافة حزمة تجميعية</button>
+                       <button className="bg-[#FF6B6B] text-white px-4 py-2 rounded font-bold hover:bg-red-500 transition-colors">قراءة باستخدام الباركود</button>
+                       <button className="bg-white border border-gray-300 px-4 py-2 rounded font-bold flex items-center gap-1 hover:bg-gray-50">استيراد/تصدير <span className="material-symbols-rounded text-sm">expand_more</span></button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                       <span className="font-black text-gray-700 text-lg">إدارة الطرود</span>
+                       <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold">{orders.length}</span>
+                    </div>
+                  </div>
 
-                         <div onClick={() => setOrdersAdvancedFilter(!ordersAdvancedFilter)} className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors select-none">
-                            <span className="text-xs font-bold text-gray-600">متقدم</span>
-                            <div className="w-8 h-4 rounded-full relative transition-colors" style={{ backgroundColor: ordersAdvancedFilter ? '#021D24' : '#e5e7eb' }}>
-                               <div className={`w-4 h-4 bg-white rounded-full absolute shadow transition-all duration-300 ${ordersAdvancedFilter ? 'left-0' : 'right-0'}`} />
-                            </div>
-                         </div>
+                  {/* Filter Bar */}
+                  <div className="bg-gray-50 p-3 flex justify-between items-center border-b border-gray-200">
+                    <div className="flex items-center gap-2">
+                       <div className="bg-white border border-gray-200 rounded px-2 py-1.5 flex items-center gap-1">
+                          <span className="material-symbols-rounded text-sm text-gray-400">search</span>
+                          <input type="text" placeholder="بحث..." className="bg-transparent outline-none w-24 text-xs" />
+                       </div>
+                       <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-24"><option>تخصيص</option></select>
+                       <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-20"><option>الكل</option></select>
+                       <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-32"><option>تاريخ أخر حالة</option></select>
+                       <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-20"><option>الكل</option></select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                       <span className="text-gray-500 font-bold">تحديد الكل</span>
+                       <input type="checkbox" checked={orders.length > 0 && selectedOrders.length === orders.length} onChange={toggleAllOrders} className="rounded text-[#1089A4] w-4 h-4 cursor-pointer" />
+                    </div>
+                  </div>
 
-                         <div className="flex bg-gray-100 rounded-lg p-1 overflow-hidden shadow-sm items-center">
-                            <button onClick={() => setOrdersViewMode("grid")} className={`px-2 py-0.5 rounded transition-colors ${ordersViewMode === "grid" ? "bg-[#021D24] text-white shadow" : "text-gray-500 hover:text-gray-700"}`}>
-                               <span className="material-symbols-rounded text-sm block">grid_view</span>
-                            </button>
-                            <button onClick={() => setOrdersViewMode("list")} className={`px-2 py-0.5 rounded transition-colors ${ordersViewMode === "list" ? "bg-[#021D24] text-white shadow" : "text-gray-500 hover:text-gray-700"}`}>
-                               <span className="material-symbols-rounded text-sm block">view_list</span>
-                            </button>
-                         </div>
-                      </div>
-
-                      {/* Stacked Dropdowns */}
-                      {ordersAdvancedFilter && (
-                        <div className="flex flex-col gap-3 transition-all duration-300">
-                           <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
-                              <option>فلتر</option>
-                           </select>
-                           <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
-                              <option>الملحقات</option>
-                           </select>
-                           <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
-                              <option>الجميع وحسب</option>
-                           </select>
-                        </div>
-                      )}
-
-                      {/* Bottom Row Buttons */}
-                      <div className="flex justify-end items-center gap-2 flex-wrap mt-2">
-                         <button onClick={() => alert("سيتم إنشاء طلبية مخزنة")} className="bg-[#021D24] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#032a35] transition-colors flex items-center shadow-md">
-                            إنشاء <span className="mx-2 text-gray-500 text-[10px]">|</span> طلبية مخزنة
-                         </button>
-                         <button onClick={() => alert("سيتم إضافة بوليصة جديدة")} className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md">بوليصة +</button>
-                         <button onClick={() => alert("سيتم تحميل بوليصة PDF")} className="bg-[#F29124] border-2 border-black text-black font-black px-5 py-1.5 rounded-full text-[11px] hover:bg-orange-400 transition-colors shadow-md">بوليصة PDF</button>
-                         <button onClick={handleBulkPrint} className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md flex items-center gap-1">طباعة <span className="text-[10px]">▼</span></button>
-                         <button onClick={() => alert("اختر إجراء للتطبيق")} className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md flex items-center gap-1">إجراء <span className="text-[10px]">▼</span></button>
-                      </div>
-                   </div>
-
-                   {/* Table matching the screenshot exactly */}
-                   <div className="overflow-x-auto">
-                      <table className="w-full text-right text-xs whitespace-nowrap">
-                         <thead className="bg-gray-50 text-gray-500 border-b border-gray-200">
-                            <tr>
-                               <th className="p-4 w-10 text-center"><input type="checkbox" checked={orders.length > 0 && selectedOrders.length === orders.length} onChange={toggleAllOrders} className="rounded border-gray-300 text-[#1089A4] w-4 h-4 cursor-pointer" /></th>
-                               <th className="p-4 font-black">#</th>
-                               <th className="p-4 font-black text-center">ملاحظة</th>
-                               <th className="p-4 font-black">المفصل</th>
-                               <th className="p-4 font-black">الاجراء المطلوب</th>
-                               <th className="p-4 font-black">رقم التتبع</th>
-                               <th className="p-4 font-black">الحالة</th>
-                               <th className="p-4 font-black">حالة التاجر</th>
-                               <th className="p-4 font-black">التوصيل</th>
-                               <th className="p-4 font-black">استرداد</th>
-                            </tr>
-                         </thead>
-                         <tbody className="divide-y divide-gray-100">
-                            {orders.map((order, i) => (
-                               <tr key={order.id} onClick={() => toggleOrderSelection(order.id)} className={`hover:bg-sky-50 transition-colors group cursor-pointer ${selectedOrders.includes(order.id) ? 'bg-sky-50/50' : 'bg-white'}`}>
-                                  <td className="p-4 text-center"><input type="checkbox" checked={selectedOrders.includes(order.id)} readOnly className="rounded border-gray-300 text-[#1089A4] w-4 h-4 cursor-pointer" /></td>
-                                  <td className="p-4 font-bold text-gray-400">{i + 1}</td>
-                                  <td className="p-4 text-center">
-                                     <button className="w-7 h-7 rounded border border-gray-200 flex items-center justify-center text-gray-400 hover:text-green-500 hover:border-green-500 hover:bg-green-50 transition-colors mx-auto">
-                                        <span className="material-symbols-rounded text-sm">sticky_note_2</span>
-                                     </button>
-                                  </td>
-                                  <td className="p-4 font-black text-gray-600 tracking-wider">40680{order.id?.slice(-5).toUpperCase()}</td>
-                                  <td className="p-4 font-bold text-gray-500">{order.trackingUrl ? "جاهز" : "—"}</td>
-                                  <td className="p-4 font-bold text-green-600">{order.trackingUrl || "2375831" + (i + 10)}</td>
-                                  <td className="p-4 text-green-500 font-bold">تم التوصيل</td>
-                                  <td className="p-4 text-green-500 font-bold">تم التوصيل</td>
-                                  <td className="p-4 text-green-500 font-bold">{order.items?.[0]?.product?.vendor?.storeName || "متجر هايفيس"}</td>
-                                  <td className="p-4 font-bold text-green-600">{order.customerName || order.customer?.name || "العنود"}</td>
-                               </tr>
-                            ))}
-                            {orders.length === 0 && (
-                               <tr>
-                                  <td colSpan={10} className="p-12 text-center text-gray-400">
-                                     <span className="material-symbols-rounded text-5xl mb-3 block">shopping_bag</span>
-                                     لا توجد طلبات لعرضها حالياً
-                                  </td>
-                               </tr>
-                            )}
-                         </tbody>
-                      </table>
-                   </div>
+                  {/* Table */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-center text-xs whitespace-nowrap">
+                      <thead className="bg-white text-gray-500 border-b border-gray-200">
+                        <tr>
+                          {/* content */}
+                          <th className="p-2 border-l min-w-[120px]">
+                             <div className="font-bold mb-1">المحتوى</div>
+                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
+                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <span className="material-symbols-rounded text-[14px]">search</span>
+                             </div>
+                          </th>
+                          {/* Special Notes */}
+                          <th className="p-2 border-l min-w-[120px]">
+                             <div className="font-bold mb-1">ملاحظات خاصة</div>
+                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
+                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <span className="material-symbols-rounded text-[14px]">search</span>
+                             </div>
+                          </th>
+                          {/* Status */}
+                          <th className="p-2 border-l min-w-[120px]">
+                             <div className="font-bold mb-1">الحالة</div>
+                             <div className="bg-blue-50 border border-blue-200 text-blue-600 rounded px-2 py-1 flex items-center justify-between font-bold text-[10px]">
+                                قيد المراجعة <span className="material-symbols-rounded text-[14px] cursor-pointer">close</span>
+                             </div>
+                          </th>
+                          {/* Track */}
+                          <th className="p-2 border-l">
+                             <div className="font-bold">متابعة الطرد</div>
+                          </th>
+                          {/* Dispatch Number */}
+                          <th className="p-2 border-l min-w-[120px]">
+                             <div className="font-bold mb-1">رقم الإرسالية</div>
+                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
+                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <span className="material-symbols-rounded text-[14px]">search</span>
+                             </div>
+                          </th>
+                          {/* COD */}
+                          <th className="p-2 border-l">
+                             <div className="font-bold mb-1">COD</div>
+                          </th>
+                          {/* Price */}
+                          <th className="p-2 border-l">
+                             <div className="font-bold mb-1">السعر</div>
+                          </th>
+                          {/* Created By */}
+                          <th className="p-2 border-l min-w-[140px]">
+                             <div className="font-bold mb-1">تم إنشاؤها بواسطة</div>
+                             <select className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full"><option>الكل</option></select>
+                          </th>
+                          {/* Address */}
+                          <th className="p-2 border-l min-w-[180px]">
+                             <div className="font-bold mb-1">العنوان</div>
+                             <div className="flex gap-1">
+                                <select className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] flex-1"><option>تخصيص</option></select>
+                                <button className="bg-gray-50 border border-gray-200 rounded px-2 py-1 text-[10px]"><span className="material-symbols-rounded text-[14px]">edit</span></button>
+                             </div>
+                          </th>
+                          {/* Package No */}
+                          <th className="p-2 border-l min-w-[120px]">
+                             <div className="font-bold mb-1">رقم الطرد</div>
+                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
+                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <span className="material-symbols-rounded text-[14px]">search</span>
+                             </div>
+                          </th>
+                          {/* Checkbox */}
+                          <th className="p-4 w-10 text-center border-l"></th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {orders.map((order, i) => (
+                          <tr key={order.id} onClick={() => toggleOrderSelection(order.id)} className={`transition-colors cursor-pointer ${order.status === 'REJECTED' ? 'bg-[#ffb3b3] hover:bg-[#ffa3a3]' : 'bg-white hover:bg-gray-50'}`}>
+                            <td className="p-3 border-l text-gray-400">
+                               {order.notes || "—"}
+                            </td>
+                            <td className="p-3 border-l font-bold text-gray-500 max-w-[120px] truncate">
+                               <button className="bg-[#FF6B6B] text-white px-6 py-1.5 rounded font-black">{order.status === 'REJECTED' ? 'ملغاة' : order.status === 'PENDING_APPROVAL' ? 'قيد المراجعة' : 'مكتمل'}</button>
+                            </td>
+                            <td className="p-3 border-l font-black text-gray-700">
+                               <div className="flex items-center justify-center gap-1">
+                                 <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                                 <div className="w-2.5 h-2.5 rounded-full bg-cyan-400"></div>
+                               </div>
+                            </td>
+                            <td className="p-3 border-l">
+                               —
+                            </td>
+                            <td className="p-3 border-l font-bold text-gray-600">{order.trackingNumber || "—"}</td>
+                            <td className="p-3 border-l font-black">﷼{order.paymentMethod === "COD" ? order.totalAmount : 0}</td>
+                            <td className="p-3 border-l font-black">﷼{order.totalAmount}</td>
+                            <td className="p-3 border-l text-gray-500 text-[10px]">{order.customerEmail || "operation@mersal.com"}</td>
+                            <td className="p-3 border-l text-[10px] text-gray-600 leading-tight w-[200px] whitespace-normal">
+                               {`${order.street || ''}، ${order.district || ''}، ${order.city}`}
+                            </td>
+                            <td className="p-3 font-mono text-gray-600 border-l">100414{order.id?.slice(-6)}</td>
+                            <td className="p-4 text-center"><input type="checkbox" checked={selectedOrders.includes(order.id)} readOnly className="rounded text-[#1089A4] w-4 h-4 cursor-pointer" /></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -1526,70 +1556,102 @@ export default function AdminDashboard() {
             {/* ── 13. INVENTORY ── */}
             {activeTab === "inventory" && (
               <motion.div key="inventory" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-                  <div className="flex items-center gap-2 flex-grow max-w-sm">
-                    <div className="relative flex-grow">
-                      <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-                      <input
-                        value={inventorySearch}
-                        onChange={e => setInventorySearch(e.target.value)}
-                        placeholder="ابحث عن منتج، بائع..."
-                        className="input-mersal pr-10 w-full"
-                      />
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden text-xs" dir="rtl">
+                  {/* Top Bar */}
+                  <div className="flex items-center justify-between p-4 border-b">
+                    <div className="flex gap-2">
+                       <button className="bg-[#FF6B6B] text-white px-4 py-2 rounded font-bold hover:bg-red-500 transition-colors">إضافة دفعة منتجات</button>
+                       <button className="bg-[#FF6B6B] text-white px-4 py-2 rounded font-bold hover:bg-red-500 transition-colors">قراءة باستخدام الباركود</button>
+                       <label className="bg-white border border-gray-300 px-4 py-2 rounded font-bold flex items-center gap-1 hover:bg-gray-50 cursor-pointer">
+                          استيراد/تصدير <span className="material-symbols-rounded text-sm">expand_more</span>
+                          <input type="file" accept=".xlsx, .xls" className="hidden" onChange={handleImportExcel} disabled={actionLoading === "import_excel"} />
+                       </label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                       <span className="font-black text-gray-700 text-lg">إدارة المنتجات</span>
+                       <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold">{inventoryProducts.length}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <button onClick={() => handleExportExcel()} className="px-4 py-2 bg-green-600 text-white font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-green-700 transition">
-                      <span className="material-symbols-rounded text-sm">download</span>
-                      تصدير Excel
-                    </button>
-                    <label className="px-4 py-2 bg-[#1089A4] text-white font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-[#0c7287] transition cursor-pointer relative overflow-hidden">
-                      <span className="material-symbols-rounded text-sm">upload</span>
-                      {actionLoading === "import_excel" ? "جاري التحديث..." : "استيراد Excel"}
-                      <input type="file" accept=".xlsx, .xls" className="hidden" onChange={handleImportExcel} disabled={actionLoading === "import_excel"} />
-                    </label>
-                  </div>
-                </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  {/* Filter Bar */}
+                  <div className="bg-gray-50 p-3 flex justify-between items-center border-b border-gray-200">
+                    <div className="flex items-center gap-2">
+                       <div className="bg-white border border-gray-200 rounded px-2 py-1.5 flex items-center gap-1">
+                          <span className="material-symbols-rounded text-sm text-gray-400">search</span>
+                          <input type="text" value={inventorySearch} onChange={e => setInventorySearch(e.target.value)} placeholder="بحث..." className="bg-transparent outline-none w-24 text-xs" />
+                       </div>
+                       <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-24"><option>تخصيص</option></select>
+                       <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-20"><option>الكل</option></select>
+                       <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-32"><option>تاريخ أخر حالة</option></select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                       <span className="text-gray-500 font-bold">تحديد الكل</span>
+                       <input type="checkbox" className="rounded text-[#1089A4] w-4 h-4 cursor-pointer" />
+                    </div>
+                  </div>
+
+                  {/* Table */}
                   <div className="overflow-x-auto">
-                    <table className="w-full text-right text-sm">
-                      <thead className="bg-[#021D24] text-white text-xs">
+                    <table className="w-full text-center text-xs whitespace-nowrap">
+                      <thead className="bg-white text-gray-500 border-b border-gray-200">
                         <tr>
-                          <th className="px-5 py-4">ID</th>
-                          <th className="px-5 py-4">المنتج</th>
-                          <th className="px-5 py-4">البائع</th>
-                          <th className="px-5 py-4">القسم</th>
-                          <th className="px-5 py-4">السعر</th>
-                          <th className="px-5 py-4">المخزون</th>
-                          <th className="px-5 py-4">الحالة</th>
+                          <th className="p-2 border-l min-w-[120px]">
+                             <div className="font-bold mb-1">المنتج</div>
+                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
+                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <span className="material-symbols-rounded text-[14px]">search</span>
+                             </div>
+                          </th>
+                          <th className="p-2 border-l min-w-[120px]">
+                             <div className="font-bold mb-1">القسم</div>
+                             <select className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full"><option>الكل</option></select>
+                          </th>
+                          <th className="p-2 border-l min-w-[120px]">
+                             <div className="font-bold mb-1">البائع</div>
+                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
+                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <span className="material-symbols-rounded text-[14px]">search</span>
+                             </div>
+                          </th>
+                          <th className="p-2 border-l">
+                             <div className="font-bold mb-1">المخزون</div>
+                          </th>
+                          <th className="p-2 border-l">
+                             <div className="font-bold mb-1">السعر</div>
+                          </th>
+                          <th className="p-2 border-l min-w-[120px]">
+                             <div className="font-bold mb-1">الحالة</div>
+                             <select className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full"><option>الكل</option></select>
+                          </th>
+                          <th className="p-2 border-l min-w-[120px]">
+                             <div className="font-bold mb-1">معرف المنتج</div>
+                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
+                                <input type="text" placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
+                                <span className="material-symbols-rounded text-[14px]">search</span>
+                             </div>
+                          </th>
+                          <th className="p-4 w-10 text-center border-l"></th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y">
+                      <tbody className="divide-y divide-gray-100">
                         {inventoryProducts.map(p => (
-                          <tr key={p.id} className="hover:bg-gray-50">
-                            <td className="px-5 py-3 text-xs text-gray-400 font-mono" dir="ltr">{p.id.slice(-8)}</td>
-                            <td className="px-5 py-3 font-bold text-[#021D24] max-w-[200px] truncate">{p.title}</td>
-                            <td className="px-5 py-3 text-gray-600">{p.vendor?.storeName || '—'}</td>
-                            <td className="px-5 py-3 text-gray-500">{p.category?.name || '—'}</td>
-                            <td className="px-5 py-3 font-black text-[#1089A4]">{p.price?.toLocaleString()} ج.س</td>
-                            <td className="px-5 py-3">
-                              <span className={cn("font-bold px-2 py-1 rounded border", p.stock > 0 ? "text-green-600 border-green-200 bg-green-50" : "text-red-600 border-red-200 bg-red-50")}>
-                                {p.stock} قطعة
-                              </span>
+                          <tr key={p.id} className={`transition-colors cursor-pointer ${p.status === 'REJECTED' ? 'bg-[#ffb3b3] hover:bg-[#ffa3a3]' : 'bg-white hover:bg-gray-50'}`}>
+                            <td className="p-3 border-l font-bold text-gray-700 max-w-[200px] truncate">{p.title}</td>
+                            <td className="p-3 border-l text-gray-500">{p.category?.name || '—'}</td>
+                            <td className="p-3 border-l text-gray-600">{p.vendor?.storeName || '—'}</td>
+                            <td className="p-3 border-l font-black text-gray-700">{p.stock}</td>
+                            <td className="p-3 border-l font-black">﷼{p.price?.toLocaleString()}</td>
+                            <td className="p-3 border-l">
+                               <button className="bg-[#FF6B6B] text-white px-6 py-1.5 rounded font-black text-[10px]">
+                                 {p.status === 'APPROVED' ? 'نشط' : p.status === 'PENDING' ? 'بانتظار الموافقة' : 'مرفوض'}
+                               </button>
                             </td>
-                            <td className="px-5 py-3">
-                              <span className={cn("badge text-[10px]", p.status === 'APPROVED' ? "badge-approved" : p.status === 'PENDING' ? "badge-pending" : "badge-rejected")}>
-                                {p.status}
-                              </span>
-                            </td>
+                            <td className="p-3 border-l font-mono text-gray-600">{p.id.slice(-8)}</td>
+                            <td className="p-4 text-center border-l"><input type="checkbox" className="rounded text-[#1089A4] w-4 h-4 cursor-pointer" /></td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                    {inventoryProducts.length === 0 && (
-                      <div className="text-center py-10 text-gray-400 font-bold">لا توجد منتجات مطابقة</div>
-                    )}
                   </div>
                 </div>
               </motion.div>

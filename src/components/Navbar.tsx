@@ -93,7 +93,7 @@ export default function Navbar() {
           </Link>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex-grow flex items-stretch rounded-lg overflow-hidden border-2 border-[#F29124]/30 transition-all focus-within:border-[#F29124]">
+          <form onSubmit={handleSearch} className="flex-grow flex items-stretch rounded-lg overflow-hidden border-2 border-[#108DB2]/30 transition-all focus-within:border-[#108DB2]">
             {/* Category select */}
             <select className="hidden md:block bg-gray-100 text-gray-700 text-[11px] font-bold px-3 border-l border-gray-200 outline-none cursor-pointer min-w-[120px]">
               <option>كل الأقسام</option>
@@ -111,9 +111,9 @@ export default function Navbar() {
             />
             <button
               type="submit"
-              className="bg-[#F29124] text-white px-4 lg:px-5 flex items-center justify-center hover:bg-[#D97B10] transition-colors"
+              className="bg-[#108DB2] text-white px-4 lg:px-5 flex items-center justify-center hover:bg-[#0D708E] transition-colors"
             >
-              <span className="material-symbols-rounded text-xl font-bold">search</span>
+              <span className="material-symbols-rounded text-xl">search</span>
             </button>
           </form>
 

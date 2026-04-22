@@ -143,26 +143,6 @@ export default function HeroSection() {
         </button>
       </div>
 
-      {/* ── FEATURE STRIPS (Amazon-style deal banners) ──── */}
-      <div className="bg-[#F3F4F6] border-b border-gray-200">
-        <div className="max-w-[1600px] mx-auto px-4 lg:px-6 py-3 grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            { icon: "local_shipping", text: "شحن سريع", sub: "خلال 24–48 ساعة" },
-            { icon: "verified",       text: "موردون موثوقون", sub: "معتمدون من مرسال" },
-            { icon: "payments",       text: "دفع آمن",   sub: "عند الاستلام أو تحويل" },
-            { icon: "support_agent",  text: "دعم 24/7",  sub: "فريقنا دايماً معاك" },
-          ].map((f, i) => (
-            <div key={i} className="flex items-center gap-3 bg-white rounded-lg p-3 shadow-sm">
-              <span className="material-symbols-rounded text-2xl text-[#1089A4]">{f.icon}</span>
-              <div>
-                <p className="text-xs font-black text-[#021D24]">{f.text}</p>
-                <p className="text-[10px] text-gray-400">{f.sub}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
     </section>
   );
 }

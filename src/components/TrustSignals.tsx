@@ -5,15 +5,15 @@ import { motion } from "framer-motion";
 const signals = [
   {
     icon: "local_shipping",
-    title: "توصيل سريع",
-    desc: "شحن لكل ولايات السودان",
+    title: "توصيل لكل السودان",
+    desc: "شحن سريع وآمن للولايات",
     color: "bg-[#1089A4]/10",
     iconColor: "text-[#1089A4]"
   },
   {
     icon: "verified_user",
-    title: "ضمان حقيقي",
-    desc: "منتجات أصلية 100%",
+    title: "موردون موثوقين",
+    desc: "تجار معتمدين من مرسال",
     color: "bg-[#F29124]/10",
     iconColor: "text-[#F29124]"
   },

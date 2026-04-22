@@ -157,34 +157,64 @@ export default function Navbar() {
                     {isAuthenticated ? (
                       <div className="p-2 space-y-1">
                         <div className="px-5 py-4 mb-3 bg-white/5 rounded-3xl border border-white/5">
-                          <p className="text-sm font-black text-white tracking-tight">{session?.user?.name}</p>
-                          <p className="text-[10px] text-[#C5A021] font-bold uppercase tracking-widest">{session?.user?.email}</p>
+                          <p className="text-sm font-black text-white tracking-tight">{session?.user?.name || "مستخدم مرسال"}</p>
+                          <p className="text-[10px] text-[#C5A021] font-bold uppercase tracking-widest leading-none mt-1">{session?.user?.email}</p>
                         </div>
-                        <Link href="/profile" className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-white/5 text-sm font-bold text-white/80 transition-colors">
-                          لوحة التحكم
-                          <span className="material-symbols-rounded text-lg opacity-40">dashboard</span>
+
+                        {/* Standard Links */}
+                        <Link href="/profile" className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-white/5 text-xs font-bold text-white/80 transition-all group/item">
+                          حسابي الشخصي
+                          <span className="material-symbols-rounded text-lg opacity-40 group-hover/item:opacity-100 group-hover/item:text-[#C5A021]">person</span>
                         </Link>
-                        <Link href="/orders" className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-white/5 text-sm font-bold text-white/80 transition-colors">
-                          مشترياتي
-                          <span className="material-symbols-rounded text-lg opacity-40">package_2</span>
+                        
+                        <Link href="/orders" className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-white/5 text-xs font-bold text-white/80 transition-all group/item">
+                          طلباتي ومشترياتي
+                          <span className="material-symbols-rounded text-lg opacity-40 group-hover/item:opacity-100 group-hover/item:text-[#C5A021]">package_2</span>
                         </Link>
-                        <div className="h-px bg-white/5 my-1" />
+
+                        <div className="h-px bg-white/5 my-2 mx-2" />
+
+                        {/* Role Based Dashboards */}
+                        {(session?.user as any)?.isVendor && (
+                          <Link href="/vendor/dashboard" className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#F29124]/10 hover:bg-[#F29124]/20 text-xs font-black text-[#F29124] transition-all group/item border border-[#F29124]/10">
+                            لوحة تحكم التاجر
+                            <span className="material-symbols-rounded text-lg group-hover/item:scale-110 transition-transform">storefront</span>
+                          </Link>
+                        )}
+
+                        {(session?.user as any)?.role === 'ADMIN' && (
+                          <Link href="/admin/dashboard" className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#1089A4]/10 hover:bg-[#1089A4]/20 text-xs font-black text-[#1089A4] transition-all group/item border border-[#1089A4]/10">
+                            لوحة الإدارة
+                            <span className="material-symbols-rounded text-lg group-hover/item:scale-110 transition-transform">admin_panel_settings</span>
+                          </Link>
+                        )}
+
+                        {(session?.user as any)?.isVendor || (session?.user as any)?.role === 'ADMIN' ? (
+                          <div className="h-px bg-white/5 my-2 mx-2" />
+                        ) : null}
+
                         <button
                           onClick={() => signOut()}
-                          className="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-red-500/10 text-sm font-bold text-red-400 transition-colors"
+                          className="w-full flex items-center justify-between px-4 py-3 rounded-xl hover:bg-red-500/10 text-xs font-bold text-red-400 transition-all group/item"
                         >
-                          خروج
-                          <span className="material-symbols-rounded text-lg">logout</span>
+                          تسجيل الخروج
+                          <span className="material-symbols-rounded text-lg group-hover/item:translate-x-1 transition-transform">logout</span>
                         </button>
                       </div>
                     ) : (
-                      <div className="p-4 flex flex-col gap-3">
-                        <Link href="/login" className="flex items-center justify-center h-11 bg-[#F29124] text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all">
-                          تسجيل الدخول
-                        </Link>
-                        <p className="text-center text-[10px] text-white/30">
-                          ليس لديك حساب؟ <Link href="/register" className="text-[#F29124] hover:underline">سجل هنا</Link>
-                        </p>
+                      <div className="p-5 space-y-4">
+                        <div className="text-center space-y-1 mb-2">
+                          <p className="text-sm font-black text-white">مرحباً بك في مرسال</p>
+                          <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest">سجل دخولك لتتمتع بكافة المزايا</p>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Link href="/login" className="flex items-center justify-center h-12 bg-[#F29124] text-[#021D24] rounded-2xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-[#F29124]/20 active:scale-95">
+                            تسجيل الدخول
+                          </Link>
+                          <Link href="/login?tab=register" className="flex items-center justify-center h-12 bg-white/5 border border-white/10 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95">
+                            إنشاء حساب جديد
+                          </Link>
+                        </div>
                       </div>
                     )}
                   </motion.div>

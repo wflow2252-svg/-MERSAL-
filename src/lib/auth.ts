@@ -52,6 +52,15 @@ export const authOptions: NextAuthOptions = {
         token.age = (user as any).age;
         token.phone = (user as any).phone;
         token.interests = (user as any).interests;
+
+        // Check if user is a Vendor
+        const vendor = await prisma.vendor.findUnique({
+          where: { userId: user.id },
+          select: { id: true, status: true }
+        });
+        token.isVendor = !!vendor;
+        token.vendorId = vendor?.id;
+        token.vendorStatus = vendor?.status;
       }
       
       // 2. SOVEREIGN MASTER OVERRIDE: Authorized Super Admins
@@ -77,6 +86,9 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session.user as any).id = token.id;
         (session.user as any).role = token.role;
+        (session.user as any).isVendor = token.isVendor;
+        (session.user as any).vendorId = token.vendorId;
+        (session.user as any).vendorStatus = token.vendorStatus;
         (session.user as any).isOnboarded = token.isOnboarded;
         (session.user as any).age = token.age;
         (session.user as any).phone = token.phone;

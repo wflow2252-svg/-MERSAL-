@@ -83,7 +83,7 @@ export default function Navbar() {
               className="relative w-[150px] h-12 lg:w-[180px] lg:h-16"
             >
               <Image 
-                src="/logo-najez-new.png" 
+                src="/logo-najez-final.png" 
                 alt="ناجز - NAJEZ" 
                 fill 
                 className="object-contain" 

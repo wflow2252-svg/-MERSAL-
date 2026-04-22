@@ -61,7 +61,7 @@ export default function Footer() {
           {/* Logo + tagline */}
           <div className="flex items-center gap-4 mb-8 border-b border-white/10 pb-8">
             <div className="relative w-48 h-18 lg:w-56 lg:h-20">
-              <Image src="/logo-najez-new.png" alt="ناجز" fill className="object-contain" />
+              <Image src="/logo-najez-final.png" alt="ناجز" fill className="object-contain" />
             </div>
             <div>
               <p className="text-lg font-black text-white">ناجز | NAJEZ</p>

@@ -58,14 +58,15 @@ export default function Footer() {
       <div className="bg-[#021D24] text-white pt-10 pb-6">
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
 
-          {/* Logo + tagline */}
-          <div className="flex items-center gap-4 mb-8 border-b border-white/10 pb-8">
-            <div className="relative w-48 h-18 lg:w-56 lg:h-20">
-              <Image src="/logo-navbar-final.png" alt="مرسال" fill className="object-contain" />
-            </div>
-            <div>
-              <p className="text-lg font-black text-white">مرسال | MERSAL</p>
-              <p className="text-xs text-[#C5A021] font-bold">اتسوّق بثقة — نوصّل لبابك في السودان 🇸🇩</p>
+          {/* Footer Identity Block */}
+          <div className="mb-8 border-b border-white/10 pb-8">
+            <div className="relative w-full max-w-[500px] h-20 lg:h-24">
+              <Image 
+                src="/footer-identity.png" 
+                alt="مرسال - MERSAL" 
+                fill 
+                className="object-contain object-right" 
+              />
             </div>
           </div>
 

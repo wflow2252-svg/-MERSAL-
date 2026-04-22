@@ -11,38 +11,29 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const formData = await req.json();
-    const { image, filename } = formData; // For base64 or simpler handling if needed
-
-    // However, native FormData is better for gallery uploads
-    // Let's support both but prioritize standard FormData for mobile
-    
-    // If standard multi-part boundary exists:
-    let data;
+    // Parse FormData directly — do NOT call req.json() first
+    let data: FormData;
     try {
       data = await req.formData();
     } catch (e) {
-      // Fallback for JSON-based base64 if necessary
-      return NextResponse.json({ error: "Please use FormData for image uploads" }, { status: 400 });
+      return NextResponse.json({ error: "يرجى إرسال الملف كـ FormData" }, { status: 400 });
     }
 
     const file = data.get("file") as File;
-    if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    if (!file || typeof file === "string") {
+      return NextResponse.json({ error: "لم يتم رفع أي ملف" }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Sanitize and generate unique name
+    // Generate unique filename
     const ext = path.extname(file.name) || ".jpg";
     const uniqueName = `${crypto.randomUUID()}${ext}`;
-    
+
     const uploadDir = path.join(process.cwd(), "public", "uploads");
-    
-    // Ensure dir exists
     await mkdir(uploadDir, { recursive: true });
-    
+
     const filePath = path.join(uploadDir, uniqueName);
     await writeFile(filePath, buffer);
 

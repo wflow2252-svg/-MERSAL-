@@ -1,89 +1,114 @@
 "use client"
 
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
-import ShopFilters from "@/components/ShopFilters";
 import Link from "next/link";
 import Image from "next/image";
-import { MOCK_PRODUCTS } from "@/lib/mockData/products";
-
-const categoriesUI: any = {
-  "electronics": { name: "الإلكترونيات والموبايل", image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&q=80&w=1200", icon: "smartphone" },
-  "fashion": { name: "الأزياء والملابس", image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=1200", icon: "apparel" },
-  "home": { name: "المنزل والمطبخ", image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=1200", icon: "home" },
-  "beauty": { name: "الجمال والعناية الشخصية", image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&q=80&w=1200", icon: "content_cut" },
-  "toys": { name: "الألعاب وتسلية الأطفال", image: "https://images.unsplash.com/photo-1532330393533-443990a51d10?auto=format&fit=crop&q=80&w=1200", icon: "toys" },
-  "sports": { name: "الرياضة واللياقة البدنية", image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=1200", icon: "fitness_center" },
-  "books": { name: "الكتب والقرطاسية", image: "https://images.unsplash.com/photo-1524578271613-d550eeb8489e?auto=format&fit=crop&q=80&w=1200", icon: "menu_book" },
-  "automotive": { name: "قطع غيار السيارات", image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&q=80&w=1200", icon: "build" },
-};
 
 export default function CategoryPage() {
   const params = useParams();
   const id = params.id as string;
-  const categoryUI = categoriesUI[id] || { name: "قسم مجهول", image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&q=80&w=1200", icon: "category" };
-  
-  const filteredProducts = MOCK_PRODUCTS.filter(p => p.categoryId === id);
+
+  const [category, setCategory] = useState<any>(null);
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/admin/categories?id=${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setCategory(data);
+          setProducts(data.products || []);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#021D24]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-14 h-14 border-4 border-[#1089A4] border-t-transparent rounded-full animate-spin" />
+          <p className="text-white/40 text-xs font-bold uppercase tracking-widest">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const catName = category?.name || "قسم";
+  const catIcon = category?.icon || "";
 
   return (
     <div className="min-h-screen bg-muted/20" dir="rtl">
-      {/* Category Hero - High Impact */}
-      <section className="relative h-[450px] overflow-hidden bg-[#021D24] shadow-2xl">
-        <Image src={categoryUI.image} alt={categoryUI.name} fill className="object-cover opacity-30 scale-110 blur-[2px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#021D24] to-transparent z-10" />
+      {/* Category Hero */}
+      <section className="relative h-[380px] overflow-hidden bg-[#021D24] shadow-2xl">
+        {catIcon && (catIcon.startsWith("http") || catIcon.startsWith("/")) ? (
+          <Image src={catIcon} alt={catName} fill className="object-cover opacity-25 scale-110 blur-sm" />
+        ) : null}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#021D24] via-[#021D24]/60 to-transparent z-10" />
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-12 text-center">
-           <div className="w-24 h-24 bg-[#1089A4] rounded-[2.5rem] flex items-center justify-center mb-8 shadow-2xl border-4 border-white/10 animate-fade-in">
-              <span className="material-symbols-rounded text-5xl text-white">{categoryUI.icon}</span>
-           </div>
-           <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6">{categoryUI.name}</h1>
-           <div className="flex items-center gap-4 text-white/50 text-sm font-black uppercase tracking-[0.4em]">
-              <Link href="/" className="hover:text-[#F29124] transition-colors">الرئيسية</Link>
-              <span className="text-[#1089A4]">/</span>
-              <span>{categoryUI.name}</span>
-           </div>
+          <div className="w-24 h-24 bg-[#1089A4] rounded-[2.5rem] flex items-center justify-center mb-8 shadow-2xl border-4 border-white/10 overflow-hidden">
+            {catIcon && (catIcon.startsWith("http") || catIcon.startsWith("/")) ? (
+              <Image src={catIcon} alt={catName} width={96} height={96} className="object-cover w-full h-full" />
+            ) : (
+              <span className="text-4xl">{catIcon || "📦"}</span>
+            )}
+          </div>
+          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tighter mb-4">{catName}</h1>
+          <div className="flex items-center gap-4 text-white/50 text-sm font-black uppercase tracking-[0.3em]">
+            <Link href="/" className="hover:text-[#F29124] transition-colors">الرئيسية</Link>
+            <span className="text-[#1089A4]">/</span>
+            <span>{catName}</span>
+          </div>
         </div>
       </section>
 
-      <div className="max-w-[1920px] mx-auto px-6 md:px-12 py-24 grid grid-cols-1 lg:grid-cols-12 gap-16">
-        {/* Elite Sidebar Filters */}
-        <aside className="lg:col-span-3 space-y-12">
-           <ShopFilters />
-        </aside>
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-16">
+        {/* Count bar */}
+        <div className="bg-white px-8 py-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between mb-10">
+          <p className="text-[#021D24]/50 text-sm font-black">
+            عرض <span className="text-[#1089A4]">{products.length}</span> منتج في {catName}
+          </p>
+        </div>
 
-        {/* Product Hub */}
-        <main className="lg:col-span-9 space-y-12">
-            <div className="bg-white px-12 py-6 rounded-[2.5rem] border border-gray-100 shadow-xl flex flex-wrap items-center justify-between gap-6">
-                <p className="text-[#021D24]/40 text-sm font-black uppercase tracking-widest">
-                   عرض <span className="text-[#1089A4]">{filteredProducts.length}</span> منتج تم اختيارهم بعناية
-                </p>
-                <div className="flex items-center gap-6">
-                   <span className="text-[10px] font-black uppercase tracking-widest text-[#021D24]/20 underline underline-offset-8">ترتيب حسب:</span>
-                   <select className="bg-gray-50 px-6 py-2.5 rounded-xl text-xs font-black outline-none border-2 border-transparent focus:border-[#1089A4] transition-all cursor-pointer">
-                      <option>الأحدث أولاً 🔥</option>
-                      <option>السعر: من الأقل</option>
-                      <option>السعر: من الأعلى</option>
-                   </select>
-                </div>
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+          {products.map((p) => (
+            <ProductCard
+              key={p.id}
+              id={p.id}
+              title={p.title}
+              price={p.price}
+              image={p.images?.split(",")?.[0] || "/placeholder.png"}
+              vendor={p.vendor?.storeName || "متجر مرسال"}
+              vendorLocation={p.vendor?.city || ""}
+              vendorId={p.vendorId}
+            />
+          ))}
+          {products.length === 0 && (
+            <div className="col-span-full py-32 text-center space-y-6">
+              <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center mx-auto shadow-inner">
+                <span className="material-symbols-rounded text-5xl text-[#1089A4]/20">inventory_2</span>
+              </div>
+              <h3 className="text-3xl font-black text-[#021D24]">لا توجد منتجات حالياً</h3>
+              <p className="text-[#021D24]/40 max-w-sm mx-auto">نعمل على إضافة منتجات لهذا القسم قريباً</p>
+              <Link href="/" className="inline-block bg-[#1089A4] text-white px-8 py-3 rounded-2xl font-black text-sm shadow-lg shadow-[#1089A4]/20">
+                العودة للرئيسية
+              </Link>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12">
-              {filteredProducts.map((p) => (
-                <ProductCard key={p.id} {...p} />
-              ))}
-              {filteredProducts.length === 0 && (
-                <div className="col-span-full py-40 text-center space-y-8">
-                   <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-inner">
-                      <span className="material-symbols-rounded text-6xl text-[#1089A4]/20">inventory_2</span>
-                   </div>
-                   <h3 className="text-4xl font-black text-[#021D24]">لا توجد منتجات حالياً</h3>
-                   <p className="text-xl text-[#021D24]/30 max-w-lg mx-auto">نحن نعمل على إضافة منتجات فاخرة لهذا القسم قريباً. ترقبوا جديد مرسال!</p>
-                   <Link href="/shop" className="inline-block bg-[#1089A4] text-white px-10 py-4 rounded-2xl font-black text-sm shadow-xl shadow-[#1089A4]/20">تصفح كافة الأقسام</Link>
-                </div>
-              )}
-            </div>
-        </main>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-

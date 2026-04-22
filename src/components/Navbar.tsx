@@ -74,7 +74,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <div className="relative w-[160px] h-12">
               <Image 
-                src="/logo-new-white.png" 
+                src="/logo-final-brand.png" 
                 alt="مرسال - MORSALL" 
                 fill 
                 className="object-contain" 

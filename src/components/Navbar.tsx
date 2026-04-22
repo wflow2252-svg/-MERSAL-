@@ -84,7 +84,7 @@ export default function Navbar() {
             >
               <Image 
                 src="/icon.png" 
-                alt="ناجز - NAJEZ" 
+                alt="مرسال - MERSAL" 
                 fill 
                 className="object-contain" 
                 priority 
@@ -117,7 +117,7 @@ export default function Navbar() {
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder="ابحث عن أفضل العروض في ناجز..."
+              placeholder="ابحث عن أفضل العروض في مرسال..."
               className="flex-grow bg-transparent text-white px-5 text-sm outline-none placeholder:text-white/30 text-right"
             />
             <button
@@ -274,7 +274,7 @@ export default function Navbar() {
               className="absolute top-0 right-0 w-80 h-screen bg-[#020D10] shadow-[0_0_50px_rgba(0,0,0,0.5)] z-[101] p-6 text-white border-l border-white/10"
             >
               <div className="flex items-center justify-between mb-8">
-                <h3 className="text-xl font-black">أقسام ناجز</h3>
+                <h3 className="text-xl font-black">أقسام مرسال</h3>
                 <button onClick={() => setShowCategories(false)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10">
                   <span className="material-symbols-rounded">close</span>
                 </button>

@@ -87,7 +87,7 @@ export default function VendorRegister() {
             </div>
             <div className="space-y-4">
                <h1 className="text-3xl font-black text-[#021D24]">مطلوب تسجيل الدخول 🔐</h1>
-               <p className="text-gray-400 font-bold leading-relaxed">لبدء عملية تسجيل متجرك في ناجز، يجب أن تمتلك حساب مستخدم نشط أولاً لربط المتجر به.</p>
+               <p className="text-gray-400 font-bold leading-relaxed">لبدء عملية تسجيل متجرك في مرسال، يجب أن تمتلك حساب مستخدم نشط أولاً لربط المتجر به.</p>
             </div>
             <Link 
               href={`/login?callbackUrl=/vendor/register`}
@@ -195,14 +195,14 @@ export default function VendorRegister() {
                         onClick={() => setFormData({...formData, shippingModel: "NAJEZ_HANDLES"})}
                         className={cn("p-6 rounded-[2rem] border-4 text-right transition-all", formData.shippingModel === "NAJEZ_HANDLES" ? "border-[#10B981] bg-sky-50 shadow-xl" : "border-gray-50 hover:border-gray-200")}
                      >
-                        <h4 className="text-sm font-black text-[#021D24] mb-2">تخزين ناجز</h4>
+                        <h4 className="text-sm font-black text-[#021D24] mb-2">تخزين مرسال</h4>
                         <p className="text-[10px] text-gray-400 font-bold">نقوم بكافة العمليات اللوجستية نيابة عنك.</p>
                      </button>
                      <button 
                         onClick={() => setFormData({...formData, shippingModel: "VENDOR_PACKS"})}
                         className={cn("p-6 rounded-[2rem] border-4 text-right transition-all", formData.shippingModel === "VENDOR_PACKS" ? "border-[#F29124] bg-orange-50 shadow-xl" : "border-gray-50 hover:border-gray-200")}
                      >
-                        <h4 className="text-sm font-black text-[#021D24] mb-2">شحن ناجز</h4>
+                        <h4 className="text-sm font-black text-[#021D24] mb-2">شحن مرسال</h4>
                         <p className="text-[10px] text-gray-400 font-bold">أنت تغلف ونحن نستلم الطلب الجاهز.</p>
                      </button>
                   </div>
@@ -252,7 +252,7 @@ export default function VendorRegister() {
         </div>
 
         <p className="text-center mt-12 text-[10px] font-black uppercase tracking-[0.5em] text-gray-300">
-           ناجز للنخبة <span className="text-[#10B981]">●</span> شركاء النجاح
+           مرسال للنخبة <span className="text-[#10B981]">●</span> شركاء النجاح
         </p>
       </div>
 

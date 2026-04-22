@@ -205,7 +205,7 @@ export default function LoginPage() {
                  />
                  <RevealText 
                     key={isLogin ? "log-sub" : "sign-sub"}
-                    text={isLogin ? "في هرم الفخامة" : "في ناجز النخبة"} 
+                    text={isLogin ? "في هرم الفخامة" : "في مرسال النخبة"} 
                     delay={0.5}
                     className="text-4xl font-black text-white/40 italic h-12" 
                  />
@@ -218,7 +218,7 @@ export default function LoginPage() {
               >
                  <div className="w-3 h-3 rounded-full bg-secondary animate-pulse" />
                  <p className="text-white/60 text-[13px] font-bold tracking-wide">
-                    {isLogin ? "خدمة عملاء استثنائية وسرعة فائقة في التسليم." : "انضم لنظام ناجز الرائد، حيث التميز هو المعيار."}
+                    {isLogin ? "خدمة عملاء استثنائية وسرعة فائقة في التسليم." : "انضم لنظام مرسال الرائد، حيث التميز هو المعيار."}
                  </p>
               </motion.div>
            </div>
@@ -229,7 +229,7 @@ export default function LoginPage() {
                  <span className="text-[10px] text-white/20 font-black uppercase tracking-widest mt-1">SLA الموثوقية السيادية</span>
               </div>
               <div className="text-[10px] font-black text-white/10 uppercase tracking-[0.6em]">
-                 NAJEZ CORE V4.0
+                 MERSAL CORE V4.0
               </div>
            </div>
         </div>

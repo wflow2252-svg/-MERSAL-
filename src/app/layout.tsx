@@ -7,15 +7,15 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import ScrollToTop from "@/components/ScrollToTop";
 
 export const metadata = {
-  title: "ناجز | اتسوّق بثقة — نوصّل لبابك في السودان",
-  description: "ناجز منصة التجارة الإلكترونية الأولى في السودان — آلاف المنتجات، توصيل سريع، ودفع آمن.",
-  keywords: ["ناجز", "تسوق", "السودان", "توصيل", "الخرطوم", "منتجات", "متجر إلكتروني"],
-  authors: [{ name: "فريق ناجز" }],
+  title: "مرسال | اتسوّق بثقة — نوصّل لبابك في السودان",
+  description: "مرسال منصة التجارة الإلكترونية الأولى في السودان — آلاف المنتجات، توصيل سريع، ودفع آمن.",
+  keywords: ["مرسال", "تسوق", "السودان", "توصيل", "الخرطوم", "منتجات", "متجر إلكتروني"],
+  authors: [{ name: "فريق مرسال" }],
   openGraph: {
-    title: "ناجز | ابدأ تجارتك أو اتسوّق الآن",
+    title: "مرسال | ابدأ تجارتك أو اتسوّق الآن",
     description: "آلاف المنتجات من موردين موثوقين — توصيل لكل أنحاء السودان.",
-    url: "https://najez.sd",
-    siteName: "ناجز",
+    url: "https://mersal.sd",
+    siteName: "مرسال",
     locale: "ar_SD",
     type: "website",
   },

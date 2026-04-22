@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 :root {
-  /* ── Brand Colors (ناجز - NAJEZ) ───────────────────────── */
+  /* ── Brand Colors (مرسال - MERSAL) ───────────────────────── */
   --primary: #10B981; /* Premium Emerald */
   --primary-rgb: 16, 185, 129;
   --primary-light: #34D399;
@@ -25,7 +25,7 @@
   --border: #E2E8F0;
   --border-light: #F1F5F9;
 
-  /* ── Najez Premium Header ──────────────────────────── */
+  /* ── مرسال Premium Header ──────────────────────────── */
   --header-bg: #020D10;
   --header-secondary: #0A1A1F;
   --header-accent: #F29124;

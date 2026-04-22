@@ -9,17 +9,17 @@ const COLS = [
     links: [
       { label: "من نحن",            href: "/about" },
       { label: "وظائف",             href: "/careers" },
-      { label: "أخبار ناجز",       href: "/news" },
+      { label: "أخبار مرسال",       href: "/news" },
       { label: "شراكات استراتيجية", href: "/partners" },
     ],
   },
   {
     title: "اربح معنا",
     links: [
-      { label: "ابدأ تجارتك — بع على ناجز", href: "/vendor/register" },
+      { label: "ابدأ تجارتك — بع على مرسال", href: "/vendor/register" },
       { label: "برنامج التوصيل",   href: "/delivery-jobs" },
       { label: "المسوقون بالعمولة", href: "/affiliates" },
-      { label: "استثمر في ناجز",  href: "/invest" },
+      { label: "استثمر في مرسال",  href: "/invest" },
     ],
   },
   {
@@ -28,7 +28,7 @@ const COLS = [
       { label: "الدفع عند الاستلام", href: "/payment/cod" },
       { label: "التحويل البنكي",      href: "/payment/bank" },
       { label: "الدفع الإلكتروني",   href: "/payment/online" },
-      { label: "ناجز ريوارد",        href: "/rewards" },
+      { label: "مرسال ريوارد",        href: "/rewards" },
     ],
   },
   {
@@ -64,7 +64,7 @@ export default function Footer() {
               <Image src="/icon.png" alt="ناجز" fill className="object-contain" />
             </div>
             <div>
-              <p className="text-lg font-black text-white">ناجز | NAJEZ</p>
+              <p className="text-lg font-black text-white">مرسال | MERSAL</p>
               <p className="text-xs text-[#F29124] font-bold">اتسوّق بثقة — نوصّل لبابك في السودان 🇸🇩</p>
             </div>
           </div>
@@ -98,7 +98,7 @@ export default function Footer() {
               <span>|</span>
               <Link href="/cookies" className="hover:text-white transition-colors">سياسة الكوكيز</Link>
               <span>|</span>
-              <span>© 2026 ناجز — جميع الحقوق محفوظة</span>
+              <span>© 2026 مرسال — جميع الحقوق محفوظة</span>
             </div>
 
             {/* Security badges */}
@@ -116,7 +116,7 @@ export default function Footer() {
       {/* ── Bottom band (like Amazon) ── */}
       <div className="bg-[#011116] text-center py-3">
         <p className="text-[10px] text-white/20 font-bold">
-          Powered by Najez Tech — Sudan's #1 E-Commerce Platform 🇸🇩
+          Powered by Mersal Tech — Sudan's #1 E-Commerce Platform 🇸🇩
         </p>
       </div>
     </footer>

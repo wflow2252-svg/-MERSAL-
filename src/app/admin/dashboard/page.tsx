@@ -82,8 +82,8 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
           {/* Header - Forced LTR to ensure Logo is strictly on the Left */}
           <div className="flex justify-between items-start border-b-4 border-black pb-4 mb-4" dir="ltr">
             {/* Left: Combined Logo (Icon + Text) */}
-            <div className="w-20 h-20 flex flex-col items-start pl-2 pt-2">
-               <Image src="/icon.png" alt="Mersal" width={80} height={80} className="object-contain" />
+            <div className="w-1/2 flex flex-col items-start pl-2 pt-2">
+               <Image src="/logo-navbar-final.png" alt="Mersal" width={160} height={120} className="object-contain" />
             </div>
             {/* Right: Order ID (Clear and Large) */}
             <div className="text-right w-1/2 flex flex-col items-end pr-4 pt-4">
@@ -597,8 +597,8 @@ export default function AdminDashboard() {
       {/* ── Sidebar ── */}
       <aside className="hidden lg:flex w-72 bg-[#021D24] text-white flex-col pt-28 shadow-2xl z-20 overflow-y-auto">
         <div className="px-6 mb-8 flex flex-col items-center gap-4 text-center">
-          <div className="relative w-20 h-20 mb-2">
-            <Image src="/icon.png" alt="Logo" fill className="object-contain" />
+          <div className="relative w-48 h-16 mb-2">
+            <Image src="/logo-navbar-final.png" alt="Logo" fill className="object-contain" />
           </div>
           <div>
             <span className="font-black text-2xl text-[#1089A4] tracking-tight block">مرسال</span>

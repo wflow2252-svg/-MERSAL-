@@ -191,7 +191,7 @@ export default function LoginPage() {
            <div className="relative z-10 w-full">
               <Link href="/" className="inline-flex items-center group/logo">
                  <div className="w-20 h-20 flex items-center justify-center relative">
-                    <Image src="/icon.png" alt="Logo" fill className="object-contain" />
+                    <Image src="/logo-navbar-final.png" alt="Logo" fill className="object-contain" />
                  </div>
               </Link>
            </div>

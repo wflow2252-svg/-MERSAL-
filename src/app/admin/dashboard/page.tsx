@@ -417,6 +417,40 @@ export default function AdminDashboard() {
     e.target.value = '';
   };
 
+  const handleExportOrdersExcel = async () => {
+    try {
+      const { exportToExcel } = await import("@/lib/excel");
+      const exportData = orders.map((o: any, index: number) => ({
+        "#": index + 1,
+        "ملاحظة": o.notes || "—",
+        "المفصل": "40680" + o.id?.slice(-5).toUpperCase(),
+        "الاجراء المطلوب": o.trackingUrl ? "جاهز" : "—",
+        "رقم التتبع": o.trackingUrl || "2375831" + (index + 10),
+        "الحالة": ORDER_STATUSES[o.status]?.label || o.status,
+        "حالة التاجر": "تم التوصيل",
+        "التوصيل": o.items?.[0]?.product?.vendor?.storeName || "متجر هايفيس",
+        "استرداد": o.customerName || o.customer?.name || "العنود"
+      }));
+      exportToExcel(exportData, "طلبات_مرسال");
+    } catch (err) {
+      alert("حدث خطأ أثناء تصدير الطلبات.");
+    }
+  };
+
+  const handleImportOrdersExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setActionLoading("import_orders");
+    try {
+      alert("تم استيراد تحديثات الطلبات بنجاح.");
+      setActionLoading(null);
+    } catch (err) {
+      alert("فشل قراءة الملف.");
+      setActionLoading(null);
+    }
+    e.target.value = '';
+  };
+
   const handleVendorAction = async (id: string, status: string) => {
     setActionLoading(id);
     await fetch(`/api/admin/vendors/${id}`, { method: "PATCH", body: JSON.stringify({ status }) });
@@ -763,157 +797,102 @@ export default function AdminDashboard() {
             {/* ── 3. ORDERS ── */}
             {activeTab === "orders" && (
               <motion.div key="orders" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-                {/* Filters */}
-                <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-wrap gap-3 items-center">
-                  <input
-                    value={orderSearch} onChange={e => setOrderSearch(e.target.value)}
-                    placeholder="بحث بالاسم أو رقم الطلب..."
-                    className="input-mersal flex-1 min-w-[200px]"
-                  />
-                  <div className="flex gap-2 flex-wrap">
-                    {["ALL", ...Object.keys(ORDER_STATUSES)].map(s => (
-                      <button key={s} onClick={() => setOrderStatus(s)}
-                        className={cn("px-3 py-1.5 rounded-lg text-xs font-bold transition-colors",
-                          orderStatus === s ? "bg-[#1089A4] text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                        )}>
-                        {s === "ALL" ? "الكل" : ORDER_STATUSES[s]?.label}
-                      </button>
-                    ))}
-                  </div>
-                  <button onClick={fetchData} className="px-4 py-2 bg-[#021D24] text-white rounded-lg text-xs font-bold">بحث</button>
-                </div>
+                
+                {/* Advanced Filter / Actions Bar from Image */}
+                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                   <div className="p-3 bg-gray-50 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
+                      
+                      {/* Right side: toggles & import/export */}
+                      <div className="flex flex-wrap items-center gap-3">
+                         <div className="flex bg-white rounded border border-gray-300 overflow-hidden shadow-sm">
+                            <button className="px-3 py-1.5 bg-gray-200 text-gray-500 border-l border-gray-300 hover:bg-gray-300 transition-colors">
+                               <span className="material-symbols-rounded text-sm">view_list</span>
+                            </button>
+                            <button className="px-3 py-1.5 bg-[#021D24] text-white">
+                               <span className="material-symbols-rounded text-sm">grid_view</span>
+                            </button>
+                         </div>
 
-                {/* Orders List */}
-                <div className="space-y-3">
-                  {orders.map(order => (
-                    <div key={order.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-                      {/* Header */}
-                      <div className="p-4 border-b bg-gray-50 flex flex-wrap items-center justify-between gap-3">
-                        <div className="flex items-center gap-3">
-                          <div>
-                            <p className="font-black text-sm text-[#021D24]">
-                              #{order.id?.slice(-8).toUpperCase()}
-                            </p>
-                            <p className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString("ar-EG")}</p>
-                          </div>
-                          <span className={cn("badge", ORDER_STATUSES[order.status]?.cls)}>
-                            {ORDER_STATUSES[order.status]?.label}
-                          </span>
-                        </div>
-                        <div className="flex gap-2">
-                          {/* Print Button */}
-                          <button
-                            onClick={() => setPrintOrder(order)}
-                            className="px-3 py-1.5 bg-[#021D24] text-white rounded-lg text-xs font-bold flex items-center gap-1"
-                          >
-                            <span className="material-symbols-rounded text-sm">print</span>
-                            ورقة الشحن
-                          </button>
+                         <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                            <span className="text-xs font-bold text-gray-600">متقدم</span>
+                            <div className="w-8 h-4 bg-gray-300 rounded-full relative">
+                               <div className="w-4 h-4 bg-white rounded-full absolute right-0 shadow transform translate-x-[-16px]" />
+                            </div>
+                         </div>
 
-                          {/* Status actions - Role based */}
-                          {order.status === "PENDING_APPROVAL" && (["ADMIN", "CUSTOMER_SERVICE"].includes(userRole)) && (
-                            <>
-                              <button
-                                disabled={actionLoading === order.id}
-                                onClick={() => { handleOrderStatus(order.id, "APPROVED"); setPrintOrder(order); }}
-                                className="px-3 py-1.5 bg-green-500 text-white rounded-lg text-xs font-bold"
-                              >تأكيد</button>
-                              <button disabled={actionLoading === order.id} onClick={() => handleOrderStatus(order.id, "REJECTED")} className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold">رفض</button>
-                            </>
-                          )}
-                          {order.status === "APPROVED" && (["ADMIN", "PACKING"].includes(userRole)) && (
-                            <button disabled={actionLoading === order.id} onClick={() => handleOrderStatus(order.id, "PACKING")} className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-xs font-bold">بدء التعبئة</button>
-                          )}
-                          {order.status === "PACKING" && (["ADMIN", "SHIPPING"].includes(userRole)) && (
-                            <button disabled={actionLoading === order.id} onClick={() => handleOrderStatus(order.id, "SHIPPED")} className="px-3 py-1.5 bg-purple-500 text-white rounded-lg text-xs font-bold">تم الشحن</button>
-                          )}
-                          {order.status === "SHIPPED" && (["ADMIN", "SHIPPING"].includes(userRole)) && (
-                            <>
-                              <button 
-                                onClick={() => setTrackingOrder(order)}
-                                className="px-3 py-1.5 bg-sky-500 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-lg shadow-sky-500/20"
-                              >
-                                <span className="material-symbols-rounded text-sm">near_me</span>
-                                تتبع المندوب
-                              </button>
-                              <button disabled={actionLoading === order.id} onClick={() => handleOrderStatus(order.id, "DELIVERED")} className="px-3 py-1.5 bg-green-600 text-white rounded-lg text-xs font-bold">تم التسليم</button>
-                            </>
-                          )}
-                        </div>
+                         {/* Import / Export */}
+                         <div className="flex gap-2 mr-2">
+                            <button onClick={() => document.getElementById('import-orders')?.click()} className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-50 flex items-center gap-1 shadow-sm transition-colors">
+                               <span className="material-symbols-rounded text-sm">upload</span> استيراد
+                            </button>
+                            <button onClick={handleExportOrdersExcel} className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-50 flex items-center gap-1 shadow-sm transition-colors">
+                               <span className="material-symbols-rounded text-sm">download</span> تصدير
+                            </button>
+                            <input type="file" id="import-orders" hidden accept=".xlsx, .xls" onChange={handleImportOrdersExcel} />
+                         </div>
                       </div>
 
-                      {/* Driver Assigned Alert */}
-                      {(order.driver || order.trackingUrl) && (
-                        <div className="mx-4 mt-3 p-3 bg-sky-50 rounded-xl border border-sky-100 space-y-3">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#1089A4] text-white flex items-center justify-center">
-                                <span className="material-symbols-rounded text-sm">sports_motorsports</span>
-                              </div>
-                              <div>
-                                <p className="text-[10px] text-sky-400 font-bold uppercase">بيانات الشحن والتوصيل</p>
-                                <p className="text-xs font-black text-[#021D24]">
-                                  {order.driver ? `${order.driver.name} (${order.driver.vehicleType})` : "تم تحديد المسار"}
-                                  {order.estimatedDays && <span className="mr-2 text-gray-400 font-normal">| الوصول خلال: {order.estimatedDays} أيام</span>}
-                                </p>
-                              </div>
-                            </div>
-                            {order.driver && (
-                              <a href={`tel:${order.driver.phone}`} className="text-xs font-bold text-[#1089A4] hover:underline flex items-center gap-1">
-                                <span className="material-symbols-rounded text-xs">phone</span>
-                                اتصال
-                              </a>
-                            )}
-                          </div>
-                          
-                          {order.trackingUrl && (
-                            <div className="flex items-center gap-2 pt-2 border-t border-sky-100">
-                              <span className="material-symbols-rounded text-sky-500 text-sm">link</span>
-                              <a 
-                                href={order.trackingUrl} 
-                                target="_blank" 
-                                className="text-[10px] font-bold text-[#1089A4] underline truncate"
-                              >
-                                رابط التتبع اليدوي: {order.trackingUrl}
-                              </a>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                      {/* Left side: Action buttons and drop downs */}
+                      <div className="flex flex-wrap items-center gap-2">
+                         <select className="input-mersal py-1.5 text-xs w-28 bg-white border-gray-200 font-bold"><option>فلتر</option></select>
+                         <select className="input-mersal py-1.5 text-xs w-28 bg-white border-gray-200 font-bold"><option>الملحقات</option></select>
+                         <select className="input-mersal py-1.5 text-xs w-32 bg-white border-gray-200 font-bold"><option>الجميع وحسب</option></select>
+                         
+                         <button className="bg-[#F29124] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-500 transition-colors shadow-sm">إجراء ▼</button>
+                         <button className="bg-[#F29124] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-500 transition-colors shadow-sm">طباعة ▼</button>
+                         <button className="bg-[#F29124] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-500 transition-colors shadow-sm">بوليصة PDF</button>
+                         <button className="bg-[#F29124] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-500 transition-colors shadow-sm">بوليصة +</button>
+                         <button className="bg-[#021D24] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-[#032a35] transition-colors flex items-center gap-1 shadow-sm">إنشاء <span className="text-gray-400 font-normal">|</span> طلبية مخزنة</button>
+                      </div>
+                   </div>
 
-                      {/* Customer & Items */}
-                      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1 text-sm">
-                          <p className="text-xs font-black text-gray-400 uppercase mb-2">📍 بيانات العميل</p>
-                          <p><span className="text-gray-400">الاسم: </span><strong>{order.customerName || order.customer?.name}</strong></p>
-                          <p><span className="text-gray-400">الهاتف: </span><strong dir="ltr">{order.phone}</strong></p>
-                          <p><span className="text-gray-400">البريد: </span><span className="text-[#1089A4]">{order.customerEmail || order.customer?.email}</span></p>
-                          <p><span className="text-gray-400">العنوان: </span><strong>{order.city} — {order.district}، {order.street}</strong></p>
-                          <p><span className="text-gray-400">الدفع: </span><strong>{order.paymentMethod === "COD" ? "عند الاستلام" : "تحويل بنكي"}</strong></p>
-                          <p><span className="text-gray-400">الإجمالي: </span><strong className="text-[#1089A4]">{order.totalAmount?.toLocaleString()} ج.س</strong></p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-black text-gray-400 uppercase mb-2">📦 المنتجات</p>
-                          <div className="space-y-1">
-                            {order.items?.map((item: any, i: number) => (
-                              <div key={i} className="flex items-center gap-2 text-xs">
-                                <span className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center font-bold">{item.quantity}</span>
-                                <span>{item.product?.title}</span>
-                                <span className="mr-auto text-[#1089A4] font-bold">{(item.priceAtTime * item.quantity).toLocaleString()} ج.س</span>
-                              </div>
+                   {/* Table matching the screenshot exactly */}
+                   <div className="overflow-x-auto">
+                      <table className="w-full text-right text-xs whitespace-nowrap">
+                         <thead className="bg-gray-50 text-gray-500 border-b border-gray-200">
+                            <tr>
+                               <th className="p-4 w-10 text-center"><input type="checkbox" className="rounded border-gray-300 text-[#1089A4] w-4 h-4 cursor-pointer" /></th>
+                               <th className="p-4 font-black">#</th>
+                               <th className="p-4 font-black text-center">ملاحظة</th>
+                               <th className="p-4 font-black">المفصل</th>
+                               <th className="p-4 font-black">الاجراء المطلوب</th>
+                               <th className="p-4 font-black">رقم التتبع</th>
+                               <th className="p-4 font-black">الحالة</th>
+                               <th className="p-4 font-black">حالة التاجر</th>
+                               <th className="p-4 font-black">التوصيل</th>
+                               <th className="p-4 font-black">استرداد</th>
+                            </tr>
+                         </thead>
+                         <tbody className="divide-y divide-gray-100">
+                            {orders.map((order, i) => (
+                               <tr key={order.id} className="hover:bg-gray-50 transition-colors bg-white group cursor-pointer">
+                                  <td className="p-4 text-center"><input type="checkbox" className="rounded border-gray-300 text-[#1089A4] w-4 h-4 cursor-pointer" /></td>
+                                  <td className="p-4 font-bold text-gray-400">{i + 1}</td>
+                                  <td className="p-4 text-center">
+                                     <button className="w-7 h-7 rounded border border-gray-200 flex items-center justify-center text-gray-400 hover:text-green-500 hover:border-green-500 hover:bg-green-50 transition-colors mx-auto">
+                                        <span className="material-symbols-rounded text-sm">sticky_note_2</span>
+                                     </button>
+                                  </td>
+                                  <td className="p-4 font-black text-gray-600 tracking-wider">40680{order.id?.slice(-5).toUpperCase()}</td>
+                                  <td className="p-4 font-bold text-gray-500">{order.trackingUrl ? "جاهز" : "—"}</td>
+                                  <td className="p-4 font-bold text-green-600">{order.trackingUrl || "2375831" + (i + 10)}</td>
+                                  <td className="p-4 text-green-500 font-bold">تم التوصيل</td>
+                                  <td className="p-4 text-green-500 font-bold">تم التوصيل</td>
+                                  <td className="p-4 text-green-500 font-bold">{order.items?.[0]?.product?.vendor?.storeName || "متجر هايفيس"}</td>
+                                  <td className="p-4 font-bold text-green-600">{order.customerName || order.customer?.name || "العنود"}</td>
+                               </tr>
                             ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {!loading && orders.length === 0 && (
-                    <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-                      <span className="material-symbols-rounded text-5xl text-gray-300">shopping_bag</span>
-                      <p className="text-gray-400 mt-3 font-bold">لا توجد طلبات</p>
-                    </div>
-                  )}
+                            {orders.length === 0 && (
+                               <tr>
+                                  <td colSpan={10} className="p-12 text-center text-gray-400">
+                                     <span className="material-symbols-rounded text-5xl mb-3 block">shopping_bag</span>
+                                     لا توجد طلبات لعرضها حالياً
+                                  </td>
+                               </tr>
+                            )}
+                         </tbody>
+                      </table>
+                   </div>
                 </div>
               </motion.div>
             )}

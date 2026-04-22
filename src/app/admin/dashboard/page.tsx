@@ -303,7 +303,7 @@ export default function AdminDashboard() {
   // Form states
   const [newEmployee, setNewEmployee] = useState({ name: "", email: "", role: "PACKING" });
   const [newDriver, setNewDriver] = useState({ name: "", phone: "", vehicleType: "مواتر (دباب)" });
-  const [newZone, setNewZone] = useState({ name: "", city: "", fee: "" });
+  const [newZone, setNewZone] = useState({ fromCity: "", toCity: "", fee: "" });
   const [newCategory, setNewCategory] = useState({ name: "", icon: "📦" });
   const [newProvider, setNewProvider] = useState({ name: "", apiKey: "", baseUrl: "" });
 
@@ -617,13 +617,13 @@ export default function AdminDashboard() {
   };
 
   const handleAddZone = async () => {
-    if (!newZone.name || !newZone.city || !newZone.fee) return;
+    if (!newZone.fromCity || !newZone.toCity || !newZone.fee) return;
     setActionLoading("zone");
-    const r = await fetch("/api/admin/delivery-zones", { method: "POST", body: JSON.stringify({ ...newZone, fee: Number(newZone.fee) }) });
+    const r = await fetch("/api/admin/delivery-zones", { method: "POST", body: JSON.stringify({ fromCity: newZone.fromCity, toCity: newZone.toCity, fee: Number(newZone.fee) }) });
     if (r.ok) {
       const data = await r.json();
       setDeliveryZones(prev => [data, ...prev]);
-      setNewZone({ name: "", city: "", fee: "" });
+      setNewZone({ fromCity: "", toCity: "", fee: "" });
     }
     setActionLoading(null);
   };
@@ -1419,19 +1419,45 @@ export default function AdminDashboard() {
               <motion.div key="delivery" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
                   <h3 className="font-black text-[#021D24] mb-4">إضافة منطقة توصيل</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <input value={newZone.name} onChange={e => setNewZone(p => ({...p, name: e.target.value}))} className="input-mersal" placeholder="اسم المنطقة (شمبات...)" />
-                    <input value={newZone.city} onChange={e => setNewZone(p => ({...p, city: e.target.value}))} className="input-mersal" placeholder="المدينة (الخرطوم...)" />
-                    <input type="number" value={newZone.fee} onChange={e => setNewZone(p => ({...p, fee: e.target.value}))} className="input-mersal" placeholder="رسوم التوصيل (ج.س)" />
-                    <button onClick={handleAddZone} disabled={actionLoading === "zone"} className="btn-primary disabled:opacity-50">إضافة +</button>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+                    <div>
+                      <label className="text-xs font-bold text-gray-500 block mb-1">من مدينة</label>
+                      <input
+                        value={newZone.fromCity}
+                        onChange={e => setNewZone(p => ({...p, fromCity: e.target.value}))}
+                        className="input-mersal w-full"
+                        placeholder="الخرطوم"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-500 block mb-1">إلى مدينة</label>
+                      <input
+                        value={newZone.toCity}
+                        onChange={e => setNewZone(p => ({...p, toCity: e.target.value}))}
+                        className="input-mersal w-full"
+                        placeholder="أم درمان"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-500 block mb-1">رسوم التوصيل (ج.س)</label>
+                      <input
+                        type="number"
+                        value={newZone.fee}
+                        onChange={e => setNewZone(p => ({...p, fee: e.target.value}))}
+                        className="input-mersal w-full"
+                        placeholder="مثال: 500"
+                      />
+                    </div>
+                    <button onClick={handleAddZone} disabled={actionLoading === "zone"} className="btn-primary disabled:opacity-50 h-[42px]">إضافة +</button>
                   </div>
                 </div>
+
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                   <table className="w-full text-right text-sm">
                     <thead className="bg-gray-50 border-b text-xs font-black text-gray-500 uppercase">
                       <tr>
-                        <th className="px-5 py-3">المنطقة</th>
-                        <th className="px-5 py-3">المدينة</th>
+                        <th className="px-5 py-3">المنطلق</th>
+                        <th className="px-5 py-3">الوصول</th>
                         <th className="px-5 py-3">رسوم التوصيل</th>
                         <th className="px-5 py-3">الحالة</th>
                         <th className="px-5 py-3">إجراء</th>
@@ -1440,9 +1466,9 @@ export default function AdminDashboard() {
                     <tbody className="divide-y">
                       {deliveryZones.map(zone => (
                         <tr key={zone.id} className="hover:bg-gray-50">
-                          <td className="px-5 py-4 font-bold">{zone.name}</td>
-                          <td className="px-5 py-4">{zone.city}</td>
-                          <td className="px-5 py-4 font-black text-[#1089A4]">{zone.fee?.toLocaleString()} ج.س</td>
+                          <td className="px-5 py-4 font-bold">{zone.fromCity}</td>
+                          <td className="px-5 py-4 font-bold text-[#1089A4]">{zone.toCity}</td>
+                          <td className="px-5 py-4 font-black text-[#F29124]">{zone.fee?.toLocaleString()} ج.س</td>
                           <td className="px-5 py-4">
                             <span className={cn("badge", zone.isActive ? "badge-approved" : "badge-rejected")}>
                               {zone.isActive ? "نشطة" : "معطّلة"}

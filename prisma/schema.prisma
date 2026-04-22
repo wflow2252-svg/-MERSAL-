@@ -200,8 +200,8 @@ model Employee {
 
 model DeliveryZone {
   id       String  @id @default(cuid())
-  name     String  // اسم المنطقة (شمبات، بحري...)
-  city     String  // المدينة (الخرطوم، أم درمان...)
+  fromCity String  // من مدينة
+  toCity   String  // إلى مدينة
   fee      Float   // رسوم التوصيل بالجنيه السوداني
   isActive Boolean @default(true)
 }

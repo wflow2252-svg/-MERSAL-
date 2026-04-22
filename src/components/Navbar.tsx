@@ -106,7 +106,7 @@ export default function Navbar() {
           {/* Advanced Search Bar */}
           <form 
             onSubmit={handleSearch} 
-            className="flex-grow flex items-stretch h-11 bg-white/5 rounded-xl border border-white/10 hover:border-[#F29124]/50 focus-within:border-[#F29124] focus-within:ring-4 focus-within:ring-[#F29124]/10 transition-all overflow-hidden"
+            className="flex-grow flex items-stretch h-11 bg-white/5 rounded-xl border border-white/10 hover:border-[#C5A021]/50 focus-within:border-[#C5A021] focus-within:ring-4 focus-within:ring-[#C5A021]/10 transition-all overflow-hidden"
           >
             <select className="hidden md:block bg-transparent text-white/70 text-[12px] font-bold px-4 hover:text-white outline-none cursor-pointer border-l border-white/10">
               <option className="bg-[#020D10]">كل الأقسام</option>
@@ -122,7 +122,7 @@ export default function Navbar() {
             />
             <button
               type="submit"
-              className="px-6 flex items-center justify-center text-white/50 hover:text-[#F29124] transition-colors"
+              className="px-6 flex items-center justify-center text-white/50 hover:text-[#C5A021] transition-colors"
             >
               <span className="material-symbols-rounded text-2xl">search</span>
             </button>
@@ -134,12 +134,16 @@ export default function Navbar() {
             {/* Account Dropdown */}
             <div className="relative">
               <motion.button
-                whileHover={{ y: -2 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setShowUserMenu(p => !p)}
-                className="flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg hover:bg-white/5 transition-all text-center"
+                className="flex flex-col items-center justify-center w-14 h-14 rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 transition-all text-center group"
               >
-                <span className="material-symbols-rounded text-2xl text-white/70">person</span>
-                <span className="text-[10px] font-bold text-white/40">حسابي</span>
+                <div className="relative">
+                  <span className="material-symbols-rounded text-2xl text-white/70 group-hover:text-white transition-colors">person</span>
+                  <div className="absolute top-0 right-0 w-2 h-2 bg-[#C5A021] rounded-full border border-black shadow-[0_0_10px_rgba(197,160,33,0.5)]" />
+                </div>
+                <span className="text-[9px] font-black text-white/40 group-hover:text-white transition-colors uppercase tracking-widest leading-none mt-1">حسابي</span>
               </motion.button>
 
               <AnimatePresence>
@@ -148,13 +152,13 @@ export default function Navbar() {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute left-0 top-full mt-4 w-60 bg-[#0A1A1F] rounded-2xl shadow-2xl border border-white/10 backdrop-blur-xl overflow-hidden z-50 text-right"
+                    className="absolute left-0 top-full mt-4 w-64 bg-[#0F172A] rounded-[2.5rem] shadow-3xl border border-white/5 backdrop-blur-2xl overflow-hidden z-50 text-right ring-1 ring-white/10"
                   >
                     {isAuthenticated ? (
                       <div className="p-2 space-y-1">
-                        <div className="px-4 py-3 mb-2 bg-[#F29124]/10 rounded-xl">
-                          <p className="text-xs font-black text-white">{session?.user?.name}</p>
-                          <p className="text-[10px] text-[#F29124]">{session?.user?.email}</p>
+                        <div className="px-5 py-4 mb-3 bg-white/5 rounded-3xl border border-white/5">
+                          <p className="text-sm font-black text-white tracking-tight">{session?.user?.name}</p>
+                          <p className="text-[10px] text-[#C5A021] font-bold uppercase tracking-widest">{session?.user?.email}</p>
                         </div>
                         <Link href="/profile" className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-white/5 text-sm font-bold text-white/80 transition-colors">
                           لوحة التحكم
@@ -190,10 +194,10 @@ export default function Navbar() {
 
             {/* Wishlist */}
             <Link href="/wishlist" className="hidden lg:flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg hover:bg-white/5 transition-all relative group">
-              <span className="material-symbols-rounded text-2xl text-white/70 group-hover:text-[#F29124] transition-colors">favorite</span>
+              <span className="material-symbols-rounded text-2xl text-white/70 group-hover:text-[#C5A021] transition-colors">favorite</span>
               <span className="text-[10px] font-bold text-white/40">المفضلة</span>
               {favorites.length > 0 && (
-                <span className="absolute top-1 left-2 h-4 min-w-[16px] bg-[#F29124] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1">
+                <span className="absolute top-1 left-2 h-4 min-w-[16px] bg-[#C5A021] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1">
                   {favorites.length}
                 </span>
               )}
@@ -204,11 +208,11 @@ export default function Navbar() {
               <motion.div 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-[#F29124] text-white rounded-xl h-11 px-4 lg:px-6 flex items-center gap-3 shadow-lg shadow-[#F29124]/20 hover:brightness-110 transition-all"
+                className="bg-[#C5A021] text-white rounded-xl h-11 px-4 lg:px-6 flex items-center gap-3 shadow-lg shadow-[#C5A021]/20 hover:brightness-110 transition-all"
               >
                 <div className="relative">
                   <span className="material-symbols-rounded text-2xl">shopping_bag</span>
-                  <span className="absolute -top-1 -right-1 h-4 min-w-[16px] bg-white text-[#F29124] text-[9px] font-black rounded-full flex items-center justify-center px-1">
+                  <span className="absolute -top-1 -right-1 h-4 min-w-[16px] bg-white text-[#C5A021] text-[9px] font-black rounded-full flex items-center justify-center px-1">
                     {cartCount}
                   </span>
                 </div>

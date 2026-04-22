@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const COLS = [
   {
-    title: "تعرف على ناجز",
+    title: "تعرف على مرسال",
     links: [
       { label: "من نحن",            href: "/about" },
       { label: "وظائف",             href: "/careers" },
@@ -61,11 +61,11 @@ export default function Footer() {
           {/* Logo + tagline */}
           <div className="flex items-center gap-4 mb-8 border-b border-white/10 pb-8">
             <div className="relative w-16 h-16 lg:w-20 lg:h-20">
-              <Image src="/icon.png" alt="ناجز" fill className="object-contain" />
+              <Image src="/icon.png" alt="مرسال" fill className="object-contain" />
             </div>
             <div>
               <p className="text-lg font-black text-white">مرسال | MERSAL</p>
-              <p className="text-xs text-[#F29124] font-bold">اتسوّق بثقة — نوصّل لبابك في السودان 🇸🇩</p>
+              <p className="text-xs text-[#C5A021] font-bold">اتسوّق بثقة — نوصّل لبابك في السودان 🇸🇩</p>
             </div>
           </div>
 
@@ -105,7 +105,7 @@ export default function Footer() {
             <div className="flex items-center gap-2">
               {["lock", "verified_user", "shield", "payment"].map(ic => (
                 <div key={ic} className="w-8 h-7 bg-white/5 rounded border border-white/10 flex items-center justify-center">
-                  <span className="material-symbols-rounded text-[13px] text-[#F29124]/60">{ic}</span>
+                  <span className="material-symbols-rounded text-[13px] text-[#C5A021]/60">{ic}</span>
                 </div>
               ))}
             </div>

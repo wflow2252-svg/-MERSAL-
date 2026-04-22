@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const SLIDES = [
   {
-    bg: "from-[#F29124]/90 to-[#D97B10]",
+    bg: "from-[#C5A021]/90 to-[#A6881A]",
     tag: "📢 مساحة إعلانية",
     title: "أعـلـن هـنـا",
     subtitle: "احجز مساحتك",
@@ -87,17 +87,17 @@ export default function HeroSection() {
         {/* Content */}
         <div className={cn("absolute inset-0 flex items-center max-w-[1600px] mx-auto px-6 lg:px-12 transition-all duration-300", transitioning ? "opacity-0 translate-x-4" : "opacity-100 translate-x-0")}>
           <div className="max-w-2xl">
-            <span className="inline-block bg-[#F29124] text-white text-xs font-black px-3 py-1 rounded mb-4">
+            <span className="inline-block bg-[#C5A021] text-white text-xs font-black px-3 py-1 rounded mb-4">
               {s.tag}
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-2">
-              {s.title} <span className="text-[#F29124]">{s.subtitle}</span>
+              {s.title} <span className="text-[#C5A021]">{s.subtitle}</span>
             </h1>
             <p className="text-sm md:text-base text-white/70 mb-6 max-w-lg">{s.desc}</p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href={s.ctaHref}
-                className="bg-[#F29124] hover:bg-[#D97B10] text-white px-6 py-3 rounded font-black text-sm transition-colors inline-flex items-center gap-2"
+                className="bg-[#C5A021] hover:bg-[#A6881A] text-white px-6 py-3 rounded font-black text-sm transition-colors inline-flex items-center gap-2"
               >
                 {s.cta}
                 <span className="material-symbols-rounded text-base">arrow_back</span>
@@ -113,7 +113,7 @@ export default function HeroSection() {
         </div>
 
         {/* Badge top-left */}
-        <div className="absolute top-6 left-6 bg-[#F29124] text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg">
+        <div className="absolute top-6 left-6 bg-[#C5A021] text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg">
           {s.badge}
         </div>
 
@@ -123,7 +123,7 @@ export default function HeroSection() {
             <button
               key={i}
               onClick={() => changeSlide(i)}
-              className={cn("h-1.5 rounded-full transition-all duration-300", i === active ? "w-8 bg-[#F29124]" : "w-4 bg-white/30")}
+              className={cn("h-1.5 rounded-full transition-all duration-300", i === active ? "w-8 bg-[#C5A021]" : "w-4 bg-white/30")}
             />
           ))}
         </div>

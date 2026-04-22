@@ -3,13 +3,13 @@
 
 :root {
   /* ── Brand Colors (مرسال - MERSAL) ───────────────────────── */
-  --primary: #10B981; /* Premium Emerald */
-  --primary-rgb: 16, 185, 129;
-  --primary-light: #34D399;
-  --primary-dark: #059669;
+  --primary: #0F172A; /* Royal Midnight Blue */
+  --primary-rgb: 15, 23, 42;
+  --primary-light: #1E293B;
+  --primary-dark: #020617;
 
-  --accent: #F29124; /* Original Brand Orange for continuity */
-  --accent-rgb: 242, 145, 36;
+  --accent: #C5A021; /* Antique Gold */
+  --accent-rgb: 197, 160, 33;
 
   --secondary: #0F172A; /* Slate 900 for dark sections */
   --secondary-rgb: 15, 23, 42;
@@ -26,9 +26,9 @@
   --border-light: #F1F5F9;
 
   /* ── مرسال Premium Header ──────────────────────────── */
-  --header-bg: #020D10;
-  --header-secondary: #0A1A1F;
-  --header-accent: #F29124;
+  --header-bg: #020617; /* Even deeper midnight */
+  --header-secondary: #0F172A;
+  --header-accent: #C5A021;
 
   /* ── Semantic ─────────────────────────────────────── */
   --success: #10B981;

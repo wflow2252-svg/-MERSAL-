@@ -131,8 +131,18 @@ export default function VendorRegister() {
           <div className="absolute top-0 left-0 w-32 h-32 bg-[#1089A4]/5 rounded-br-[5rem] pointer-events-none" />
           
           {error && (
-            <div className="bg-red-50 text-[#CB2E26] p-6 rounded-3xl text-[11px] font-black uppercase tracking-widest mb-10 border border-red-100 flex items-center gap-4 animate-shake">
-               <span className="material-symbols-rounded text-xl">error</span> {error}
+            <div className="bg-red-50 text-[#CB2E26] p-8 rounded-[2.5rem] border-4 border-red-100 flex flex-col gap-6 animate-shake mb-12">
+               <div className="flex items-center gap-4 text-[11px] font-black uppercase tracking-widest">
+                  <span className="material-symbols-rounded text-2xl">error</span> {error}
+               </div>
+               {error.includes("مسجل كبائع بالفعل") && (
+                 <Link 
+                   href="/vendor/dashboard"
+                   className="w-full bg-[#021D24] text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl hover:bg-[#1089A4] transition-all"
+                 >
+                    <span className="material-symbols-rounded text-lg">dashboard</span> توجه للوحة التحكم الآن
+                 </Link>
+               )}
             </div>
           )}
 

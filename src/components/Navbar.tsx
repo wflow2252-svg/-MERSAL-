@@ -22,7 +22,7 @@ const NAV_CATS = [
 ];
 
 export default function Navbar() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const { cartCount } = useCart();
   const { favorites, compareList } = useWishlist();
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,6 +33,13 @@ export default function Navbar() {
   const router = useRouter();
   const isAdmin = (session?.user as any)?.role === "ADMIN";
   const isAuthenticated = status === "authenticated";
+
+  // Proactive Session Refresh (e.g. if user just became a vendor)
+  useEffect(() => {
+    if (isAuthenticated) {
+      update();
+    }
+  }, [isAuthenticated]);
 
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();

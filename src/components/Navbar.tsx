@@ -64,7 +64,7 @@ export default function Navbar() {
       dir="rtl"
     >
       {/* ── HIGH-END TOP BAR ─────────────────────────── */}
-      <div className="bg-[#020D10] text-white shadow-2xl border-b border-white/5 relative overflow-hidden">
+      <div className="bg-[#020D10] text-white shadow-2xl border-b border-white/5 relative">
         {/* Animated accent line */}
         <motion.div 
           initial={{ scaleX: 0 }}

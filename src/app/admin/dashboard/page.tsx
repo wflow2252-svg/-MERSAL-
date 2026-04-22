@@ -83,7 +83,7 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
           <div className="flex justify-between items-start border-b-4 border-black pb-4 mb-4" dir="ltr">
             {/* Left: Combined Logo (Icon + Text) */}
             <div className="w-1/2 flex flex-col items-start pl-2 pt-2">
-               <Image src="/logo.png" alt="Mersall" width={160} height={120} className="object-contain" />
+               <Image src="/logo-najez-new.png" alt="Najez" width={160} height={120} className="object-contain" />
             </div>
             {/* Right: Order ID (Clear and Large) */}
             <div className="text-right w-1/2 flex flex-col items-end pr-4 pt-4">
@@ -598,7 +598,7 @@ export default function AdminDashboard() {
       <aside className="hidden lg:flex w-72 bg-[#021D24] text-white flex-col pt-28 shadow-2xl z-20 overflow-y-auto">
         <div className="px-6 mb-8 flex flex-col items-center gap-4 text-center">
           <div className="relative w-48 h-16 mb-2">
-            <Image src="/logo.png" alt="Logo" fill className="object-contain" />
+            <Image src="/logo-najez-new.png" alt="Logo" fill className="object-contain" />
           </div>
           <div>
             <span className="font-black text-2xl text-[#1089A4] tracking-tight block">مـرسـال</span>

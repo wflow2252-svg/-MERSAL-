@@ -2,58 +2,56 @@
 @import "tailwindcss";
 
 :root {
-  /* ── Brand Colors (مرسال) ────────────────────────── */
-  --primary: #1089A4;
-  --primary-rgb: 16, 137, 164;
-  --primary-light: #44B9D9;
-  --primary-dark: #026D8A;
+  /* ── Brand Colors (ناجز - NAJEZ) ───────────────────────── */
+  --primary: #10B981; /* Premium Emerald */
+  --primary-rgb: 16, 185, 129;
+  --primary-light: #34D399;
+  --primary-dark: #059669;
 
-  --accent: #038DB1;
-  --accent-rgb: 3, 141, 177;
+  --accent: #F29124; /* Original Brand Orange for continuity */
+  --accent-rgb: 242, 145, 36;
 
-  --secondary: #F29124;
-  --secondary-rgb: 242, 145, 36;
-  --secondary-light: #FFB35A;
-  --secondary-dark: #D97B10;
+  --secondary: #0F172A; /* Slate 900 for dark sections */
+  --secondary-rgb: 15, 23, 42;
 
-  /* ── Amazon-inspired Neutrals ─────────────────────── */
-  --background: #FFFFFF;
-  --surface: #F3F4F6;
-  --surface-2: #E8EAED;
-  --foreground: #0F1111;
-  --foreground-soft: #333333;
-  --foreground-muted: #565959;
+  /* ── Premium Neutrals ─────────────────────────────── */
+  --background: #FAFAFA;
+  --surface: #FFFFFF;
+  --surface-2: #F1F5F9;
+  --foreground: #0F172A;
+  --foreground-soft: #334155;
+  --foreground-muted: #64748B;
 
-  --border: #D5D9D9;
-  --border-light: #E8EAED;
+  --border: #E2E8F0;
+  --border-light: #F1F5F9;
 
-  /* ── Amazon-style Header ──────────────────────────── */
-  --header-bg: #021D24;
-  --header-secondary: #1A3340;
+  /* ── Najez Premium Header ──────────────────────────── */
+  --header-bg: #020D10;
+  --header-secondary: #0A1A1F;
   --header-accent: #F29124;
 
   /* ── Semantic ─────────────────────────────────────── */
-  --success: #067D62;
-  --warning: #C45500;
-  --error: #C40000;
-  --info: #1089A4;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --info: #3B82F6;
 
-  /* ── Spacing & Shape ──────────────────────────────── */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  /* ── Spacing & Shape (Premium rounded) ────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
   --radius-full: 9999px;
 
-  /* ── Shadows ──────────────────────────────────────── */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
-  --shadow-card: 0 2px 8px rgba(16,137,164,0.08);
+  /* ── Enhanced Shadows ─────────────────────────────── */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 20px 50px -12px rgba(0,0,0,0.25);
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.05);
 
-  /* ── Glass ────────────────────────────────────────── */
-  --glass-bg: rgba(255,255,255,0.92);
-  --glass-border: rgba(255,255,255,0.6);
+  /* ── Glassmorphism ────────────────────────────────── */
+  --glass-bg: rgba(255,255,255,0.7);
+  --glass-border: rgba(255,255,255,0.3);
 }
 
 @theme inline {

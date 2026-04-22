@@ -11,7 +11,7 @@ const SLIDES = [
     tag: "📢 مساحة إعلانية",
     title: "أعـلـن هـنـا",
     subtitle: "احجز مساحتك",
-    desc: "عزز مبيعاتك واعرض منتجاتك لآلاف الزوار يومياً على منصة مرسال.",
+    desc: "عزز مبيعاتك واعرض منتجاتك لآلاف الزوار يومياً على منصة ناجز.",
     cta: "تواصل معنا للإعلان",
     ctaHref: "/contact",
     sub: "تفاصيل الباقات",
@@ -36,7 +36,7 @@ const SLIDES = [
     bg: "from-[#2C1810] to-[#021D24]",
     tag: "👗 أزياء السودان",
     title: "الموضة الجديدة",
-    subtitle: "وصلت لمرسال",
+    subtitle: "وصلت لناجز",
     desc: "أحدث صيحات الأزياء من أفضل المتاجر في السودان",
     cta: "تسوّق الأزياء",
     ctaHref: "/category/fashion",
@@ -148,7 +148,7 @@ export default function HeroSection() {
         <div className="max-w-[1600px] mx-auto px-4 lg:px-6 py-3 grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { icon: "local_shipping", text: "شحن سريع", sub: "خلال 24–48 ساعة" },
-            { icon: "verified",       text: "موردون موثوقون", sub: "معتمدون من مرسال" },
+            { icon: "verified",       text: "موردون موثوقون", sub: "معتمدون من ناجز" },
             { icon: "payments",       text: "دفع آمن",   sub: "عند الاستلام أو تحويل" },
             { icon: "support_agent",  text: "دعم 24/7",  sub: "فريقنا دايماً معاك" },
           ].map((f, i) => (

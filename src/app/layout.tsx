@@ -7,25 +7,25 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import ScrollToTop from "@/components/ScrollToTop";
 
 export const metadata = {
-  title: "مرسال | اتسوّق بثقة — نوصّل لبابك في السودان",
-  description: "مرسال منصة التجارة الإلكترونية الأولى في السودان — آلاف المنتجات، توصيل سريع، ودفع آمن.",
-  keywords: ["مرسال", "تسوق", "السودان", "توصيل", "الخرطوم", "منتجات", "متجر إلكتروني"],
-  authors: [{ name: "فريق مرسال" }],
+  title: "ناجز | اتسوّق بثقة — نوصّل لبابك في السودان",
+  description: "ناجز منصة التجارة الإلكترونية الأولى في السودان — آلاف المنتجات، توصيل سريع، ودفع آمن.",
+  keywords: ["ناجز", "تسوق", "السودان", "توصيل", "الخرطوم", "منتجات", "متجر إلكتروني"],
+  authors: [{ name: "فريق ناجز" }],
   openGraph: {
-    title: "مرسال | ابدأ تجارتك أو اتسوّق الآن",
+    title: "ناجز | ابدأ تجارتك أو اتسوّق الآن",
     description: "آلاف المنتجات من موردين موثوقين — توصيل لكل أنحاء السودان.",
-    url: "https://morsall.com",
-    siteName: "مرسال",
+    url: "https://najez.sd",
+    siteName: "ناجز",
     locale: "ar_SD",
     type: "website",
   },
   icons: {
     icon: [
-      { url: "/logo-final.png", sizes: "32x32" },
-      { url: "/logo-final.png", sizes: "192x192" },
+      { url: "/logo-najez-new.png", sizes: "32x32" },
+      { url: "/logo-najez-new.png", sizes: "192x192" },
     ],
-    shortcut: "/logo-final.png",
-    apple: "/logo-final.png",
+    shortcut: "/logo-najez-new.png",
+    apple: "/logo-najez-new.png",
   },
 };
 

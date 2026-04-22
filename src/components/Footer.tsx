@@ -5,30 +5,30 @@ import Image from "next/image";
 
 const COLS = [
   {
-    title: "تعرف على مرسال",
+    title: "تعرف على ناجز",
     links: [
       { label: "من نحن",            href: "/about" },
       { label: "وظائف",             href: "/careers" },
-      { label: "أخبار مرسال",       href: "/news" },
+      { label: "أخبار ناجز",       href: "/news" },
       { label: "شراكات استراتيجية", href: "/partners" },
     ],
   },
   {
     title: "اربح معنا",
     links: [
-      { label: "ابدأ تجارتك — بع على مرسال", href: "/vendor/register" },
+      { label: "ابدأ تجارتك — بع على ناجز", href: "/vendor/register" },
       { label: "برنامج التوصيل",   href: "/delivery-jobs" },
       { label: "المسوقون بالعمولة", href: "/affiliates" },
-      { label: "استثمر في مرسال",  href: "/invest" },
+      { label: "استثمر في ناجز",  href: "/invest" },
     ],
   },
   {
-    title: "طرق الدفع لدينا",
+    title: "طوق الدفع لدينا",
     links: [
       { label: "الدفع عند الاستلام", href: "/payment/cod" },
       { label: "التحويل البنكي",      href: "/payment/bank" },
       { label: "الدفع الإلكتروني",   href: "/payment/online" },
-      { label: "مرسال ريوارد",        href: "/rewards" },
+      { label: "ناجز ريوارد",        href: "/rewards" },
     ],
   },
   {
@@ -49,7 +49,7 @@ export default function Footer() {
       {/* ── Back to top ── */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="w-full bg-[#1A3340] hover:bg-[#1089A4] text-white text-xs font-bold py-3 transition-colors"
+        className="w-full bg-[#1A3340] hover:bg-[#F29124] text-white text-xs font-bold py-3 transition-colors"
       >
         العودة إلى أعلى الصفحة ↑
       </button>
@@ -60,11 +60,11 @@ export default function Footer() {
 
           {/* Logo + tagline */}
           <div className="flex items-center gap-4 mb-8 border-b border-white/10 pb-8">
-            <div className="relative w-40 h-24">
-              <Image src="/footer-logo.png" alt="مرسال" fill className="object-contain" />
+            <div className="relative w-48 h-18 lg:w-56 lg:h-20">
+              <Image src="/logo-najez-new.png" alt="ناجز" fill className="object-contain" />
             </div>
             <div>
-              <p className="text-lg font-black text-white">مرسال | MERSAL</p>
+              <p className="text-lg font-black text-white">ناجز | NAJEZ</p>
               <p className="text-xs text-[#F29124] font-bold">اتسوّق بثقة — نوصّل لبابك في السودان 🇸🇩</p>
             </div>
           </div>
@@ -98,7 +98,7 @@ export default function Footer() {
               <span>|</span>
               <Link href="/cookies" className="hover:text-white transition-colors">سياسة الكوكيز</Link>
               <span>|</span>
-              <span>© 2026 مرسال — جميع الحقوق محفوظة</span>
+              <span>© 2026 ناجز — جميع الحقوق محفوظة</span>
             </div>
 
             {/* Security badges */}
@@ -116,7 +116,7 @@ export default function Footer() {
       {/* ── Bottom band (like Amazon) ── */}
       <div className="bg-[#011116] text-center py-3">
         <p className="text-[10px] text-white/20 font-bold">
-          Powered by Mersal Tech — Sudan's #1 E-Commerce Platform 🇸🇩
+          Powered by Najez Tech — Sudan's #1 E-Commerce Platform 🇸🇩
         </p>
       </div>
     </footer>

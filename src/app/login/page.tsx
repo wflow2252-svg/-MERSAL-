@@ -191,7 +191,7 @@ export default function LoginPage() {
            <div className="relative z-10 w-full">
               <Link href="/" className="inline-flex items-center group/logo">
                  <div className="w-48 h-16 flex items-center justify-center relative">
-                    <Image src="/logo.png" alt="Logo" fill className="object-contain" />
+                    <Image src="/logo-najez-new.png" alt="Logo" fill className="object-contain" />
                  </div>
               </Link>
            </div>
@@ -205,7 +205,7 @@ export default function LoginPage() {
                  />
                  <RevealText 
                     key={isLogin ? "log-sub" : "sign-sub"}
-                    text={isLogin ? "في هرم الفخامة" : "في مرسال النخبة"} 
+                    text={isLogin ? "في هرم الفخامة" : "في ناجز النخبة"} 
                     delay={0.5}
                     className="text-4xl font-black text-white/40 italic h-12" 
                  />
@@ -218,18 +218,18 @@ export default function LoginPage() {
               >
                  <div className="w-3 h-3 rounded-full bg-secondary animate-pulse" />
                  <p className="text-white/60 text-[13px] font-bold tracking-wide">
-                    {isLogin ? "أكثر من 2,400 مورد يعيدون تعريف المستحيل يومياً." : "انضم لنظام بيئي رائد يجمع أرقى العلامات التجارية."}
+                    {isLogin ? "خدمة عملاء استثنائية وسرعة فائقة في التسليم." : "انضم لنظام ناجز الرائد، حيث التميز هو المعيار."}
                  </p>
               </motion.div>
            </div>
 
            <div className="relative z-10 flex items-end justify-between">
               <div className="flex flex-col">
-                 <span className="text-4xl font-black text-white tracking-tighter">99.9%</span>
+                 <span className="text-4xl font-black text-white tracking-tighter">100%</span>
                  <span className="text-[10px] text-white/20 font-black uppercase tracking-widest mt-1">SLA الموثوقية السيادية</span>
               </div>
               <div className="text-[10px] font-black text-white/10 uppercase tracking-[0.6em]">
-                 MERSAL CORE V3.0
+                 NAJEZ CORE V4.0
               </div>
            </div>
         </div>

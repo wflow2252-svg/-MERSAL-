@@ -20,7 +20,7 @@ export default function VendorRegister() {
     phone: "",
     storeName: "",
     storeCity: "الخرطوم",
-    shippingModel: "MERSAL_HANDLES",
+    shippingModel: "NAJEZ_HANDLES",
     subscriptionPlan: "BASIC",
     bankStatementUrl: "placeholder_url",
     commercialRegUrl: "",
@@ -87,15 +87,15 @@ export default function VendorRegister() {
             </div>
             <div className="space-y-4">
                <h1 className="text-3xl font-black text-[#021D24]">مطلوب تسجيل الدخول 🔐</h1>
-               <p className="text-gray-400 font-bold leading-relaxed">لبدء عملية تسجيل متجرك في مرسال، يجب أن تمتلك حساب مستخدم نشط أولاً لربط المتجر به.</p>
+               <p className="text-gray-400 font-bold leading-relaxed">لبدء عملية تسجيل متجرك في ناجز، يجب أن تمتلك حساب مستخدم نشط أولاً لربط المتجر به.</p>
             </div>
             <Link 
               href={`/login?callbackUrl=/vendor/register`}
-              className="block w-full bg-[#1089A4] text-white py-6 rounded-3xl font-black text-xs uppercase tracking-[0.4em] shadow-xl shadow-[#1089A4]/20 hover:scale-105 transition-all"
+              className="block w-full bg-[#10B981] text-white py-6 rounded-3xl font-black text-xs uppercase tracking-[0.4em] shadow-xl shadow-[#10B981]/20 hover:scale-105 transition-all"
             >
                تسجيل الدخول الآن
             </Link>
-            <p className="text-[10px] font-bold text-gray-300">ليس لديك حساب؟ <Link href="/register" className="text-[#1089A4] underline">اشترك الآن</Link></p>
+            <p className="text-[10px] font-bold text-gray-300">ليس لديك حساب؟ <Link href="/register" className="text-[#10B981] underline">اشترك الآن</Link></p>
          </div>
       </div>
     );
@@ -192,17 +192,17 @@ export default function VendorRegister() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                      <button 
-                        onClick={() => setFormData({...formData, shippingModel: "MERSAL_HANDLES"})}
-                        className={cn("p-6 rounded-[2rem] border-4 text-right transition-all", formData.shippingModel === "MERSAL_HANDLES" ? "border-[#1089A4] bg-sky-50 shadow-xl" : "border-gray-50 hover:border-gray-200")}
+                        onClick={() => setFormData({...formData, shippingModel: "NAJEZ_HANDLES"})}
+                        className={cn("p-6 rounded-[2rem] border-4 text-right transition-all", formData.shippingModel === "NAJEZ_HANDLES" ? "border-[#10B981] bg-sky-50 shadow-xl" : "border-gray-50 hover:border-gray-200")}
                      >
-                        <h4 className="text-sm font-black text-[#021D24] mb-2">تخزين مرسال</h4>
+                        <h4 className="text-sm font-black text-[#021D24] mb-2">تخزين ناجز</h4>
                         <p className="text-[10px] text-gray-400 font-bold">نقوم بكافة العمليات اللوجستية نيابة عنك.</p>
                      </button>
                      <button 
                         onClick={() => setFormData({...formData, shippingModel: "VENDOR_PACKS"})}
                         className={cn("p-6 rounded-[2rem] border-4 text-right transition-all", formData.shippingModel === "VENDOR_PACKS" ? "border-[#F29124] bg-orange-50 shadow-xl" : "border-gray-50 hover:border-gray-200")}
                      >
-                        <h4 className="text-sm font-black text-[#021D24] mb-2">شحن مرسال</h4>
+                        <h4 className="text-sm font-black text-[#021D24] mb-2">شحن ناجز</h4>
                         <p className="text-[10px] text-gray-400 font-bold">أنت تغلف ونحن نستلم الطلب الجاهز.</p>
                      </button>
                   </div>
@@ -252,7 +252,7 @@ export default function VendorRegister() {
         </div>
 
         <p className="text-center mt-12 text-[10px] font-black uppercase tracking-[0.5em] text-gray-300">
-           مرسال للنخبة <span className="text-[#1089A4]">●</span> شركاء النجاح
+           ناجز للنخبة <span className="text-[#10B981]">●</span> شركاء النجاح
         </p>
       </div>
 

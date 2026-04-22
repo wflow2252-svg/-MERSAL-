@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
@@ -98,15 +99,15 @@ export default function OnboardingPage() {
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                  <label className="block text-xs font-bold text-primary/60 mb-3 mr-2 uppercase tracking-widest">كم عمرك؟</label>
-                 <input type="number" value={age} onChange={(e) => setAge(e.target.value)} required placeholder="العمر" className="input-field" />
+                 <input type="number" value={age} onChange={(e) => setAge(e.target.value)} required placeholder="العمر" className="input-mersal" />
               </div>
               <div>
                  <label className="block text-xs font-bold text-primary/60 mb-3 mr-2 uppercase tracking-widest">رقم الهاتف (واتساب)</label>
-                 <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required placeholder="0900000000" className="input-field" />
+                 <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required placeholder="0900000000" className="input-mersal" />
               </div>
            </div>
 
-           <div className="space-y-6">
+          <div className="space-y-6">
               <label className="block text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] pr-2">ما هي رغباتك؟ (اختر اهتماماتك)</label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                  {CATEGORIES.map((cat) => (
@@ -115,26 +116,49 @@ export default function OnboardingPage() {
                       type="button"
                       onClick={() => toggleInterest(cat.id)}
                       className={cn(
-                        "flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all gap-2 group",
+                        "flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all gap-2 group relative overflow-hidden",
                         selectedInterests.includes(cat.id) 
-                        ? "bg-primary border-primary text-white shadow-2xl shadow-primary/20" 
-                        : "bg-muted/50 border-transparent hover:border-primary/20"
+                        ? "bg-[#021D24] border-[#021D24] text-white shadow-2xl shadow-primary/20" 
+                        : "bg-white border-gray-100 hover:border-[#1089A4]/30 hover:bg-gray-50"
                       )}
                     >
                       <span className={cn(
-                        "material-symbols-rounded text-2xl",
-                        selectedInterests.includes(cat.id) ? "text-white" : "text-primary/20"
+                        "material-symbols-rounded text-2xl transition-transform group-hover:scale-110",
+                        selectedInterests.includes(cat.id) ? "text-[#C5A021]" : "text-[#021D24]/20"
                       )}>{cat.icon}</span>
-                      <span className="text-[10px] font-black">{cat.name}</span>
+                      <span className={cn(
+                        "text-[10px] font-black transition-colors",
+                        selectedInterests.includes(cat.id) ? "text-white" : "text-[#021D24]"
+                      )}>{cat.name}</span>
                     </button>
                  ))}
               </div>
            </div>
 
-           <div className="pt-6">
-              <button disabled={isSubmitting || !age || !phone || selectedInterests.length === 0} className="w-full btn-primary py-6">
+           <div className="pt-6 space-y-4">
+              <button 
+                type="submit"
+                disabled={isSubmitting || !age || !phone || selectedInterests.length === 0} 
+                className={cn(
+                   "w-full py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98] shadow-xl",
+                   (isSubmitting || !age || !phone || selectedInterests.length === 0)
+                   ? "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"
+                   : "bg-[#021D24] text-white hover:bg-[#032a35] shadow-[#021D24]/20"
+                )}
+              >
                  {isSubmitting ? "جاري الحفظ..." : "بدء التسوق الآن"}
               </button>
+              
+              {!selectedInterests.length && (
+                 <p className="text-center text-[9px] font-bold text-red-500 animate-pulse">يرجى اختيار اهتمام واحد على الأقل للمتابعة</p>
+              )}
+
+              <div className="text-center pt-2">
+                 <Link href="/vendor/register" className="text-[10px] font-black text-[#1089A4] uppercase tracking-widest hover:underline flex items-center justify-center gap-2">
+                    <span className="material-symbols-rounded text-sm">storefront</span>
+                    هل أنت تاجر؟ سجل متجرك الآن من هنا
+                 </Link>
+              </div>
            </div>
         </form>
 

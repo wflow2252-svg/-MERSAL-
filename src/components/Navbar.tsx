@@ -29,6 +29,7 @@ export default function Navbar() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [userCity, setUserCity] = useState("جاري التحديد...");
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const isAdmin = (session?.user as any)?.role === "ADMIN";
@@ -44,6 +45,39 @@ export default function Navbar() {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // 1. Try local storage first
+    const saved = localStorage.getItem("mersal_user_city");
+    if (saved) {
+      setUserCity(saved);
+      return;
+    }
+
+    // 2. Try GeoIP (Sudan cities mapping)
+    fetch("https://ipapi.co/json/")
+      .then(res => res.json())
+      .then(data => {
+        const city = data.city || "الخرطوم";
+        // Map English names to Arabic for Sudan
+        const cityMap: Record<string, string> = {
+          "Khartoum": "الخرطوم",
+          "Omdurman": "أمدرمان",
+          "Bahri": "بحري",
+          "Port Sudan": "بورتسودان",
+          "Atbara": "عطبرة",
+          "Wad Madani": "ود مدني",
+          "Kassala": "كسلا",
+          "El Obeid": "الأبيض",
+          "Kosti": "كوسطي",
+          "Dongola": "دنقلا"
+        };
+        const arabicCity = cityMap[city] || city;
+        setUserCity(arabicCity);
+        localStorage.setItem("mersal_user_city", arabicCity);
+      })
+      .catch(() => setUserCity("الخرطوم")); // Fallback
   }, []);
 
   useEffect(() => {
@@ -100,7 +134,7 @@ export default function Navbar() {
             </div>
             <div className="flex flex-col leading-tight">
               <span className="text-[10px] text-white/40 font-medium">نصلك إلى</span>
-              <span className="text-[13px] font-bold text-white">الخرطوم</span>
+              <span className="text-[13px] font-bold text-white">{userCity}</span>
             </div>
           </Link>
 

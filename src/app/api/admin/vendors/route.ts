@@ -35,3 +35,48 @@ export async function GET() {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+export async function POST(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!(session as any)?.user?.email || (session as any).user.role !== 'ADMIN') {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { storeName, ownerName, ownerEmail, ownerPassword, phone, location } = body;
+
+    const bcrypt = await import("bcryptjs");
+    const hashedPassword = await bcrypt.default.hash(ownerPassword, 12);
+
+    const vendor = await prisma.$transaction(async (tx: any) => {
+      const user = await tx.user.create({
+        data: {
+          email: ownerEmail,
+          name: ownerName,
+          password: hashedPassword,
+          role: "VENDOR",
+          phone: phone,
+          isOnboarded: true,
+        }
+      });
+
+      return await tx.vendor.create({
+        data: {
+          userId: user.id,
+          storeName,
+          location: location || "الخرطوم",
+          status: "APPROVED",
+          phone: phone,
+        }
+      });
+    });
+
+    return NextResponse.json(vendor);
+  } catch (error: any) {
+    console.error("Admin Create Vendor Error:", error);
+    if (error.code === 'P2002') {
+      return NextResponse.json({ error: "البريد الإلكتروني مستخدم بالفعل" }, { status: 400 });
+    }
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}

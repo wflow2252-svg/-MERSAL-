@@ -190,20 +190,25 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
 }
 
 // ── Main Component ─────────────────────────────────────
-const ProductReviewRow = ({ p, onAction, loading }: any) => {
+const ProductReviewRow = ({ p, onAction, onEdit, loading }: any) => {
   const [price, setPrice] = useState(p.price || 0);
   const [stock, setStock] = useState(p.stock || 0);
   
   return (
     <div className="p-4 flex flex-col gap-3">
-       <div className="flex items-center gap-3">
-          <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 border flex-shrink-0">
-             {p.images && <Image src={p.images.split(",")[0]} alt={p.title} fill className="object-cover" />}
+       <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+             <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 border flex-shrink-0">
+                {p.images && <Image src={p.images.split(",")[0]} alt={p.title} fill className="object-cover" />}
+             </div>
+             <div>
+                <p className="font-bold text-sm text-[#021D24] leading-tight">{p.title}</p>
+                <p className="text-xs text-gray-400 font-bold mt-1">المتجر: <span className="text-[#1089A4]">{p.vendor?.storeName || 'غير محدد'}</span></p>
+             </div>
           </div>
-          <div>
-             <p className="font-bold text-sm text-[#021D24] leading-tight">{p.title}</p>
-             <p className="text-xs text-gray-500 font-bold mt-1">المتجر: {p.vendor?.storeName || 'غير محدد'}</p>
-          </div>
+          <button onClick={() => onEdit(p)} className="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors">
+            <span className="material-symbols-rounded text-sm">edit</span>
+          </button>
        </div>
        <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg border border-gray-100">
           <div>
@@ -285,6 +290,18 @@ export default function AdminDashboard() {
   const [sysSettings, setSysSettings] = useState<any>(null);
   const [admins, setAdmins] = useState<any[]>([]);
 
+  // Vendor Modal States
+  const [vendorModal, setVendorModal] = useState<null | "add">(null);
+  const [vendorForm, setVendorForm] = useState({
+    storeName: "",
+    ownerName: "",
+    ownerEmail: "",
+    ownerPassword: "",
+    phone: "",
+    location: "الخرطوم"
+  });
+  const [vendorFormLoading, setVendorFormLoading] = useState(false);
+
   // Orders Filter States
   const [oContentSearch, setOContentSearch] = useState("");
   const [oNotesSearch, setONotesSearch] = useState("");
@@ -306,6 +323,21 @@ export default function AdminDashboard() {
   const [newZone, setNewZone] = useState({ fromCity: "", toCity: "", fee: "" });
   const [newCategory, setNewCategory] = useState({ name: "", icon: "📦" });
   const [newProvider, setNewProvider] = useState({ name: "", apiKey: "", baseUrl: "" });
+
+  // Order Edit Modal (Logestechs-style)
+  const [editOrderModal, setEditOrderModal] = useState<any>(null);
+  const [editOrderStatus, setEditOrderStatus] = useState("");
+  const [editOrderTracking, setEditOrderTracking] = useState("");
+  const [editOrderNotes, setEditOrderNotes] = useState("");
+  const [editOrderLoading, setEditOrderLoading] = useState(false);
+
+  // Admin Product Add/Edit Modal
+  const [productModal, setProductModal] = useState<"add" | "edit" | null>(null);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [productForm, setProductForm] = useState({ title: "", description: "", price: "", stock: "", categoryId: "", vendorId: "", images: "" });
+  const [productFormLoading, setProductFormLoading] = useState(false);
+  const [productImageFiles, setProductImageFiles] = useState<File[]>([]);
+  const [productPreviews, setProductPreviews] = useState<string[]>([]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -508,7 +540,11 @@ export default function AdminDashboard() {
 
   const handleVendorAction = async (id: string, status: string) => {
     setActionLoading(id);
-    await fetch(`/api/admin/vendors/${id}`, { method: "PATCH", body: JSON.stringify({ status }) });
+    await fetch(`/api/admin/vendors/${id}`, { 
+      method: "PATCH", 
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }) 
+    });
     setPendingVendors(prev => prev.filter(v => v.id !== id));
     fetchStats();
     setActionLoading(null);
@@ -516,7 +552,11 @@ export default function AdminDashboard() {
 
   const handleProductAction = async (id: string, action: string, price?: number, stock?: number) => {
     setActionLoading(id);
-    await fetch("/api/admin/products", { method: "POST", body: JSON.stringify({ id, action, price, stock }) });
+    await fetch("/api/admin/products", { 
+      method: "POST", 
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, action, price, stock }) 
+    });
     setPendingProducts(prev => prev.filter(p => p.id !== id));
     setActionLoading(null);
   };
@@ -529,7 +569,11 @@ export default function AdminDashboard() {
       return;
     }
     setActionLoading(id);
-    await fetch("/api/admin/orders", { method: "PATCH", body: JSON.stringify({ id, status }) });
+    await fetch("/api/admin/orders", { 
+      method: "PATCH", 
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status }) 
+    });
     setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
     setActionLoading(null);
   };
@@ -556,6 +600,7 @@ export default function AdminDashboard() {
     
     await fetch("/api/admin/orders", { 
       method: "PATCH", 
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
         id: orderId, 
         status, 
@@ -709,6 +754,135 @@ export default function AdminDashboard() {
     setActionLoading(null);
   };
 
+  // ── Order Edit (Logestechs-style) ──
+  const openEditOrder = (order: any) => {
+    setEditOrderModal(order);
+    setEditOrderStatus(order.status || "");
+    setEditOrderTracking(order.trackingNumber || "");
+    setEditOrderNotes(order.notes || "");
+  };
+
+  const handleSaveOrderEdit = async () => {
+    if (!editOrderModal) return;
+    setEditOrderLoading(true);
+    const res = await fetch("/api/admin/orders", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: editOrderModal.id, status: editOrderStatus, trackingNumber: editOrderTracking, notes: editOrderNotes }),
+    });
+    if (res.ok) {
+      const updated = await res.json();
+      setOrders(prev => prev.map(o => o.id === updated.id ? { ...o, ...updated } : o));
+      setEditOrderModal(null);
+    }
+    setEditOrderLoading(false);
+  };
+
+  // ── Admin Product Modal ──
+  const openAddProduct = () => {
+    setProductModal("add");
+    setEditingProduct(null);
+    setProductForm({ title: "", description: "", price: "", stock: "", categoryId: "", vendorId: "", images: "" });
+    setProductImageFiles([]);
+    setProductPreviews([]);
+  };
+
+  const openEditProduct = (p: any) => {
+    setProductModal("edit");
+    setEditingProduct(p);
+    setProductForm({
+      title: p.title || "",
+      description: p.description || "",
+      price: String(p.price || ""),
+      stock: String(p.stock || ""),
+      categoryId: p.categoryId || "",
+      vendorId: p.vendorId || "",
+      images: p.images || "",
+    });
+    setProductPreviews(p.images ? p.images.split(",").filter(Boolean) : []);
+    setProductImageFiles([]);
+  };
+
+  const handleProductImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    setProductImageFiles(prev => [...prev, ...files]);
+    setProductPreviews(prev => [...prev, ...files.map(f => URL.createObjectURL(f))]);
+  };
+
+  const handleSaveProduct = async () => {
+    setProductFormLoading(true);
+    try {
+      let finalImages = productForm.images;
+      // Upload new files
+      if (productImageFiles.length > 0) {
+        const urls = await Promise.all(productImageFiles.map(async (file) => {
+          const fd = new FormData(); fd.append("file", file);
+          const r = await fetch("/api/upload", { method: "POST", body: fd });
+          const d = await r.json(); return d.url;
+        }));
+        // Merge with existing images (for edit mode)
+        const existing = productForm.images ? productForm.images.split(",").filter(Boolean) : [];
+        finalImages = [...existing, ...urls].join(",");
+      }
+
+      const payload = { ...productForm, images: finalImages };
+
+      if (productModal === "edit" && editingProduct) {
+        const res = await fetch("/api/admin/products", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: editingProduct.id, ...payload }) });
+        if (res.ok) {
+          const updated = await res.json();
+          setInventoryProducts(prev => prev.map(p => p.id === updated.id ? { ...p, ...updated } : p));
+          setProductModal(null);
+        }
+      } else {
+        const res = await fetch("/api/admin/products", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        if (res.ok) {
+          const created = await res.json();
+          setInventoryProducts(prev => [created, ...prev]);
+          setProductModal(null);
+        }
+      }
+    } catch (e) { console.error(e); }
+    setProductFormLoading(false);
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    if (!confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
+    const res = await fetch("/api/admin/products", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
+    if (res.ok) setInventoryProducts(prev => prev.filter(p => p.id !== id));
+  };
+
+  const handleSaveVendor = async () => {
+    if (!vendorForm.storeName || !vendorForm.ownerEmail || !vendorForm.ownerPassword) {
+      alert("الرجاء إكمال كافة الحقول المطلوبة");
+      return;
+    }
+    setVendorFormLoading(true);
+    try {
+      const res = await fetch("/api/admin/vendors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(vendorForm)
+      });
+      if (res.ok) {
+        const created = await res.json();
+        // Refresh vendors list
+        const r = await fetch("/api/admin/vendors");
+        if (r.ok) setAllVendors(await r.json());
+        setVendorModal(null);
+        setVendorForm({ storeName: "", ownerName: "", ownerEmail: "", ownerPassword: "", phone: "", location: "الخرطوم" });
+      } else {
+        const d = await res.json();
+        alert(d.error || "فشل إنشاء المتجر");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("حدث خطأ تقني");
+    }
+    setVendorFormLoading(false);
+  };
+
   // ── Computations for Filters ──
   const filteredOrdersArray = orders.filter(o => {
     if (orderSearch && !o.id?.includes(orderSearch)) return false;
@@ -749,6 +923,170 @@ export default function AdminDashboard() {
 
       {/* Shipping Label Modal */}
       {printOrder && <ShippingLabel order={printOrder} onClose={() => setPrintOrder(null)} />}
+
+      {/* ── Order Edit Modal (Logestechs-style) ── */}
+      {editOrderModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" dir="rtl">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setEditOrderModal(null)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg z-10 overflow-hidden">
+            {/* Header */}
+            <div className="bg-[#021D24] text-white px-6 py-4 flex items-center justify-between">
+              <div>
+                <h3 className="font-black text-lg">تعديل حالة الطلب</h3>
+                <p className="text-white/40 text-xs font-mono mt-0.5">#{editOrderModal.id?.slice(-8).toUpperCase()}</p>
+              </div>
+              <button onClick={() => setEditOrderModal(null)} className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20">
+                <span className="material-symbols-rounded text-sm">close</span>
+              </button>
+            </div>
+
+            {/* Status Timeline */}
+            <div className="px-6 pt-5 pb-3">
+              <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">الحالة الحالية</p>
+              <div className="flex gap-2 flex-wrap">
+                {[
+                  { val: "PENDING", label: "معلق", color: "bg-yellow-100 text-yellow-700 border-yellow-200" },
+                  { val: "PROCESSING", label: "قيد التجهيز", color: "bg-blue-100 text-blue-700 border-blue-200" },
+                  { val: "SHIPPED", label: "قيد التوصيل", color: "bg-purple-100 text-purple-700 border-purple-200" },
+                  { val: "DELIVERED", label: "تم التوصيل", color: "bg-green-100 text-green-700 border-green-200" },
+                  { val: "POSTPONED", label: "مؤجل", color: "bg-orange-100 text-orange-700 border-orange-200" },
+                  { val: "RETURNED", label: "مرتجع", color: "bg-gray-100 text-gray-700 border-gray-200" },
+                  { val: "REJECTED", label: "ملغاة", color: "bg-red-100 text-red-700 border-red-200" },
+                ].map(s => (
+                  <button
+                    key={s.val}
+                    onClick={() => setEditOrderStatus(s.val)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-black border-2 transition-all ${editOrderStatus === s.val ? s.color + " scale-105 shadow-md" : "bg-gray-50 text-gray-400 border-gray-100 hover:border-gray-300"}`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tracking */}
+            <div className="px-6 py-3 space-y-3">
+              <div>
+                <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">رقم الإرسالية / التتبع</label>
+                <input
+                  value={editOrderTracking}
+                  onChange={e => setEditOrderTracking(e.target.value)}
+                  placeholder="أدخل رقم التتبع..."
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:border-[#1089A4] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">ملاحظات</label>
+                <textarea
+                  value={editOrderNotes}
+                  onChange={e => setEditOrderNotes(e.target.value)}
+                  placeholder="ملاحظات إضافية..."
+                  rows={2}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1089A4] transition-colors resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t flex justify-end gap-3">
+              <button onClick={() => setEditOrderModal(null)} className="px-5 py-2 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-xl transition-colors">إلغاء</button>
+              <button onClick={handleSaveOrderEdit} disabled={editOrderLoading} className="px-6 py-2 bg-[#1089A4] text-white text-sm font-black rounded-xl hover:bg-[#0E7A92] disabled:opacity-50 transition-colors flex items-center gap-2">
+                {editOrderLoading && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+                حفظ التغييرات
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Admin Product Add/Edit Modal ── */}
+      {productModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" dir="rtl">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setProductModal(null)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl z-10 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="bg-[#021D24] text-white px-6 py-4 flex items-center justify-between sticky top-0">
+              <h3 className="font-black text-lg">{productModal === "add" ? "إضافة منتج جديد" : "تعديل المنتج"}</h3>
+              <button onClick={() => setProductModal(null)} className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20">
+                <span className="material-symbols-rounded text-sm">close</span>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {/* Vendor Selector */}
+              <div>
+                <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">المتجر / البائع <span className="text-red-500">*</span></label>
+                <select value={productForm.vendorId} onChange={e => setProductForm(p => ({...p, vendorId: e.target.value}))} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1089A4]">
+                  <option value="">اختر المتجر...</option>
+                  {allVendors.map((v: any) => (
+                    <option key={v.id} value={v.id}>{v.storeName} — {v.city}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Title & Price & Stock */}
+              <div>
+                <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">اسم المنتج <span className="text-red-500">*</span></label>
+                <input value={productForm.title} onChange={e => setProductForm(p => ({...p, title: e.target.value}))} placeholder="مثال: سماعة بلوتوث لاسلكية" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1089A4]" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">السعر (ج.س) <span className="text-red-500">*</span></label>
+                  <input type="number" value={productForm.price} onChange={e => setProductForm(p => ({...p, price: e.target.value}))} placeholder="0" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1089A4]" />
+                </div>
+                <div>
+                  <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">الكمية</label>
+                  <input type="number" value={productForm.stock} onChange={e => setProductForm(p => ({...p, stock: e.target.value}))} placeholder="0" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1089A4]" />
+                </div>
+              </div>
+
+              {/* Category */}
+              <div>
+                <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">القسم</label>
+                <select value={productForm.categoryId} onChange={e => setProductForm(p => ({...p, categoryId: e.target.value}))} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1089A4]">
+                  <option value="">بدون قسم</option>
+                  {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">وصف المنتج</label>
+                <textarea value={productForm.description} onChange={e => setProductForm(p => ({...p, description: e.target.value}))} rows={3} placeholder="وصف تفصيلي للمنتج..." className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1089A4] resize-none" />
+              </div>
+
+              {/* Images */}
+              <div>
+                <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">صور المنتج</label>
+                {productPreviews.length > 0 && (
+                  <div className="grid grid-cols-4 gap-2 mb-3">
+                    {productPreviews.map((src, i) => (
+                      <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-gray-100">
+                        <img src={src} alt="" className="w-full h-full object-cover" />
+                        <button onClick={() => { setProductPreviews(p => p.filter((_, j) => j !== i)); setProductImageFiles(p => p.filter((_, j) => j !== i)); }} className="absolute top-1 left-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">×</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <label className="flex items-center gap-3 cursor-pointer bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-[#1089A4] transition-colors">
+                  <span className="material-symbols-rounded text-2xl text-[#1089A4]">add_photo_alternate</span>
+                  <span className="text-sm font-bold text-gray-500">اختر صور المنتج</span>
+                  <input type="file" multiple accept="image/*" onChange={handleProductImageSelect} className="hidden" />
+                </label>
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t flex justify-end gap-3 sticky bottom-0 bg-white">
+              <button onClick={() => setProductModal(null)} className="px-5 py-2 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-xl">إلغاء</button>
+              <button onClick={handleSaveProduct} disabled={productFormLoading || !productForm.title || !productForm.price || !productForm.vendorId} className="px-6 py-2 bg-[#1089A4] text-white text-sm font-black rounded-xl hover:bg-[#0E7A92] disabled:opacity-50 flex items-center gap-2">
+                {productFormLoading && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+                {productModal === "add" ? "إضافة المنتج" : "حفظ التعديلات"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Sidebar ── */}
       <aside className="hidden lg:flex w-72 bg-[#021D24] text-white flex-col pt-28 shadow-2xl z-20 overflow-y-auto">
@@ -890,7 +1228,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="divide-y">
                     {pendingProducts.map(p => (
-                      <ProductReviewRow key={p.id} p={p} onAction={handleProductAction} loading={actionLoading} />
+                      <ProductReviewRow key={p.id} p={p} onAction={handleProductAction} onEdit={openEditProduct} loading={actionLoading} />
                     ))}
                     {pendingProducts.length === 0 && <p className="text-center py-8 text-gray-400 text-sm">لا توجد منتجات بانتظار المراجعة ✅</p>}
                   </div>
@@ -1023,34 +1361,60 @@ export default function AdminDashboard() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
-                        {filteredOrdersArray.map((order, i) => (
-                          <tr key={order.id} onClick={() => toggleOrderSelection(order.id)} className={`transition-colors cursor-pointer ${order.status === 'REJECTED' ? 'bg-[#ffb3b3] hover:bg-[#ffa3a3]' : 'bg-white hover:bg-gray-50'}`}>
-                            <td className="p-3 border-l text-gray-400">
-                               {order.notes || "—"}
-                            </td>
-                            <td className="p-3 border-l font-bold text-gray-500 max-w-[120px] truncate">
-                               <button className="bg-[#FF6B6B] text-white px-6 py-1.5 rounded font-black">{order.status === 'REJECTED' ? 'ملغاة' : order.status === 'PENDING_APPROVAL' ? 'قيد المراجعة' : 'مكتمل'}</button>
-                            </td>
-                            <td className="p-3 border-l font-black text-gray-700">
-                               <div className="flex items-center justify-center gap-1">
-                                 <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                                 <div className="w-2.5 h-2.5 rounded-full bg-cyan-400"></div>
-                               </div>
-                            </td>
-                            <td className="p-3 border-l">
-                               —
-                            </td>
-                            <td className="p-3 border-l font-bold text-gray-600">{order.trackingNumber || "—"}</td>
-                            <td className="p-3 border-l font-black">﷼{order.paymentMethod === "COD" ? order.totalAmount : 0}</td>
-                            <td className="p-3 border-l font-black">﷼{order.totalAmount}</td>
-                            <td className="p-3 border-l text-gray-500 text-[10px]">{order.customerEmail || "operation@mersal.com"}</td>
-                            <td className="p-3 border-l text-[10px] text-gray-600 leading-tight w-[200px] whitespace-normal">
-                               {`${order.street || ''}، ${order.district || ''}، ${order.city}`}
-                            </td>
-                            <td className="p-3 font-mono text-gray-600 border-l">100414{order.id?.slice(-6)}</td>
-                            <td className="p-4 text-center"><input type="checkbox" checked={selectedOrders.includes(order.id)} readOnly className="rounded text-[#1089A4] w-4 h-4 cursor-pointer" /></td>
-                          </tr>
-                        ))}
+                        {filteredOrdersArray.map((order) => {
+                          const statusConfig: any = {
+                            'PENDING': { label: 'معلق', color: 'bg-yellow-500' },
+                            'PROCESSING': { label: 'قيد التجهيز', color: 'bg-blue-500' },
+                            'SHIPPED': { label: 'قيد التوصيل', color: 'bg-purple-500' },
+                            'DELIVERED': { label: 'تم التوصيل', color: 'bg-green-500' },
+                            'POSTPONED': { label: 'مؤجل', color: 'bg-orange-500' },
+                            'RETURNED': { label: 'مرتجع', color: 'bg-gray-500' },
+                            'REJECTED': { label: 'ملغاة', color: 'bg-red-500' },
+                          };
+                          const s = statusConfig[order.status] || { label: order.status, color: 'bg-gray-400' };
+
+                          return (
+                            <tr 
+                              key={order.id} 
+                              onClick={() => openEditOrder(order)} 
+                              className={cn(
+                                "transition-colors cursor-pointer border-b",
+                                order.status === 'REJECTED' ? 'bg-red-50 hover:bg-red-100' : 'bg-white hover:bg-gray-50'
+                              )}
+                            >
+                              <td className="p-3 border-l text-gray-400 max-w-[150px] truncate">
+                                 {order.notes || "—"}
+                              </td>
+                              <td className="p-3 border-l font-bold text-gray-500">
+                                 <button className={cn("text-white px-4 py-1.5 rounded-lg font-black text-[10px] shadow-sm min-w-[80px]", s.color)}>
+                                   {s.label}
+                                 </button>
+                              </td>
+                              <td className="p-3 border-l">
+                                 <div className="flex items-center justify-center gap-1">
+                                   <div className={cn("w-2.5 h-2.5 rounded-full", s.color)}></div>
+                                   <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
+                                 </div>
+                              </td>
+                              <td className="p-3 border-l text-blue-500 hover:underline">
+                                 <span className="material-symbols-rounded text-sm">visibility</span>
+                              </td>
+                              <td className="p-3 border-l font-bold text-gray-600">{order.trackingNumber || "—"}</td>
+                              <td className="p-3 border-l font-black">ج.س {order.paymentMethod === "COD" ? order.totalAmount?.toLocaleString() : 0}</td>
+                              <td className="p-3 border-l font-black text-[#1089A4]">ج.س {order.totalAmount?.toLocaleString()}</td>
+                              <td className="p-3 border-l text-gray-500 text-[10px] font-bold">
+                                {order.items?.[0]?.vendor?.storeName || order.customerEmail || "—"}
+                              </td>
+                              <td className="p-3 border-l text-[10px] text-gray-600 leading-tight w-[200px] whitespace-normal text-right">
+                                 {`${order.street || ''}، ${order.district || ''}، ${order.city}`}
+                              </td>
+                              <td className="p-3 font-mono text-gray-400 border-l">#100{order.id?.slice(-5).toUpperCase()}</td>
+                              <td className="p-4 text-center" onClick={(e) => { e.stopPropagation(); toggleOrderSelection(order.id); }}>
+                                <input type="checkbox" checked={selectedOrders.includes(order.id)} readOnly className="rounded text-[#1089A4] w-4 h-4 cursor-pointer" />
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -1151,6 +1515,19 @@ export default function AdminDashboard() {
             {/* ── 5. VENDORS ── */}
             {activeTab === "vendors" && (
               <motion.div key="vendors" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+                
+                {/* Header with Add Button */}
+                <div className="flex items-center justify-between bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                   <div>
+                      <h3 className="font-black text-[#021D24]">إدارة الموردين</h3>
+                      <p className="text-xs text-gray-400">إجمالي المتاجر المسجلة: {allVendors.length}</p>
+                   </div>
+                   <button onClick={() => setVendorModal("add")} className="bg-[#1089A4] text-white px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 hover:bg-[#0d6e84] transition-colors shadow-lg shadow-[#1089A4]/20">
+                      <span className="material-symbols-rounded">add_business</span>
+                      إضافة متجر جديد
+                   </button>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {allVendors.map((store, i) => (
                     <div key={i} className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow">
@@ -1638,32 +2015,38 @@ export default function AdminDashboard() {
                   {/* Top Bar */}
                   <div className="flex items-center justify-between p-4 border-b">
                     <div className="flex gap-2">
-                       <button className="bg-[#FF6B6B] text-white px-4 py-2 rounded font-bold hover:bg-red-500 transition-colors">إضافة دفعة منتجات</button>
-                       <button className="bg-[#FF6B6B] text-white px-4 py-2 rounded font-bold hover:bg-red-500 transition-colors">قراءة باستخدام الباركود</button>
-                       <label className="bg-white border border-gray-300 px-4 py-2 rounded font-bold flex items-center gap-1 hover:bg-gray-50 cursor-pointer">
-                          استيراد/تصدير <span className="material-symbols-rounded text-sm">expand_more</span>
+                       <button onClick={openAddProduct} className="bg-[#1089A4] text-white px-4 py-2 rounded-lg font-black hover:bg-[#0E7A92] transition-colors flex items-center gap-1.5 shadow-sm">
+                         <span className="material-symbols-rounded text-sm">add_circle</span>
+                         إضافة منتج جديد
+                       </button>
+                       <button className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-bold flex items-center gap-1.5 hover:bg-gray-50">
+                         <span className="material-symbols-rounded text-sm">barcode_scanner</span>
+                         قراءة باركود
+                       </button>
+                       <label className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-bold flex items-center gap-1.5 hover:bg-gray-50 cursor-pointer">
+                          <span className="material-symbols-rounded text-sm">upload_file</span>
+                          استيراد/تصدير
                           <input type="file" accept=".xlsx, .xls" className="hidden" onChange={handleImportExcel} disabled={actionLoading === "import_excel"} />
                        </label>
                     </div>
                     <div className="flex items-center gap-2">
-                       <span className="font-black text-gray-700 text-lg">إدارة المنتجات</span>
-                       <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold">{inventoryProducts.length}</span>
+                       <span className="font-black text-[#021D24] text-lg">إدارة المخزون</span>
+                       <span className="bg-orange-100 text-orange-600 px-2.5 py-0.5 rounded-full font-black">{inventoryProducts.length}</span>
                     </div>
                   </div>
 
                   {/* Filter Bar */}
                   <div className="bg-gray-50 p-3 flex justify-between items-center border-b border-gray-200">
                     <div className="flex items-center gap-2">
-                       <div className="bg-white border border-gray-200 rounded px-2 py-1.5 flex items-center gap-1">
+                       <div className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-2">
                           <span className="material-symbols-rounded text-sm text-gray-400">search</span>
-                          <input type="text" value={inventorySearch} onChange={e => setInventorySearch(e.target.value)} placeholder="بحث..." className="bg-transparent outline-none w-24 text-xs" />
+                          <input type="text" value={inventorySearch} onChange={e => setInventorySearch(e.target.value)} placeholder="بحث سريح..." className="bg-transparent outline-none w-40 text-xs" />
                        </div>
-                       <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-24"><option>تخصيص</option></select>
-                       <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-20"><option>الكل</option></select>
-                       <select className="bg-white border border-gray-200 rounded px-2 py-1.5 outline-none text-xs w-32"><option>تاريخ أخر حالة</option></select>
+                       <select className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 outline-none text-xs w-24 font-bold text-gray-500"><option>تخصيص</option></select>
+                       <select className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 outline-none text-xs w-24 font-bold text-gray-500"><option>الفلاتر</option></select>
                     </div>
-                    <div className="flex items-center gap-2">
-                       <span className="text-gray-500 font-bold">تحديد الكل</span>
+                    <div className="flex items-center gap-3">
+                       <span className="text-gray-400 font-bold">تحديد الكل</span>
                        <input type="checkbox" className="rounded text-[#1089A4] w-4 h-4 cursor-pointer" />
                     </div>
                   </div>
@@ -1671,71 +2054,86 @@ export default function AdminDashboard() {
                   {/* Table */}
                   <div className="overflow-x-auto min-h-[400px]">
                     <table className="w-full text-center text-xs whitespace-nowrap">
-                      <thead className="bg-white text-gray-500 border-b border-gray-200">
+                      <thead className="bg-white text-gray-400 border-b border-gray-200 uppercase tracking-widest text-[10px]">
                         <tr>
-                          <th className="p-2 border-l min-w-[120px]">
-                             <div className="font-bold mb-1">المنتج</div>
+                          <th className="p-3 border-l min-w-[200px]">
+                             <div className="font-black mb-1">المنتج</div>
                              <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
                                 <input type="text" value={pTitleSearch} onChange={e => setPTitleSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
                                 <span className="material-symbols-rounded text-[14px]">search</span>
                              </div>
                           </th>
-                          <th className="p-2 border-l min-w-[120px]">
-                             <div className="font-bold mb-1">القسم</div>
-                             <select value={pCategoryFilter} onChange={e => setPCategoryFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full">
+                          <th className="p-3 border-l min-w-[120px]">
+                             <div className="font-black mb-1">القسم</div>
+                             <select value={pCategoryFilter} onChange={e => setPCategoryFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full font-bold">
                                 <option value="الكل">الكل</option>
                                 {uniqueCategories.map(cat => (
                                    <option key={cat as string} value={cat as string}>{cat as string}</option>
                                 ))}
                              </select>
                           </th>
-                          <th className="p-2 border-l min-w-[120px]">
-                             <div className="font-bold mb-1">البائع</div>
+                          <th className="p-3 border-l min-w-[150px]">
+                             <div className="font-black mb-1">البائع / المتجر</div>
                              <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
                                 <input type="text" value={pVendorSearch} onChange={e => setPVendorSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
                                 <span className="material-symbols-rounded text-[14px]">search</span>
                              </div>
                           </th>
-                          <th className="p-2 border-l">
-                             <div className="font-bold mb-1">المخزون</div>
+                          <th className="p-3 border-l">
+                             <div className="font-black mb-1">المخزون</div>
                           </th>
-                          <th className="p-2 border-l">
-                             <div className="font-bold mb-1">السعر</div>
+                          <th className="p-3 border-l">
+                             <div className="font-black mb-1">السعر</div>
                           </th>
-                          <th className="p-2 border-l min-w-[120px]">
-                             <div className="font-bold mb-1">الحالة</div>
-                             <select value={pStatusFilter} onChange={e => setPStatusFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full">
+                          <th className="p-3 border-l min-w-[120px]">
+                             <div className="font-black mb-1">الحالة</div>
+                             <select value={pStatusFilter} onChange={e => setPStatusFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full font-bold">
                                 <option value="الكل">الكل</option>
                                 <option value="APPROVED">نشط</option>
                                 <option value="PENDING">بانتظار الموافقة</option>
                                 <option value="REJECTED">مرفوض</option>
                              </select>
                           </th>
-                          <th className="p-2 border-l min-w-[120px]">
-                             <div className="font-bold mb-1">معرف المنتج</div>
-                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" value={pIdSearch} onChange={e => setPIdSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
-                                <span className="material-symbols-rounded text-[14px]">search</span>
-                             </div>
+                          <th className="p-3 border-l">
+                             <div className="font-black mb-1">الإجراءات</div>
                           </th>
-                          <th className="p-4 w-10 text-center border-l"></th>
+                          <th className="p-3 font-black">ID</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
                         {filteredInventoryArray.map(p => (
-                          <tr key={p.id} className={`transition-colors cursor-pointer ${p.status === 'REJECTED' ? 'bg-[#ffb3b3] hover:bg-[#ffa3a3]' : 'bg-white hover:bg-gray-50'}`}>
-                            <td className="p-3 border-l font-bold text-gray-700 max-w-[200px] truncate">{p.title}</td>
-                            <td className="p-3 border-l text-gray-500">{p.category?.name || '—'}</td>
-                            <td className="p-3 border-l text-gray-600">{p.vendor?.storeName || '—'}</td>
-                            <td className="p-3 border-l font-black text-gray-700">{p.stock}</td>
-                            <td className="p-3 border-l font-black">﷼{p.price?.toLocaleString()}</td>
+                          <tr key={p.id} className={cn("transition-colors cursor-pointer", p.status === 'REJECTED' ? 'bg-red-50 hover:bg-red-100' : 'bg-white hover:bg-gray-50')}>
+                            <td className="p-3 border-l text-right flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 border flex-shrink-0">
+                                {p.images && <Image src={p.images.split(",")[0]} alt="" width={40} height={40} className="object-cover w-full h-full" />}
+                              </div>
+                              <span className="font-bold text-gray-700 truncate max-w-[200px]">{p.title}</span>
+                            </td>
+                            <td className="p-3 border-l text-gray-500 font-bold">{p.category?.name || '—'}</td>
+                            <td className="p-3 border-l text-[#1089A4] font-black">{p.vendor?.storeName || '—'}</td>
+                            <td className="p-3 border-l font-black text-gray-700">
+                              <span className={cn("px-2 py-0.5 rounded-md", p.stock < 10 ? "bg-red-100 text-red-600" : "bg-gray-100")}>{p.stock}</span>
+                            </td>
+                            <td className="p-3 border-l font-black text-[#F29124]">ج.س {p.price?.toLocaleString()}</td>
                             <td className="p-3 border-l">
-                               <button className="bg-[#FF6B6B] text-white px-6 py-1.5 rounded font-black text-[10px]">
+                               <button className={cn(
+                                 "text-white px-4 py-1 rounded-lg font-black text-[9px] shadow-sm",
+                                 p.status === 'APPROVED' ? 'bg-green-500' : p.status === 'PENDING' ? 'bg-yellow-500' : 'bg-red-500'
+                               )}>
                                  {p.status === 'APPROVED' ? 'نشط' : p.status === 'PENDING' ? 'بانتظار الموافقة' : 'مرفوض'}
                                </button>
                             </td>
-                            <td className="p-3 border-l font-mono text-gray-600">{p.id.slice(-8)}</td>
-                            <td className="p-4 text-center border-l"><input type="checkbox" className="rounded text-[#1089A4] w-4 h-4 cursor-pointer" /></td>
+                            <td className="p-3 border-l">
+                              <div className="flex items-center justify-center gap-2">
+                                <button onClick={(e) => { e.stopPropagation(); openEditProduct(p); }} className="w-7 h-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors">
+                                  <span className="material-symbols-rounded text-sm">edit</span>
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); handleDeleteProduct(p.id); }} className="w-7 h-7 bg-red-50 text-red-600 rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors">
+                                  <span className="material-symbols-rounded text-sm">delete</span>
+                                </button>
+                              </div>
+                            </td>
+                            <td className="p-3 font-mono text-gray-400">#{p.id.slice(-6).toUpperCase()}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -2021,6 +2419,77 @@ export default function AdminDashboard() {
                         {actionLoading === assigningDriver.orderId ? "جاري الحفظ..." : "تأكيد الشحن"}
                       </button>
                     </div>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+            {/* ── Admin Add Vendor Modal ── */}
+            {vendorModal === "add" && (
+              <div className="fixed inset-0 z-[600] flex items-center justify-center p-4">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setVendorModal(null)} />
+                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl z-10 overflow-hidden">
+                  <div className="bg-[#021D24] text-white px-6 py-4 flex items-center justify-between">
+                    <h3 className="font-black text-lg">إضافة متجر جديد (تاجر)</h3>
+                    <button onClick={() => setVendorModal(null)} className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20">
+                      <span className="material-symbols-rounded text-sm">close</span>
+                    </button>
+                  </div>
+                  
+                  <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                       <div>
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">اسم المتجر <span className="text-red-500">*</span></label>
+                          <input value={vendorForm.storeName} onChange={e => setVendorForm(v => ({...v, storeName: e.target.value}))} placeholder="مثال: مرسال فون" className="input-mersal" />
+                       </div>
+                       <div>
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">المدينة</label>
+                          <select value={vendorForm.location} onChange={e => setVendorForm(v => ({...v, location: e.target.value}))} className="input-mersal">
+                             <option>الخرطوم</option>
+                             <option>أمدرمان</option>
+                             <option>بحري</option>
+                             <option>بورتسودان</option>
+                             <option>عطبرة</option>
+                          </select>
+                       </div>
+                    </div>
+
+                    <div className="h-px bg-gray-100 my-2" />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                       <div>
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">اسم المالك <span className="text-red-500">*</span></label>
+                          <input value={vendorForm.ownerName} onChange={e => setVendorForm(v => ({...v, ownerName: e.target.value}))} placeholder="أحمد محمد" className="input-mersal" />
+                       </div>
+                       <div>
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">رقم الهاتف</label>
+                          <input value={vendorForm.phone} onChange={e => setVendorForm(v => ({...v, phone: e.target.value}))} placeholder="09xxxxxxx" className="input-mersal" />
+                       </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                       <div>
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">البريد الإلكتروني <span className="text-red-500">*</span></label>
+                          <input value={vendorForm.ownerEmail} onChange={e => setVendorForm(v => ({...v, ownerEmail: e.target.value}))} placeholder="owner@store.com" className="input-mersal" />
+                       </div>
+                       <div>
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">كلمة المرور المؤقتة <span className="text-red-500">*</span></label>
+                          <input type="password" value={vendorForm.ownerPassword} onChange={e => setVendorForm(v => ({...v, ownerPassword: e.target.value}))} placeholder="••••••••" className="input-mersal" />
+                       </div>
+                    </div>
+
+                    <div className="bg-blue-50 p-3 rounded-xl border border-blue-100 flex items-start gap-2">
+                       <span className="material-symbols-rounded text-blue-600 text-sm">info</span>
+                       <p className="text-[10px] text-blue-700 leading-relaxed font-bold">
+                          عند الحفظ، سيتم إنشاء حساب مستخدم بالبريد المذكور ومنحه صلاحية "تاجر" وربط المتجر الجديد به تلقائياً.
+                       </p>
+                    </div>
+                  </div>
+
+                  <div className="p-6 bg-gray-50 flex gap-3">
+                    <button onClick={() => setVendorModal(null)} className="flex-1 py-3 text-sm font-black text-gray-500 border border-gray-200 rounded-xl hover:bg-white transition">إلغاء</button>
+                    <button disabled={vendorFormLoading} onClick={handleSaveVendor} className="flex-[2] py-3 text-sm font-black text-white bg-[#1089A4] rounded-xl shadow-lg shadow-[#1089A4]/20 hover:bg-[#0d6e84] transition disabled:opacity-50">
+                       {vendorFormLoading ? "جاري الإنشاء..." : "إنشاء المتجر الآن"}
+                    </button>
                   </div>
                 </motion.div>
               </div>

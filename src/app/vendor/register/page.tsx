@@ -95,7 +95,7 @@ export default function VendorRegister() {
             >
                تسجيل الدخول الآن
             </Link>
-            <p className="text-[10px] font-bold text-gray-300">ليس لديك حساب؟ <Link href="/register" className="text-[#10B981] underline">اشترك الآن</Link></p>
+            <p className="text-[10px] font-bold text-gray-300">ليس لديك حساب؟ <Link href="/login?tab=register" className="text-[#10B981] underline">اشترك الآن</Link></p>
          </div>
       </div>
     );

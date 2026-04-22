@@ -1,94 +1,11 @@
 "use client"
 
-import { useState, useRef, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-import { cn } from "@/lib/utils";
-
-// ── Magnetic Button Component ──
-const MagneticButton = ({ children, className, onClick, type = "button", disabled = false }: any) => {
-  const ref = useRef<HTMLButtonElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const springConfig = { damping: 15, stiffness: 150 };
-  const springX = useSpring(x, springConfig);
-  const springY = useSpring(y, springConfig);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const { left, top, width, height } = ref.current?.getBoundingClientRect() || { left: 0, top: 0, width: 0, height: 0 };
-    const middleX = clientX - (left + width / 2);
-    const middleY = clientY - (top + height / 2);
-    x.set(middleX * 0.3);
-    y.set(middleY * 0.3);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.button
-      ref={ref}
-      style={{ x: springX, y: springY }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-      type={type}
-      disabled={disabled}
-      className={cn("relative", className)}
-    >
-      {children}
-    </motion.button>
-  );
-};
-
-// ── Typography Reveal Component ──
-const RevealText = ({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) => {
-  const letters = text.split("");
-  const container = {
-    hidden: { opacity: 0 },
-    visible: (i: number = 1) => ({
-      opacity: 1,
-      transition: { staggerChildren: 0.03, delayChildren: 0.02 * i + delay },
-    }),
-  } as const;
-
-  const child = {
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring" as const, damping: 12, stiffness: 200 },
-    },
-    hidden: {
-      opacity: 0,
-      y: 20,
-      transition: { type: "spring" as const, damping: 12, stiffness: 200 },
-    },
-  };
-
-
-  return (
-    <motion.div
-      style={{ display: "flex", overflow: "hidden" }}
-      variants={container}
-      initial="hidden"
-      animate="visible"
-      className={className}
-    >
-      {letters.map((letter, index) => (
-        <motion.span variants={child} key={index}>
-          {letter === " " ? "\u00A0" : letter}
-        </motion.span>
-      ))}
-    </motion.div>
-  );
-};
+import { motion, AnimatePresence } from "framer-motion";
 
 function LoginContent() {
   const searchParams = useSearchParams();
@@ -101,23 +18,12 @@ function LoginContent() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
-  const cardRef = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab === "register") {
       setIsLogin(false);
     }
   }, [searchParams]);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!cardRef.current) return;
-    const { left, top } = cardRef.current.getBoundingClientRect();
-    mouseX.set(e.clientX - left);
-    mouseY.set(e.clientY - top);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,7 +32,7 @@ function LoginContent() {
     try {
       if (isLogin) {
         const result = await signIn("credentials", { email, password, redirect: false });
-        if (result?.error) setError("بيانات الدخول غير صحيحة");
+        if (result?.error) setError("بيانات الدخول غير صحيحة. يرجى المحاولة مرة أخرى.");
         else { 
           router.push("/"); 
           router.refresh(); 
@@ -138,245 +44,189 @@ function LoginContent() {
           body: JSON.stringify({ email, password, name }),
         });
         const data = await res.json();
-        if (!res.ok) setError(data.error || "فشل تسجيل الحساب");
+        if (!res.ok) setError(data.error || "فشل إنشاء الحساب. يرجى المحاولة لاحقاً.");
         else await signIn("credentials", { email, password, callbackUrl: "/onboarding" });
       }
     } catch (err) {
-      setError("حدث خطأ تقني. حاول مرة أخرى.");
+      setError("حدث خطأ في النظام. يرجى المحاولة مرة أخرى.");
     } finally { setLoading(false); }
   };
 
   return (
-    <div className="min-h-screen bg-[#01090C] flex items-center justify-center p-4 md:p-10 relative overflow-hidden font-sans rtl selection:bg-secondary selection:text-white" dir="rtl">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 md:p-8 font-sans rtl selection:bg-[#1089A4] selection:text-white" dir="rtl">
       
-      {/* ── Immersive Mesh Background ── */}
-      <div className="absolute inset-0 z-0">
-         <div className="absolute inset-0 bg-gradient-to-br from-[#021D24] via-[#01090C] to-[#010D11]" />
-         <motion.div 
-            animate={{ 
-               scale: [1, 1.2, 1],
-               rotate: [0, 90, 0],
-               x: [0, 100, 0],
-               y: [0, 50, 0]
-            }} 
-            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="absolute top-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-primary/20 blur-[150px] rounded-full" 
-         />
-         <motion.div 
-            animate={{ 
-               scale: [1, 1.3, 1],
-               rotate: [0, -45, 0],
-               x: [0, -150, 0],
-               y: [0, 100, 0]
-            }} 
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-            className="absolute bottom-[-30%] left-[-20%] w-[1200px] h-[1200px] bg-secondary/10 blur-[200px] rounded-full" 
-         />
-         <div className="absolute inset-0 bg-[#01090C]/40 backdrop-blur-[2px]" />
-      </div>
-
       <motion.div 
-        ref={cardRef}
-        onMouseMove={handleMouseMove}
-        initial={{ opacity: 0, scale: 0.9, rotateY: isLogin ? 15 : -15 }}
-        animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-        className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 rounded-[2rem] overflow-hidden shadow-[0_80px_160px_rgba(0,0,0,0.8)] bg-white/5 backdrop-blur-3xl border border-white/10 relative z-10 group"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100"
       >
-        {/* Dynamic Light Glow (Mouse Follow) */}
-        <motion.div 
-          className="absolute inset-0 pointer-events-none z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-          style={{ 
-            background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(16, 137, 164, 0.15), transparent 80%)`,
-            // @ts-ignore
-            "--mouse-x": useSpring(mouseX, { stiffness: 50, damping: 20 }).get() + "px",
-            "--mouse-y": useSpring(mouseY, { stiffness: 50, damping: 20 }).get() + "px"
-          }}
-        />
-
-        {/* ── Elite Sidebar ── */}
-        <div className="bg-[#021D24] p-12 md:p-24 hidden lg:flex flex-col justify-between relative overflow-hidden order-2 border-r border-white/5">
-           <div className="absolute inset-0 bg-[#000]/30 z-0" />
-           <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/20 blur-[100px] rounded-full" />
+        {/* ── Brand Sidebar ── */}
+        <div className="bg-[#021D24] p-10 md:p-16 hidden lg:flex flex-col justify-between relative overflow-hidden order-2">
+           <div className="absolute inset-0 bg-gradient-to-br from-[#021D24] via-[#011419] to-[#01090C] z-0" />
            
-           <div className="relative z-10 w-full">
-              <Link href="/" className="inline-flex items-center group/logo">
-                 <div className="w-20 h-20 flex items-center justify-center relative">
-                    <Image src="/logo-navbar-final.png" alt="Logo" fill className="object-contain" />
+           {/* Abstract decorative shapes */}
+           <div className="absolute -top-32 -right-32 w-80 h-80 bg-[#1089A4]/20 blur-[80px] rounded-full" />
+           <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-blue-500/10 blur-[80px] rounded-full" />
+           
+           <div className="relative z-10 w-full flex items-center justify-start">
+              <Link href="/" className="inline-block transition-transform hover:scale-105 duration-300">
+                 <div className="w-24 h-24 relative">
+                    <Image src="/logo-navbar-final.png" alt="ناجز" fill className="object-contain" />
                  </div>
               </Link>
            </div>
 
-           <div className="relative z-10 space-y-12">
-              <div className="space-y-4">
-                 <RevealText 
-                    key={isLogin ? "log-title" : "sign-title"}
-                    text={isLogin ? "أهـــلاً بـــك" : "كُـــن نُخـبويـاً"} 
-                    className="text-6xl md:text-7xl font-black text-white leading-none tracking-tighter italic h-16 md:h-20" 
-                 />
-                 <RevealText 
-                    key={isLogin ? "log-sub" : "sign-sub"}
-                    text={isLogin ? "في هرم الفخامة" : "في مرسال النخبة"} 
-                    delay={0.5}
-                    className="text-4xl font-black text-white/40 italic h-12" 
-                 />
-              </div>
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.2 }}
-                className="flex items-center gap-4 bg-white/5 backdrop-blur-md px-8 py-5 rounded-3xl border border-white/10 w-fit"
-              >
-                 <div className="w-3 h-3 rounded-full bg-secondary animate-pulse" />
-                 <p className="text-white/60 text-[13px] font-bold tracking-wide">
-                    {isLogin ? "خدمة عملاء استثنائية وسرعة فائقة في التسليم." : "انضم لنظام مرسال الرائد، حيث التميز هو المعيار."}
-                 </p>
-              </motion.div>
+           <div className="relative z-10 space-y-6">
+              <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
+                 {isLogin ? "مرحباً بك في منصة ناجز" : "انضم إلى منصة ناجز"}
+              </h2>
+              <p className="text-lg text-gray-300 max-w-sm leading-relaxed">
+                 {isLogin 
+                   ? "الوجهة الرائدة للتسوق الإلكتروني، حيث نضمن لك تجربة تسوق موثوقة وسريعة." 
+                   : "أنشئ حسابك الآن وابدأ في استكشاف آلاف المنتجات بأسعار تنافسية وخدمة عملاء استثنائية."}
+              </p>
            </div>
 
-           <div className="relative z-10 flex items-end justify-between">
-              <div className="flex flex-col">
-                 <span className="text-4xl font-black text-white tracking-tighter">100%</span>
-                 <span className="text-[10px] text-white/20 font-black uppercase tracking-widest mt-1">SLA الموثوقية السيادية</span>
-              </div>
-              <div className="text-[10px] font-black text-white/10 uppercase tracking-[0.6em]">
-                 MERSAL CORE V4.0
+           <div className="relative z-10">
+              <div className="inline-flex items-center gap-3 bg-white/5 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/10">
+                 <div className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse" />
+                 <span className="text-sm text-gray-200 font-medium">الأنظمة تعمل بكفاءة 100%</span>
               </div>
            </div>
         </div>
 
         {/* ── Auth Form Area ── */}
-        <div className="p-8 md:p-16 lg:p-24 flex flex-col justify-center bg-white relative z-10 order-1">
+        <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center relative z-10 order-1 bg-white">
             <AnimatePresence mode="wait">
               <motion.div 
                 key={isLogin ? "login" : "signup"}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-                className="w-full"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.4 }}
+                className="w-full max-w-md mx-auto"
               >
-                <div className="mb-8 md:mb-12 text-right">
-                   <h1 className="text-3xl md:text-4xl font-black text-[#021D24] font-heading tracking-tighter mb-2 md:mb-3">
+                <div className="mb-10 text-right">
+                   <h1 className="text-3xl font-bold text-gray-900 mb-3">
                       {isLogin ? "تسجيل الدخول" : "إنشاء حساب جديد"}
                    </h1>
-                   <div className="h-1 w-16 md:w-20 bg-[#1089A4] rounded-full mb-2 md:mb-3" />
-                   <p className="text-[#1089A4] text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em]">
-                      {isLogin ? "بوابة النفوذ والسيطرة التجارية" : "مفتاح العبور إلى العالم النخبوي"}
+                   <p className="text-gray-500 text-sm">
+                      {isLogin ? "أدخل بياناتك للمتابعة إلى حسابك" : "الرجاء إدخال بياناتك لإنشاء حساب جديد"}
                    </p>
                 </div>
 
-
                 {error && (
                   <motion.div 
-                    initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-                    className="bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest p-5 rounded-2xl border border-red-100 mb-8 flex items-center gap-3 shadow-sm"
+                    initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+                    className="bg-red-50 text-red-600 text-sm font-medium p-4 rounded-xl border border-red-100 mb-6 flex items-center gap-3"
                    >
-                     <span className="material-symbols-rounded bg-red-600 text-white p-1 rounded-lg text-xs">error</span> {error}
+                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                     </svg>
+                     {error}
                   </motion.div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                    {!isLogin && (
-                     <motion.div className="space-y-1.5 group">
-                        <label className="text-[10px] font-black text-primary/30 uppercase tracking-[0.2em] pr-4">الاسـم الـكـامـل</label>
-                        <input value={name} onChange={(e) => setName(e.target.value)} required type="text" placeholder="اسمك النخبوي" className="luxury-field" />
-                     </motion.div>
+                     <div className="space-y-2">
+                        <label className="text-sm font-semibold text-gray-700 block">الاسم الكامل</label>
+                        <input 
+                           value={name} 
+                           onChange={(e) => setName(e.target.value)} 
+                           required 
+                           type="text" 
+                           placeholder="أحمد محمد" 
+                           className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1089A4] focus:border-transparent transition-all" 
+                        />
+                     </div>
                    )}
-                   <motion.div className="space-y-1.5 group">
-                      <label className="text-[10px] font-black text-primary/30 uppercase tracking-[0.2em] pr-4">الـبـريـد الإلـكـتـروني</label>
-                      <input value={email} onChange={(e) => setEmail(e.target.value)} required type="email" placeholder="example@sovereign.sd" className="luxury-field" />
-                   </motion.div>
-                   <motion.div className="space-y-1.5 group">
-                      <div className="flex justify-between items-center pr-4">
-                         <label className="text-[10px] font-black text-primary/30 uppercase tracking-[0.2em]">كـلـمة الـمـرور</label>
-                         {isLogin && <button type="button" className="text-[9px] font-bold text-[#1089A4] hover:text-[#F29124] transition-colors mb-1">استعادة؟</button>}
+                   <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700 block">البريد الإلكتروني</label>
+                      <input 
+                         value={email} 
+                         onChange={(e) => setEmail(e.target.value)} 
+                         required 
+                         type="email" 
+                         placeholder="name@example.com" 
+                         dir="ltr"
+                         className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1089A4] focus:border-transparent transition-all text-right" 
+                      />
+                   </div>
+                   <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                         <label className="text-sm font-semibold text-gray-700">كلمة المرور</label>
+                         {isLogin && <Link href="/forgot-password" className="text-xs font-medium text-[#1089A4] hover:text-[#021D24] transition-colors">هل نسيت كلمة المرور؟</Link>}
                       </div>
-                      <input value={password} onChange={(e) => setPassword(e.target.value)} required type="password" placeholder="••••••••" className="luxury-field" />
-                   </motion.div>
+                      <input 
+                         value={password} 
+                         onChange={(e) => setPassword(e.target.value)} 
+                         required 
+                         type="password" 
+                         placeholder="••••••••" 
+                         dir="ltr"
+                         className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1089A4] focus:border-transparent transition-all text-right" 
+                      />
+                   </div>
 
-                   <div className="pt-6">
-                      <MagneticButton 
+                   <div className="pt-4">
+                      <button 
                          disabled={loading} 
                          type="submit" 
-                         className="w-full bg-[#021D24] text-white py-6 rounded-2xl font-black text-[12px] uppercase tracking-[0.4em] shadow-xl hover:bg-[#1089A4] transition-all overflow-hidden group/btn"
+                         className="w-full bg-[#021D24] hover:bg-[#032a35] text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-[#021D24]/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
-                         <span className="relative z-10">{loading ? "جاري الفحص..." : (isLogin ? "دخول ســيادي" : "تـفعيل الـنظام")}</span>
-                      </MagneticButton>
+                         {loading ? (
+                           <>
+                             <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                             </svg>
+                             جاري المعالجة...
+                           </>
+                         ) : (isLogin ? "تسجيل الدخول" : "إنشاء حساب")}
+                      </button>
                    </div>
                 </form>
 
-                <div className="relative my-10 text-center">
-                   <div className="absolute inset-0 flex items-center px-12 md:px-20"><div className="w-full border-t border-primary/5"></div></div>
-                   <span className="relative bg-white px-6 text-[9px] font-bold text-primary/20 uppercase tracking-[0.4em]">أو عبر البروتوكولات</span>
+                <div className="relative my-8 text-center">
+                   <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
+                   <span className="relative bg-white px-4 text-xs font-medium text-gray-400">أو المتابعة باستخدام</span>
                 </div>
 
                 <div className="w-full">
-                    <MagneticButton 
+                    <button 
+                      type="button"
                       onClick={() => signIn("google", { callbackUrl: "/" })}
-                      className="w-full py-5 border border-primary/5 rounded-2xl flex items-center justify-center gap-4 hover:bg-[#F8F9FA] transition-all text-[11px] font-black uppercase tracking-widest group/social shadow-sm"
+                      className="w-full py-3.5 px-4 bg-white border border-gray-200 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors text-sm font-semibold text-gray-700 shadow-sm"
                     >
                        <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={20} height={20} /> 
-                       <span>تـسـجـيل الـدخـول بـواسـطـة جـوجـل</span>
-                    </MagneticButton>
+                       <span>حساب جوجل</span>
+                    </button>
                  </div>
 
-                <motion.p 
-                   className="text-center text-[10px] font-bold mt-12 text-primary/40 uppercase tracking-[0.2em]"
-                >
-                   {isLogin ? "لا تـمـلك سـيادة مـسبقة؟" : "تـمتلك كـود الـعـبور؟"}
-                   <button onClick={() => setIsLogin(!isLogin)} className="mr-3 text-[#1089A4] hover:text-[#F29124] underline underline-offset-4 transition-colors">
-                      {isLogin ? "افـتح حـسابك" : "سـجل دخـولك"}
+                <p className="text-center text-sm font-medium mt-10 text-gray-600">
+                   {isLogin ? "ليس لديك حساب؟" : "لديك حساب بالفعل؟"}
+                   <button onClick={() => setIsLogin(!isLogin)} className="mr-2 text-[#1089A4] font-bold hover:underline transition-colors">
+                      {isLogin ? "إنشاء حساب جديد" : "تسجيل الدخول"}
                    </button>
-                </motion.p>
+                </p>
               </motion.div>
             </AnimatePresence>
         </div>
-
-
       </motion.div>
-
-      <style jsx global>{`
-        .luxury-field {
-          width: 100%;
-          padding: 1.4rem 1.6rem;
-          background: #F8F9FA;
-          border: 3px solid transparent;
-          border-radius: 1.5rem;
-          font-weight: 900;
-          font-size: 0.85rem;
-          transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-          color: #021D24;
-          text-align: right;
-          box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-        @media (min-width: 768px) {
-          .luxury-field {
-            padding: 1.8rem 2rem;
-            border-radius: 2rem;
-            font-size: 0.9rem;
-          }
-        }
-        .luxury-field:focus {
-          background: white;
-          border-color: #1089A4;
-          box-shadow: 0 30px 60px rgba(16, 137, 164, 0.12), inset 0 2px 4px rgba(0,0,0,0);
-          outline: none;
-          transform: translateY(-2px);
-        }
-        .shadow-elite-xl {
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-      `}</style>
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#01090C] flex items-center justify-center text-white">جاري الفحص...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-[#1089A4] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
       <LoginContent />
     </Suspense>
   );
 }
-

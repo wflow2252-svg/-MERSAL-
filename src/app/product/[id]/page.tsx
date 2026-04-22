@@ -1,6 +1,7 @@
 "use client"
 
 import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getProductById, getRelatedProducts, getVendorUpsells } from "@/lib/mockData/products";
 import ProductGallery from "@/components/product/ProductGallery";

@@ -34,12 +34,6 @@ export default function Navbar() {
   const isAdmin = (session?.user as any)?.role === "ADMIN";
   const isAuthenticated = status === "authenticated";
 
-  // Proactive Session Refresh (e.g. if user just became a vendor)
-  useEffect(() => {
-    if (isAuthenticated) {
-      update();
-    }
-  }, [isAuthenticated]);
 
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();

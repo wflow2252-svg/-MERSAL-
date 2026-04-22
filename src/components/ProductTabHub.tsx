@@ -3,36 +3,11 @@
 import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
 import Image from "next/image";
-import { useRef } from "react";
-
-const tabProducts: Record<string, any[]> = {
-  new: [
-    { id: "n1", title: "سماعات سوني WH-1000XM5",           price: 185000, vendor: "تكنو زون",    vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&q=80&w=800", badge: "جديد" },
-    { id: "n2", title: "آبل آيفون 15 برو ماكس",             price: 980000, vendor: "مرسال جادجتس", vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=800", badge: "جديد" },
-    { id: "n3", title: "ساعة رولكس أويستر بربتشوال",        price: 950000, vendor: "نخبة الساعات", vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800", badge: "جديد" },
-    { id: "n4", title: "آبل ماك بوك برو 14 بوصة M3",        price: 1450000, vendor: "آبل سيستمز",  vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=800", badge: "جديد" },
-    { id: "n5", title: "كاميرا سوني Alpha a7 IV",            price: 420000, vendor: "كاميرا ورلد", vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=800", badge: "جديد" },
-    { id: "n6", title: "تلفزيون سامسونج QLED 65 بوصة",       price: 350000, vendor: "إلكترو مول",  vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f4e85d?auto=format&fit=crop&q=80&w=800", badge: "جديد" },
-  ],
-  best: [
-    { id: "b1", title: "جهاز قهوة نسبريسو فيرتو",           price: 65000,  vendor: "البيت العصري", vendorLocation: "بحري",    image: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?auto=format&fit=crop&q=80&w=800", badge: "الأكثر مبيعاً" },
-    { id: "b2", title: "نظارات شمسية برادا كوليكشن 2026",    price: 32000,  vendor: "نظارات مكة",  vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=800", badge: "الأكثر مبيعاً" },
-    { id: "b3", title: "حذاء نايكي إير ماكس 270",            price: 45000,  vendor: "رياضة السودان", vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800", badge: "الأكثر مبيعاً" },
-    { id: "b4", title: "حقيبة جلدية فاخرة",                 price: 28000,  vendor: "ليذر كرافت",  vendorLocation: "أم درمان", image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=800", badge: "الأكثر مبيعاً" },
-    { id: "b5", title: "طقم أواني طهي جرانيت",              price: 55000,  vendor: "المطبخ الملكي", vendorLocation: "بحري",    image: "https://images.unsplash.com/photo-1584990344321-2768224f115d?auto=format&fit=crop&q=80&w=800", badge: "الأكثر مبيعاً" },
-  ],
-  offers: [
-    { id: "o1", title: "كاميرا سوني Alpha a7 IV",            price: 420000, vendor: "كاميرا ورلد", vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=800", badge: "خصم 30%", discount: 30 },
-    { id: "o2", title: "تلفزيون سامسونج QLED 65 بوصة",       price: 350000, vendor: "إلكترو مول",  vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f4e85d?auto=format&fit=crop&q=80&w=800", badge: "خصم 20%", discount: 20 },
-    { id: "o3", title: "ساعة آبل الإصدار التاسع",            price: 220000, vendor: "آبل سيستمز",  vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1434494878577-86c23bdd0639?auto=format&fit=crop&q=80&w=800", badge: "خصم 15%", discount: 15 },
-    { id: "o4", title: "خلاط مولينكس الأصلي",                price: 45000,  vendor: "إلكترو مول",  vendorLocation: "الخرطوم", image: "https://images.unsplash.com/photo-1585238341267-4c760c41031c?auto=format&fit=crop&q=80&w=800", badge: "خصم 10%", discount: 10 },
-  ],
-};
+import { useRef, useEffect, useState } from "react";
 
 const SECTIONS = [
   { id: "new",    label: "وصل حديثاً", icon: "✨" },
   { id: "best",   label: "الأكثر مبيعاً", icon: "⭐" },
-  { id: "offers", label: "عروض مميزة", icon: "🔥" },
 ];
 
 function ProductStrip({ title, products, icon }: { title: string, products: any[], icon: string }) {
@@ -95,13 +70,53 @@ function ProductStrip({ title, products, icon }: { title: string, products: any[
 }
 
 export default function ProductTabHub() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [bestProducts, setBestProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/products?sort=new")
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setProducts(data);
+      })
+      .catch(console.error);
+      
+    fetch("/api/products?sort=best")
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setBestProducts(data);
+      })
+      .catch(console.error);
+  }, []);
+
+  const tabProducts: Record<string, any[]> = {
+    new: products.map(p => ({
+      id: p.id,
+      title: p.title,
+      price: p.price,
+      vendor: p.vendor?.storeName,
+      vendorLocation: p.vendor?.location || "السودان",
+      image: p.images ? p.images.split(",")[0] : "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800",
+      badge: "جديد",
+    })),
+    best: bestProducts.map(p => ({
+      id: p.id,
+      title: p.title,
+      price: p.price,
+      vendor: p.vendor?.storeName,
+      vendorLocation: p.vendor?.location || "السودان",
+      image: p.images ? p.images.split(",")[0] : "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800",
+      badge: "الأكثر مبيعاً",
+    }))
+  };
+
   return (
     <section className="bg-[#F3F4F6] py-10" dir="rtl">
       <div className="max-w-[1600px] mx-auto px-4 lg:px-6">
 
         {/* ── Product Sections (Stacked Strips) ── */}
         <div className="flex flex-col">
-          {SECTIONS.map(sec => (
+          {SECTIONS.map(sec => tabProducts[sec.id]?.length > 0 && (
             <ProductStrip 
               key={sec.id}
               title={sec.label}

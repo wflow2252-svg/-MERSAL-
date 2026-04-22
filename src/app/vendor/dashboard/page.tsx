@@ -79,6 +79,7 @@ export default function VendorDashboard() {
           <EliteNavItem active={activeTab === "overview"} onClick={() => setActiveTab("overview")} icon="dashboard" label="لوحة التحكم" />
           <EliteNavItem active={activeTab === "products"} onClick={() => setActiveTab("products")} icon="inventory_2" label="المنتجات المركزية" />
           <EliteNavItem active={activeTab === "orders"} onClick={() => setActiveTab("orders")} icon="shopping_basket" label="طلبات المبيعات" />
+          <EliteNavItem active={activeTab === "promotion"} onClick={() => setActiveTab("promotion")} icon="campaign" label="ترويج المنتجات" />
           <EliteNavItem active={activeTab === "finance"} onClick={() => setActiveTab("finance")} icon="payments" label="المالية والسحب" />
           <div className="h-px bg-white/10 my-8 mx-4" />
           <EliteNavItem active={activeTab === "settings"} onClick={() => setActiveTab("settings")} icon="settings" label="إعدادات المتجر" />
@@ -300,6 +301,34 @@ export default function VendorDashboard() {
                     ))}
                   </tbody>
                 </table>
+               </div>
+            </div>
+          )}
+          {activeTab === "promotion" && (
+            <div className="space-y-12">
+               <div className="flex items-center justify-between">
+                 <h3 className="font-black text-4xl tracking-tighter text-[#021D24] font-heading">باقات الترويج والإعلانات</h3>
+               </div>
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {[
+                    { title: "الباقة الأساسية", desc: "ظهور في أعلى قسم 'وصل حديثاً' لمدة 3 أيام", price: "5,000 ج.س", color: "from-[#1089A4] to-[#086F85]" },
+                    { title: "الباقة الفضية", desc: "ظهور في قسم 'الأكثر مبيعاً' مع شريط مميز لمدة أسبوع", price: "12,000 ج.س", color: "from-[#F29124] to-[#D47B1E]" },
+                    { title: "الباقة الذهبية", desc: "إعلان بانر في الصفحة الرئيسية وظهور مميز لمدة شهر", price: "35,000 ج.س", color: "from-[#021D24] to-[#010E12]" },
+                  ].map((pkg, i) => (
+                    <div key={i} className={`bg-gradient-to-br ${pkg.color} p-12 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group hover:scale-105 transition-transform`}>
+                       <div className="relative z-10 flex flex-col h-full justify-between gap-8">
+                          <div>
+                            <h4 className="font-black text-3xl mb-4">{pkg.title}</h4>
+                            <p className="text-white/80 font-bold leading-relaxed">{pkg.desc}</p>
+                          </div>
+                          <div>
+                            <p className="text-4xl font-black mb-6">{pkg.price}</p>
+                            <button onClick={() => alert("سيتم توجيهك لصفحة الدفع")} className="w-full bg-white text-[#021D24] font-black py-4 rounded-2xl uppercase tracking-widest text-xs hover:bg-gray-100 transition-colors shadow-lg">طلب الباقة</button>
+                          </div>
+                       </div>
+                       <span className="material-symbols-rounded absolute -bottom-10 -right-10 text-[12rem] text-white/5 -rotate-12 group-hover:rotate-0 transition-transform">campaign</span>
+                    </div>
+                  ))}
                </div>
             </div>
           )}

@@ -190,6 +190,43 @@ function ShippingLabel({ order, onClose }: { order: any; onClose: () => void }) 
 }
 
 // ── Main Component ─────────────────────────────────────
+const ProductReviewRow = ({ p, onAction, loading }: any) => {
+  const [price, setPrice] = useState(p.price || 0);
+  const [stock, setStock] = useState(p.stock || 0);
+  
+  return (
+    <div className="p-4 flex flex-col gap-3">
+       <div className="flex items-center gap-3">
+          <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 border flex-shrink-0">
+             {p.images && <Image src={p.images.split(",")[0]} alt={p.title} fill className="object-cover" />}
+          </div>
+          <div>
+             <p className="font-bold text-sm text-[#021D24] leading-tight">{p.title}</p>
+             <p className="text-xs text-gray-500 font-bold mt-1">المتجر: {p.vendor?.storeName || 'غير محدد'}</p>
+          </div>
+       </div>
+       <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg border border-gray-100">
+          <div>
+             <label className="text-[10px] text-gray-500 font-bold block mb-1">السعر (ج.س)</label>
+             <input type="number" value={price} onChange={e => setPrice(Number(e.target.value))} className="input-mersal py-1.5 px-2 text-xs w-28" />
+          </div>
+          <div>
+             <label className="text-[10px] text-gray-500 font-bold block mb-1">الكمية (Stock)</label>
+             <input type="number" value={stock} onChange={e => setStock(Number(e.target.value))} className="input-mersal py-1.5 px-2 text-xs w-24" />
+          </div>
+          <div className="flex gap-2 mr-auto mt-4">
+             <button disabled={loading === p.id} onClick={() => onAction(p.id, "APPROVE", price, stock)} className="bg-green-500 disabled:opacity-50 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-md hover:bg-green-600 transition-colors">
+                <span className="material-symbols-rounded text-sm">done_all</span>
+             </button>
+             <button disabled={loading === p.id} onClick={() => onAction(p.id, "REJECT")} className="bg-red-500 disabled:opacity-50 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-md hover:bg-red-600 transition-colors">
+                <span className="material-symbols-rounded text-sm">delete</span>
+             </button>
+          </div>
+       </div>
+    </div>
+  )
+}
+
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const userRole = (session?.user as any)?.role || "CUSTOMER";
@@ -462,9 +499,9 @@ export default function AdminDashboard() {
     setActionLoading(null);
   };
 
-  const handleProductAction = async (id: string, action: string) => {
+  const handleProductAction = async (id: string, action: string, price?: number, stock?: number) => {
     setActionLoading(id);
-    await fetch("/api/admin/products", { method: "POST", body: JSON.stringify({ id, action }) });
+    await fetch("/api/admin/products", { method: "POST", body: JSON.stringify({ id, action, price, stock }) });
     setPendingProducts(prev => prev.filter(p => p.id !== id));
     setActionLoading(null);
   };
@@ -786,25 +823,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="divide-y">
                     {pendingProducts.map(p => (
-                      <div key={p.id} className="p-4 flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-3">
-                          <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 border flex-shrink-0">
-                            {p.images && <Image src={p.images.split(",")[0]} alt={p.title} fill className="object-cover" />}
-                          </div>
-                          <div>
-                            <p className="font-bold text-xs text-[#021D24] leading-tight">{p.title}</p>
-                            <p className="text-[11px] text-[#1089A4] font-bold">{p.price?.toLocaleString()} ج.س</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <button disabled={actionLoading === p.id} onClick={() => handleProductAction(p.id, "APPROVE")} className="btn-icon-sm bg-green-500 disabled:opacity-50">
-                            <span className="material-symbols-rounded text-sm">done_all</span>
-                          </button>
-                          <button disabled={actionLoading === p.id} onClick={() => handleProductAction(p.id, "REJECT")} className="btn-icon-sm bg-red-400 disabled:opacity-50">
-                            <span className="material-symbols-rounded text-sm">delete</span>
-                          </button>
-                        </div>
-                      </div>
+                      <ProductReviewRow key={p.id} p={p} onAction={handleProductAction} loading={actionLoading} />
                     ))}
                     {pendingProducts.length === 0 && <p className="text-center py-8 text-gray-400 text-sm">لا توجد منتجات بانتظار المراجعة ✅</p>}
                   </div>

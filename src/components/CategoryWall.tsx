@@ -2,38 +2,45 @@
 
 import Link from "next/link";
 import Image from "next/image";
-
-const CATS = [
-  { id: "electronics", name: "الإلكترونيات", img: "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&q=80&w=400" },
-  { id: "fashion",     name: "الأزياء والملابس", img: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=400" },
-  { id: "home",        name: "المنزل والمطبخ", img: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=400" },
-  { id: "beauty",      name: "الجمال والعناية", img: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&q=80&w=400" },
-  { id: "watches",     name: "الساعات الفاخرة", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400" },
-  { id: "sports",      name: "الرياضة",   img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400" },
-  { id: "food",        name: "الأغذية",   img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=400" },
-  { id: "toys",        name: "الألعاب",   img: "https://images.unsplash.com/photo-1558060370-d644479cb6f7?auto=format&fit=crop&q=80&w=400" },
-];
+import { useEffect, useState } from "react";
 
 export default function CategoryWall() {
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/admin/categories")
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setCategories(data);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
   return (
     <section className="bg-[#F3F4F6] py-6" dir="rtl">
       <div className="max-w-[1600px] mx-auto px-4 lg:px-6">
 
         {/* ── Amazon-style category cards ── */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-          {CATS.map(cat => (
+          {categories.map(cat => (
             <Link
               key={cat.id}
               href={`/category/${cat.id}`}
               className="bg-white rounded-lg p-3 text-center hover:shadow-md border border-gray-200 hover:border-[#1089A4] transition-all group"
             >
-              <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-2">
-                <Image
-                  src={cat.img}
-                  alt={cat.name}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+              <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 bg-gray-50 flex items-center justify-center text-4xl">
+                {cat.icon && (cat.icon.startsWith("http") || cat.icon.startsWith("/")) ? (
+                  <Image
+                    src={cat.icon}
+                    alt={cat.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <span>{cat.icon || "📦"}</span>
+                )}
               </div>
               <p className="text-[11px] font-black text-[#021D24] group-hover:text-[#1089A4] transition-colors leading-tight">
                 {cat.name}

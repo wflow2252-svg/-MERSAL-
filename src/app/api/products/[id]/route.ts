@@ -62,7 +62,14 @@ export async function GET(
       ram: p.ram || undefined,
       storage: p.storage || undefined,
       screenSize: p.screenSize || undefined,
-      bundleData: (p.bundleData && p.bundleData !== "null") ? JSON.parse(p.bundleData) : undefined,
+      bundleData: (() => {
+        try {
+          return (p.bundleData && p.bundleData !== "null" && p.bundleData.trim() !== "") ? JSON.parse(p.bundleData) : undefined;
+        } catch (e) {
+          console.error("Invalid bundleData JSON:", p.bundleData);
+          return undefined;
+        }
+      })(),
       type: p.type || "SIMPLE",
     };
 

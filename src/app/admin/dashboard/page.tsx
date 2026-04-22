@@ -841,114 +841,10 @@ export default function AdminDashboard() {
     fetchData();
     setActionLoading(null);
   };
-
-  const handleAddPlan = async () => {
-    if (!newPlan.name || !newPlan.price) return;
-    setActionLoading("add_plan");
-    const r = await fetch("/api/admin/subscriptions/plans", { method: "POST", body: JSON.stringify(newPlan) });
-    if (r.ok) {
-      const data = await r.json();
-      setSubscriptionPlans(prev => [...prev, data]);
-      setNewPlan({ name: "", price: "", durationDays: "30", isTrial: false });
-    }
-    setActionLoading(null);
-  };
-
-  const handleVendorAction = async (id: string, vStatus: string) => {
-    setActionLoading(id);
-    const r = await fetch("/api/admin/vendors", { method: "PATCH", body: JSON.stringify({ id, status: vStatus }) });
-    if (r.ok) fetchData();
-    setActionLoading(null);
-  };
-
-  const handleProductAction = async (id: string, pAction: string, price?: number, stock?: number) => {
-    setActionLoading(id);
-    const r = await fetch("/api/admin/products", {
-      method: "POST",
-      body: JSON.stringify({ id, action: pAction, price, stock })
-    });
-    if (r.ok) {
-      setPendingProducts(prev => prev.filter(p => p.id !== id));
-      fetchData();
-    }
-    setActionLoading(null);
-  };
-
   const handleDeleteProduct = async (id: string) => {
     if (!confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
     const r = await fetch("/api/admin/products", { method: "DELETE", body: JSON.stringify({ id }) });
     if (r.ok) setInventoryProducts(prev => prev.filter(p => p.id !== id));
-  };
-
-  const handleAddZone = async () => {
-    if (!newZone.fromCity || !newZone.toCity || !newZone.fee) return;
-    setActionLoading("zone");
-    const r = await fetch("/api/admin/delivery-zones", { method: "POST", body: JSON.stringify(newZone) });
-    if (r.ok) {
-      const data = await r.json();
-      setDeliveryZones(prev => [data, ...prev]);
-      setNewZone({ fromCity: "", toCity: "", fee: "" });
-    }
-    setActionLoading(null);
-  };
-
-  const handleDeleteZone = async (id: string) => {
-    if (!confirm("حذف المنطقة؟")) return;
-    await fetch(`/api/admin/delivery-zones?id=${id}`, { method: "DELETE" });
-    setDeliveryZones(prev => prev.filter(z => z.id !== id));
-  };
-
-  const handleAddEmployee = async () => {
-    if (!newEmployee.name || !newEmployee.email) return;
-    setActionLoading("emp");
-    const r = await fetch("/api/admin/employees", { method: "POST", body: JSON.stringify(newEmployee) });
-    if (r.ok) {
-      const data = await r.json();
-      setEmployees(prev => [data, ...prev]);
-      setNewEmployee({ name: "", email: "", role: "PACKING" });
-    }
-    setActionLoading(null);
-  };
-
-  const handleDeleteEmployee = async (id: string) => {
-    if (!confirm("هل أنت متأكد من حذف الموظف؟")) return;
-    await fetch("/api/admin/employees", { method: "DELETE", body: JSON.stringify({ id }) });
-    setEmployees(prev => prev.filter(e => e.id !== id));
-  };
-
-  const handleAddDriver = async () => {
-    if (!newDriver.name || !newDriver.phone) return;
-    setActionLoading("driver");
-    const r = await fetch("/api/admin/drivers", { method: "POST", body: JSON.stringify(newDriver) });
-    if (r.ok) {
-      const data = await r.json();
-      setDrivers(prev => [data, ...prev]);
-      setNewDriver({ name: "", phone: "", vehicleType: "مواتر (دباب)" });
-    }
-    setActionLoading(null);
-  };
-
-  const handleDeleteDriver = async (id: string) => {
-    if (!confirm("هل أنت متأكد من حذف المندوب؟")) return;
-    await fetch("/api/admin/drivers", { method: "DELETE", body: JSON.stringify({ id }) });
-    setDrivers(prev => prev.filter(d => d.id !== id));
-  };
-
-  const handleDeleteCategory = async (id: string) => {
-    if (!confirm("هل أنت متأكد من حذف هذا القسم؟")) return;
-    await fetch(`/api/admin/categories?id=${id}`, { method: "DELETE" });
-    setCategories(prev => prev.filter(c => c.id !== id));
-  };
-
-  const handleAssignPlan = async (vendorId: string, planId: string) => {
-    if (!planId) return;
-    setActionLoading(vendorId);
-    const r = await fetch("/api/admin/vendors", { 
-      method: "PATCH", 
-      body: JSON.stringify({ id: vendorId, planId, subscriptionEndsAt: new Date(Date.now() + 30*24*60*60*1000) }) 
-    });
-    if (r.ok) fetchData();
-    setActionLoading(null);
   };
 
   // ── Order Edit (Logestechs-style) ──
@@ -1062,20 +958,7 @@ export default function AdminDashboard() {
     setProductFormLoading(false);
   };
 
-  const handleDeleteProduct = async (id: string) => {
-    if (!confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
-    const res = await fetch("/api/admin/products", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
-    if (res.ok) setInventoryProducts(prev => prev.filter(p => p.id !== id));
-  };
 
-  const toggleOrderSelection = (id: string) => {
-    setSelectedOrders(prev => prev.includes(id) ? prev.filter(oid => oid !== id) : [...prev, id]);
-  };
-
-  const toggleAllOrders = () => {
-    if (selectedOrders.length === orders.length) setSelectedOrders([]);
-    else setSelectedOrders(orders.map(o => o.id));
-  };
 
   const handleSaveVendor = async () => {
     if (!vendorForm.storeName || !vendorForm.ownerEmail || !vendorForm.ownerPassword) {

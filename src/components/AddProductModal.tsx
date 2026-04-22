@@ -27,6 +27,8 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
 
   const [colors, setColors] = useState<string[]>([]);
   const [sizes, setSizes] = useState<string[]>([]);
+  const [localFiles, setLocalFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
 
   useEffect(() => {
     if (isOpen) {
@@ -37,6 +39,20 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
     }
   }, [isOpen]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      setLocalFiles(prev => [...prev, ...files]);
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setPreviews(prev => [...prev, ...newPreviews]);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setLocalFiles(prev => prev.filter((_, i) => i !== index));
+    setPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async () => {
     if (!formData.title || !formData.price || !formData.categoryId) {
       alert("يرجى ملء البيانات الأساسية (الاسم، السعر، التصنيف)");
@@ -45,11 +61,31 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
 
     setLoading(true);
     try {
+      let finalImageUrl = formData.images;
+
+      // Upload local files first
+      if (localFiles.length > 0) {
+        const uploadPromises = localFiles.map(async (file) => {
+          const body = new FormData();
+          body.append("file", file);
+          const res = await fetch("/api/upload", {
+            method: "POST",
+            body,
+          });
+          const data = await res.json();
+          return data.url;
+        });
+
+        const urls = await Promise.all(uploadPromises);
+        finalImageUrl = urls.join(",");
+      }
+
       const res = await fetch("/api/vendor/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          images: finalImageUrl,
           colors,
           sizes,
         }),
@@ -155,20 +191,42 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                 </div>
               </div>
 
-              <div className="space-y-2 h-full">
-                <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">رابط صورة المنتج</label>
-                <div className="space-y-4">
-                  <input 
-                    type="text" 
-                    value={formData.images}
-                    onChange={e => setFormData({ ...formData, images: e.target.value })}
-                    placeholder="https://example.com/image.jpg" 
-                    className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all font-bold text-xs" 
-                  />
-                  <div className="border-4 border-dashed border-border/50 rounded-[2rem] flex flex-col items-center justify-center p-10 bg-muted/10">
-                    <span className="material-symbols-rounded text-5xl mb-4 text-foreground/10">add_photo_alternate</span>
-                    <span className="text-[9px] text-foreground/30 font-bold italic">الصق رابط الصورة في الحقل أعلاه</span>
-                  </div>
+              <div className="space-y-4 h-full">
+                <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">صور المنتج (من المعرض)</label>
+                <div className="space-y-6">
+                  {/* Gallery Grid */}
+                  {previews.length > 0 && (
+                    <div className="grid grid-cols-2 gap-4">
+                      {previews.map((src, idx) => (
+                        <div key={idx} className="relative aspect-square rounded-[1.5rem] overflow-hidden bg-muted group">
+                          <img src={src} alt="Preview" className="w-full h-full object-cover" />
+                          <button 
+                            onClick={(e) => { e.preventDefault(); removeFile(idx); }}
+                            className="absolute top-2 left-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                          >
+                            <span className="material-symbols-rounded text-sm">close</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <label className="cursor-pointer group block">
+                    <input 
+                      type="file" 
+                      multiple 
+                      accept="image/*" 
+                      onChange={handleFileChange} 
+                      className="hidden" 
+                    />
+                    <div className="border-4 border-dashed border-[#1089A4]/20 rounded-[2.5rem] flex flex-col items-center justify-center p-10 bg-[#1089A4]/5 group-hover:bg-[#1089A4]/10 group-hover:border-[#1089A4]/40 transition-all">
+                      <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-xl mb-4 group-hover:scale-110 transition-transform">
+                        <span className="material-symbols-rounded text-3xl text-[#1089A4]">add_photo_alternate</span>
+                      </div>
+                      <span className="text-xs font-black text-[#021D24]">اختر صوراً من المعرض</span>
+                      <span className="text-[9px] text-[#F29124] font-bold uppercase tracking-widest mt-2 px-6 text-center leading-relaxed">اسحب الصور هنا أو اضغط للاختيار</span>
+                    </div>
+                  </label>
                 </div>
               </div>
             </div>

@@ -237,6 +237,8 @@ export default function AdminDashboard() {
   const [drivers, setDrivers] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [ordersViewMode, setOrdersViewMode] = useState<"list" | "grid">("grid");
+  const [ordersAdvancedFilter, setOrdersAdvancedFilter] = useState(false);
   const [orderStatus, setOrderStatus] = useState("ALL");
   const [orderSearch, setOrderSearch] = useState("");
   const [paymentSettings, setPaymentSettings] = useState<any>(null);
@@ -831,45 +833,47 @@ export default function AdminDashboard() {
                             <input type="file" id="import-orders" hidden accept=".xlsx, .xls" onChange={handleImportOrdersExcel} />
                          </div>
 
-                         <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
-                            <div className="w-8 h-4 bg-gray-200 rounded-full relative">
-                               <div className="w-4 h-4 bg-white rounded-full absolute right-0 shadow transform translate-x-[-16px]" />
-                            </div>
+                         <div onClick={() => setOrdersAdvancedFilter(!ordersAdvancedFilter)} className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors select-none">
                             <span className="text-xs font-bold text-gray-600">متقدم</span>
+                            <div className="w-8 h-4 rounded-full relative transition-colors" style={{ backgroundColor: ordersAdvancedFilter ? '#021D24' : '#e5e7eb' }}>
+                               <div className={`w-4 h-4 bg-white rounded-full absolute shadow transition-all duration-300 ${ordersAdvancedFilter ? 'left-0' : 'right-0'}`} />
+                            </div>
                          </div>
 
-                         <div className="flex bg-gray-100 rounded-lg p-1 overflow-hidden shadow-sm">
-                            <button className="px-3 py-1 bg-[#021D24] text-white rounded shadow">
-                               <span className="material-symbols-rounded text-sm">grid_view</span>
+                         <div className="flex bg-gray-100 rounded-lg p-1 overflow-hidden shadow-sm items-center">
+                            <button onClick={() => setOrdersViewMode("grid")} className={`px-2 py-0.5 rounded transition-colors ${ordersViewMode === "grid" ? "bg-[#021D24] text-white shadow" : "text-gray-500 hover:text-gray-700"}`}>
+                               <span className="material-symbols-rounded text-sm block">grid_view</span>
                             </button>
-                            <button className="px-3 py-1 text-gray-500 hover:text-gray-700 transition-colors">
-                               <span className="material-symbols-rounded text-sm">view_list</span>
+                            <button onClick={() => setOrdersViewMode("list")} className={`px-2 py-0.5 rounded transition-colors ${ordersViewMode === "list" ? "bg-[#021D24] text-white shadow" : "text-gray-500 hover:text-gray-700"}`}>
+                               <span className="material-symbols-rounded text-sm block">view_list</span>
                             </button>
                          </div>
                       </div>
 
                       {/* Stacked Dropdowns */}
-                      <div className="flex flex-col gap-3">
-                         <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
-                            <option>فلتر</option>
-                         </select>
-                         <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
-                            <option>الملحقات</option>
-                         </select>
-                         <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
-                            <option>الجميع وحسب</option>
-                         </select>
-                      </div>
+                      {ordersAdvancedFilter && (
+                        <div className="flex flex-col gap-3 transition-all duration-300">
+                           <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
+                              <option>فلتر</option>
+                           </select>
+                           <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
+                              <option>الملحقات</option>
+                           </select>
+                           <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
+                              <option>الجميع وحسب</option>
+                           </select>
+                        </div>
+                      )}
 
                       {/* Bottom Row Buttons */}
                       <div className="flex justify-end items-center gap-2 flex-wrap mt-2">
-                         <button className="bg-[#021D24] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#032a35] transition-colors flex items-center shadow-md">
+                         <button onClick={() => alert("سيتم إنشاء طلبية مخزنة")} className="bg-[#021D24] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#032a35] transition-colors flex items-center shadow-md">
                             إنشاء <span className="mx-2 text-gray-500 text-[10px]">|</span> طلبية مخزنة
                          </button>
-                         <button className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md">بوليصة +</button>
-                         <button className="bg-[#F29124] border-2 border-black text-black font-black px-5 py-1.5 rounded-full text-[11px] hover:bg-orange-400 transition-colors shadow-md">بوليصة PDF</button>
+                         <button onClick={() => alert("سيتم إضافة بوليصة جديدة")} className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md">بوليصة +</button>
+                         <button onClick={() => alert("سيتم تحميل بوليصة PDF")} className="bg-[#F29124] border-2 border-black text-black font-black px-5 py-1.5 rounded-full text-[11px] hover:bg-orange-400 transition-colors shadow-md">بوليصة PDF</button>
                          <button onClick={handleBulkPrint} className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md flex items-center gap-1">طباعة <span className="text-[10px]">▼</span></button>
-                         <button className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md flex items-center gap-1">إجراء <span className="text-[10px]">▼</span></button>
+                         <button onClick={() => alert("اختر إجراء للتطبيق")} className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md flex items-center gap-1">إجراء <span className="text-[10px]">▼</span></button>
                       </div>
                    </div>
 

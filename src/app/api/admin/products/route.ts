@@ -73,6 +73,17 @@ export async function POST(req: Request) {
         categoryId: categoryId || null,
         brand: brand || "",
         range: range || "",
+        type: body.type || "SIMPLE",
+        sku: body.sku || "",
+        shortDescription: body.shortDescription || "",
+        weight: body.weight ? parseFloat(body.weight) : null,
+        length: body.length ? parseFloat(body.length) : null,
+        width: body.width ? parseFloat(body.width) : null,
+        height: body.height ? parseFloat(body.height) : null,
+        ram: body.ram || "",
+        storage: body.storage || "",
+        screenSize: body.screenSize || "",
+        bundleData: body.bundleData || "",
         status: "APPROVED", // الأدمن يضيف مباشرة بدون مراجعة
       },
     });
@@ -93,7 +104,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { id, title, description, price, stock, images, categoryId, vendorId, status, brand, range } = body;
+    const { id, title, description, price, stock, images, categoryId, vendorId, status, brand, range, type, sku, shortDescription, weight, length, width, height, ram, storage, screenSize, bundleData } = body;
 
     if (!id) return NextResponse.json({ error: "id مطلوب" }, { status: 400 });
 
@@ -110,6 +121,17 @@ export async function PATCH(req: Request) {
         ...(status && { status }),
         ...(brand !== undefined && { brand }),
         ...(range !== undefined && { range }),
+        ...(type !== undefined && { type }),
+        ...(sku !== undefined && { sku }),
+        ...(shortDescription !== undefined && { shortDescription }),
+        ...(weight !== undefined && { weight: parseFloat(weight) || null }),
+        ...(length !== undefined && { length: parseFloat(length) || null }),
+        ...(width !== undefined && { width: parseFloat(width) || null }),
+        ...(height !== undefined && { height: parseFloat(height) || null }),
+        ...(ram !== undefined && { ram }),
+        ...(storage !== undefined && { storage }),
+        ...(screenSize !== undefined && { screenSize }),
+        ...(bundleData !== undefined && { bundleData }),
       },
     });
 

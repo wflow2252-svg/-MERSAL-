@@ -60,7 +60,7 @@ export default function VendorDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-muted/30 flex overflow-hidden font-sans">
+    <div className="min-h-screen bg-muted/30 flex overflow-hidden font-sans pt-16 md:pt-20">
       {/* Sidebar - Elite High Contrast Glass */}
       <aside className="w-80 bg-[#021D24] text-white flex flex-col pt-12 shadow-[40px_0_80px_rgba(2,29,36,0.2)] border-l border-white/5 relative z-20">
         <div className="px-10 mb-16">
@@ -96,7 +96,7 @@ export default function VendorDashboard() {
       </aside>
 
       <main className="flex-grow flex flex-col overflow-y-auto relative z-10">
-        <header className="h-28 bg-white/80 backdrop-blur-xl border-b border-border/50 flex items-center justify-between px-12 flex-shrink-0 sticky top-0 z-50">
+        <header className="h-28 bg-white/80 backdrop-blur-xl border-b border-border/50 flex items-center justify-between px-12 flex-shrink-0 sticky top-16 md:top-20 z-50">
           <div className="relative w-[500px] group">
             <span className="material-symbols-rounded absolute right-6 top-1/2 -translate-y-1/2 text-[#021D24]/20 group-focus-within:text-[#1089A4] transition-colors">search_insights</span>
             <input type="text" placeholder="ابحث في مخزونك أو مبيعاتك..." className="w-full bg-muted/50 border-2 border-transparent rounded-[1.75rem] px-16 py-4 outline-none focus:bg-white focus:border-[#1089A4] text-sm font-bold transition-all shadow-inner" />

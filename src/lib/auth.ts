@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   callbacks: {
     async jwt({ token, user, trigger, session }: any) {
-      // 1. Initial User Connection
+      // 1. Initial User Connection (Runs only on sign-in)
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -52,15 +52,6 @@ export const authOptions: NextAuthOptions = {
         token.age = (user as any).age;
         token.phone = (user as any).phone;
         token.interests = (user as any).interests;
-
-        // Check if user is a Vendor
-        const vendor = await prisma.vendor.findUnique({
-          where: { userId: user.id },
-          select: { id: true, status: true }
-        });
-        token.isVendor = !!vendor;
-        token.vendorId = vendor?.id;
-        token.vendorStatus = vendor?.status;
       }
       
       // 2. SOVEREIGN MASTER OVERRIDE: Authorized Super Admins
@@ -70,16 +61,44 @@ export const authOptions: NextAuthOptions = {
         token.isOnboarded = true; // Skip onboarding for master admins
       }
 
-      // 3. Dynamic Updates
-      if (trigger === "update" && session) {
-        token.isOnboarded = session.isOnboarded !== undefined ? session.isOnboarded : token.isOnboarded;
-        if (session.user) {
-           token.name = session.user.name;
-           token.age = session.user.age;
-           token.phone = session.user.phone;
-           token.interests = session.user.interests;
+      // 3. DYNAMIC DATA REFRESH (Runs on sign-in AND when update() is called)
+      const emailToFetch = token.email || user?.email;
+      if (emailToFetch) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: emailToFetch },
+          include: { vendorProfile: true }
+        });
+
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.role = dbUser.role; // Refresh role from DB
+          token.isOnboarded = dbUser.isOnboarded;
+          token.age = dbUser.age;
+          token.phone = dbUser.phone;
+          token.interests = dbUser.interests;
+          token.isVendor = !!dbUser.vendorProfile;
+          token.vendorId = dbUser.vendorProfile?.id;
+          token.vendorStatus = dbUser.vendorProfile?.status;
+
+          // Admin override still applies if DB is not updated yet
+          if (masterAdmins.includes(dbUser.email)) {
+            token.role = "ADMIN";
+            token.isOnboarded = true;
+          }
         }
       }
+
+      // 4. Manual Updates from Client (Immediate UI feed)
+      if (trigger === "update" && session) {
+        if (session.isOnboarded !== undefined) token.isOnboarded = session.isOnboarded;
+        if (session.user) {
+           token.name = session.user.name || token.name;
+           token.age = session.user.age || token.age;
+           token.phone = session.user.phone || token.phone;
+           token.interests = session.user.interests || token.interests;
+        }
+      }
+
       return token;
     },
     async session({ session, token }: any) {

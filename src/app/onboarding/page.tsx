@@ -52,7 +52,15 @@ export default function OnboardingPage() {
       });
 
       if (res.ok) {
-        await update({ isOnboarded: true });
+        await update({ 
+          isOnboarded: true,
+          user: {
+            name,
+            age: parseInt(age),
+            phone,
+            interests: selectedInterests.join(',')
+          }
+        });
         router.push("/");
         router.refresh();
       }

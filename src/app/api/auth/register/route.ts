@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 export async function POST(req: Request) {
   try {
     const { email, password, name } = await req.json();
+    console.log(`[REG] Registration attempt for: ${email}`);
 
     if (!email || !password || !name) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -16,7 +17,8 @@ export async function POST(req: Request) {
     });
 
     if (existingUser) {
-      return NextResponse.json({ error: "User already exists" }, { status: 400 });
+      console.log(`[REG] User already exists: ${email}`);
+      return NextResponse.json({ error: "البريد الإلكتروني مسجل بالفعل" }, { status: 400 });
     }
 
     // 2. Hash password
@@ -33,9 +35,15 @@ export async function POST(req: Request) {
       },
     });
 
+    console.log(`[REG] User created successfully: ${user.id} (${email})`);
+
     return NextResponse.json({ success: true, userId: user.id });
-  } catch (error) {
-    console.error("Registration error:", error);
+  } catch (error: any) {
+    console.error("Registration error details:", {
+      message: error?.message,
+      code: error?.code,
+      stack: error?.stack
+    });
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

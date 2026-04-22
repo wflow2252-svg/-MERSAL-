@@ -5,7 +5,7 @@ import { prisma } from "@/lib/db";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -13,7 +13,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const { id } = await params;
+    const { id } = params;
     const data = await req.json();
 
     const updatedVendor = await prisma.vendor.update({

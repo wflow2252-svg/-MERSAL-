@@ -55,22 +55,25 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { title, description, price, stock, images, categoryId, sizes, colors } = body;
 
-    if (!title || !price) {
-      return NextResponse.json({ error: "Title and price are required" }, { status: 400 });
+    const numericPrice = parseFloat(price);
+    const numericStock = parseInt(stock) || 0;
+
+    if (!title || isNaN(numericPrice)) {
+      return NextResponse.json({ error: "الاسم والسعر مطلوبان بشكل صحيح" }, { status: 400 });
     }
 
     const product = await prisma.product.create({
       data: {
         title,
         description: description || "",
-        price: parseFloat(price),
-        stock: parseInt(stock) || 0,
+        price: numericPrice,
+        stock: numericStock,
         images: Array.isArray(images) ? images.join(",") : images || "",
         sizes: Array.isArray(sizes) ? sizes.join(",") : sizes || "",
         colors: Array.isArray(colors) ? colors.join(",") : colors || "",
         vendorId: vendor.id,
         categoryId: categoryId || null,
-        status: "PENDING" // Manual approval required
+        status: "PENDING"
       }
     });
 

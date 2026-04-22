@@ -72,6 +72,12 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
             method: "POST",
             body,
           });
+          
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.error || "فشل في رفع إحدى الصور — قد يكون السبب حجم الملف أو قيود السيرفر");
+          }
+          
           const data = await res.json();
           return data.url;
         });
@@ -91,7 +97,9 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
         }),
       });
 
-      if (!res.ok) throw new Error("Failed to create product");
+      const result = await res.json().catch(() => ({ error: "خطأ غير معروف في السيرفر" }));
+
+      if (!res.ok) throw new Error(result.error || "فشل في حفظ بيانات المنتج");
 
       alert("تم إرسال المنتج للمراجعة بنجاح!");
       onClose();
@@ -100,8 +108,8 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
       setFormData({ title: "", price: "", stock: "", categoryId: "", description: "", images: "" });
       setColors([]);
       setSizes([]);
-    } catch (error) {
-      alert("حدث خطأ أثناء حفظ المنتج");
+    } catch (error: any) {
+      alert(error.message || "حدث خطأ أثناء حفظ المنتج");
     } finally {
       setLoading(false);
     }

@@ -20,7 +20,7 @@ export default function VendorRegister() {
     phone: "",
     storeName: "",
     storeCity: "الخرطوم",
-    shippingModel: "NAJEZ_HANDLES",
+    shippingModel: "MERSAL_HANDLES",
     subscriptionPlan: "BASIC",
     bankStatementUrl: "placeholder_url",
     commercialRegUrl: "",
@@ -202,8 +202,8 @@ export default function VendorRegister() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                      <button 
-                        onClick={() => setFormData({...formData, shippingModel: "NAJEZ_HANDLES"})}
-                        className={cn("p-6 rounded-[2rem] border-4 text-right transition-all", formData.shippingModel === "NAJEZ_HANDLES" ? "border-[#10B981] bg-sky-50 shadow-xl" : "border-gray-50 hover:border-gray-200")}
+                        onClick={() => setFormData({...formData, shippingModel: "MERSAL_HANDLES"})}
+                        className={cn("p-6 rounded-[2rem] border-4 text-right transition-all", formData.shippingModel === "MERSAL_HANDLES" ? "border-[#10B981] bg-sky-50 shadow-xl" : "border-gray-50 hover:border-gray-200")}
                      >
                         <h4 className="text-sm font-black text-[#021D24] mb-2">تخزين مرسال</h4>
                         <p className="text-[10px] text-gray-400 font-bold">نقوم بكافة العمليات اللوجستية نيابة عنك.</p>

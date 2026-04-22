@@ -72,14 +72,14 @@ function LoginContent() {
            <div className="relative z-10 w-full flex items-center justify-start">
               <Link href="/" className="inline-block transition-transform hover:scale-105 duration-300">
                  <div className="w-24 h-24 relative">
-                    <Image src="/logo-navbar-final.png" alt="ناجز" fill className="object-contain" />
+                    <Image src="/logo-navbar-final.png" alt="مرسال" fill className="object-contain" />
                  </div>
               </Link>
            </div>
 
            <div className="relative z-10 space-y-6">
               <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
-                 {isLogin ? "مرحباً بك في منصة ناجز" : "انضم إلى منصة ناجز"}
+                 {isLogin ? "مرحباً بك في منصة مرسال" : "انضم إلى منصة مرسال"}
               </h2>
               <p className="text-lg text-gray-300 max-w-sm leading-relaxed">
                  {isLogin 

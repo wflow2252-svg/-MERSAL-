@@ -146,11 +146,25 @@ export default function Navbar() {
                 onClick={() => setShowUserMenu(p => !p)}
                 className="flex flex-col items-center justify-center w-14 h-14 rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 transition-all text-center group"
               >
-                <div className="relative">
-                  <span className="material-symbols-rounded text-2xl text-white/70 group-hover:text-white transition-colors">person</span>
+                <div className="relative group-hover:scale-110 transition-transform">
+                  {isAuthenticated && session?.user?.image ? (
+                    <div className="w-7 h-7 rounded-full overflow-hidden border border-[#C5A021]/50 shadow-lg">
+                      <Image 
+                        src={session.user.image} 
+                        alt={session.user.name || "User"} 
+                        width={28} 
+                        height={28} 
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <span className="material-symbols-rounded text-2xl text-white/70 group-hover:text-white transition-colors">person</span>
+                  )}
                   <div className="absolute top-0 right-0 w-2 h-2 bg-[#C5A021] rounded-full border border-black shadow-[0_0_10px_rgba(197,160,33,0.5)]" />
                 </div>
-                <span className="text-[9px] font-black text-white/40 group-hover:text-white transition-colors uppercase tracking-widest leading-none mt-1">حسابي</span>
+                <span className="text-[9px] font-black text-white/40 group-hover:text-white transition-colors uppercase tracking-widest leading-none mt-1">
+                  {isAuthenticated ? (session?.user?.name?.split(' ')[0] || "حسابي") : "حسابي"}
+                </span>
               </motion.button>
 
               <AnimatePresence>

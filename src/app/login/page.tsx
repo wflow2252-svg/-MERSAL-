@@ -127,7 +127,10 @@ function LoginContent() {
       if (isLogin) {
         const result = await signIn("credentials", { email, password, redirect: false });
         if (result?.error) setError("بيانات الدخول غير صحيحة");
-        else { router.push("/"); router.refresh(); }
+        else { 
+          router.push("/"); 
+          router.refresh(); 
+        }
       } else {
         const res = await fetch("/api/auth/register", {
           method: "POST",
@@ -136,7 +139,7 @@ function LoginContent() {
         });
         const data = await res.json();
         if (!res.ok) setError(data.error || "فشل تسجيل الحساب");
-        else await signIn("credentials", { email, password, callbackUrl: "/" });
+        else await signIn("credentials", { email, password, callbackUrl: "/onboarding" });
       }
     } catch (err) {
       setError("حدث خطأ تقني. حاول مرة أخرى.");

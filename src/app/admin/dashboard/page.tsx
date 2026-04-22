@@ -236,6 +236,7 @@ export default function AdminDashboard() {
   const [employees, setEmployees] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
+  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [orderStatus, setOrderStatus] = useState("ALL");
   const [orderSearch, setOrderSearch] = useState("");
   const [paymentSettings, setPaymentSettings] = useState<any>(null);
@@ -477,6 +478,21 @@ export default function AdminDashboard() {
     await fetch("/api/admin/orders", { method: "PATCH", body: JSON.stringify({ id, status }) });
     setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
     setActionLoading(null);
+  };
+
+  const handleBulkPrint = () => {
+    if (selectedOrders.length === 0) return alert("يرجى تحديد طلب واحد على الأقل");
+    const orderToPrint = orders.find(o => o.id === selectedOrders[0]);
+    if (orderToPrint) setPrintOrder(orderToPrint);
+  };
+
+  const toggleOrderSelection = (id: string) => {
+    setSelectedOrders(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  };
+
+  const toggleAllOrders = () => {
+    if (selectedOrders.length === orders.length) setSelectedOrders([]);
+    else setSelectedOrders(orders.map(o => o.id));
   };
 
   const submitDriverAssignment = async () => {
@@ -799,50 +815,61 @@ export default function AdminDashboard() {
               <motion.div key="orders" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 
                 {/* Advanced Filter / Actions Bar from Image */}
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-                   <div className="p-3 bg-gray-50 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-4">
+                   <div className="p-4 flex flex-col gap-4">
                       
-                      {/* Right side: toggles & import/export */}
-                      <div className="flex flex-wrap items-center gap-3">
-                         <div className="flex bg-white rounded border border-gray-300 overflow-hidden shadow-sm">
-                            <button className="px-3 py-1.5 bg-gray-200 text-gray-500 border-l border-gray-300 hover:bg-gray-300 transition-colors">
-                               <span className="material-symbols-rounded text-sm">view_list</span>
-                            </button>
-                            <button className="px-3 py-1.5 bg-[#021D24] text-white">
-                               <span className="material-symbols-rounded text-sm">grid_view</span>
-                            </button>
-                         </div>
-
-                         <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
-                            <span className="text-xs font-bold text-gray-600">متقدم</span>
-                            <div className="w-8 h-4 bg-gray-300 rounded-full relative">
-                               <div className="w-4 h-4 bg-white rounded-full absolute right-0 shadow transform translate-x-[-16px]" />
-                            </div>
-                         </div>
-
+                      {/* Top Row: toggles & import/export */}
+                      <div className="flex justify-end items-center gap-3 w-full">
                          {/* Import / Export */}
-                         <div className="flex gap-2 mr-2">
-                            <button onClick={() => document.getElementById('import-orders')?.click()} className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-50 flex items-center gap-1 shadow-sm transition-colors">
+                         <div className="flex gap-2">
+                            <button onClick={() => document.getElementById('import-orders')?.click()} className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-gray-50 flex items-center gap-1 shadow-sm transition-colors">
                                <span className="material-symbols-rounded text-sm">upload</span> استيراد
                             </button>
-                            <button onClick={handleExportOrdersExcel} className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-50 flex items-center gap-1 shadow-sm transition-colors">
+                            <button onClick={handleExportOrdersExcel} className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-gray-50 flex items-center gap-1 shadow-sm transition-colors">
                                <span className="material-symbols-rounded text-sm">download</span> تصدير
                             </button>
                             <input type="file" id="import-orders" hidden accept=".xlsx, .xls" onChange={handleImportOrdersExcel} />
                          </div>
+
+                         <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                            <div className="w-8 h-4 bg-gray-200 rounded-full relative">
+                               <div className="w-4 h-4 bg-white rounded-full absolute right-0 shadow transform translate-x-[-16px]" />
+                            </div>
+                            <span className="text-xs font-bold text-gray-600">متقدم</span>
+                         </div>
+
+                         <div className="flex bg-gray-100 rounded-lg p-1 overflow-hidden shadow-sm">
+                            <button className="px-3 py-1 bg-[#021D24] text-white rounded shadow">
+                               <span className="material-symbols-rounded text-sm">grid_view</span>
+                            </button>
+                            <button className="px-3 py-1 text-gray-500 hover:text-gray-700 transition-colors">
+                               <span className="material-symbols-rounded text-sm">view_list</span>
+                            </button>
+                         </div>
                       </div>
 
-                      {/* Left side: Action buttons and drop downs */}
-                      <div className="flex flex-wrap items-center gap-2">
-                         <select className="input-mersal py-1.5 text-xs w-28 bg-white border-gray-200 font-bold"><option>فلتر</option></select>
-                         <select className="input-mersal py-1.5 text-xs w-28 bg-white border-gray-200 font-bold"><option>الملحقات</option></select>
-                         <select className="input-mersal py-1.5 text-xs w-32 bg-white border-gray-200 font-bold"><option>الجميع وحسب</option></select>
-                         
-                         <button className="bg-[#F29124] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-500 transition-colors shadow-sm">إجراء ▼</button>
-                         <button className="bg-[#F29124] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-500 transition-colors shadow-sm">طباعة ▼</button>
-                         <button className="bg-[#F29124] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-500 transition-colors shadow-sm">بوليصة PDF</button>
-                         <button className="bg-[#F29124] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-500 transition-colors shadow-sm">بوليصة +</button>
-                         <button className="bg-[#021D24] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-[#032a35] transition-colors flex items-center gap-1 shadow-sm">إنشاء <span className="text-gray-400 font-normal">|</span> طلبية مخزنة</button>
+                      {/* Stacked Dropdowns */}
+                      <div className="flex flex-col gap-3">
+                         <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
+                            <option>فلتر</option>
+                         </select>
+                         <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
+                            <option>الملحقات</option>
+                         </select>
+                         <select className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-xs font-bold text-gray-600 outline-none focus:border-[#1089A4] text-right appearance-none" style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 1rem center', backgroundSize: '0.65em auto' }} dir="rtl">
+                            <option>الجميع وحسب</option>
+                         </select>
+                      </div>
+
+                      {/* Bottom Row Buttons */}
+                      <div className="flex justify-end items-center gap-2 flex-wrap mt-2">
+                         <button className="bg-[#021D24] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#032a35] transition-colors flex items-center shadow-md">
+                            إنشاء <span className="mx-2 text-gray-500 text-[10px]">|</span> طلبية مخزنة
+                         </button>
+                         <button className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md">بوليصة +</button>
+                         <button className="bg-[#F29124] border-2 border-black text-black font-black px-5 py-1.5 rounded-full text-[11px] hover:bg-orange-400 transition-colors shadow-md">بوليصة PDF</button>
+                         <button onClick={handleBulkPrint} className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md flex items-center gap-1">طباعة <span className="text-[10px]">▼</span></button>
+                         <button className="bg-[#F29124] text-white px-5 py-2 rounded-full text-[11px] font-bold hover:bg-[#d87c1c] transition-colors shadow-md flex items-center gap-1">إجراء <span className="text-[10px]">▼</span></button>
                       </div>
                    </div>
 
@@ -851,7 +878,7 @@ export default function AdminDashboard() {
                       <table className="w-full text-right text-xs whitespace-nowrap">
                          <thead className="bg-gray-50 text-gray-500 border-b border-gray-200">
                             <tr>
-                               <th className="p-4 w-10 text-center"><input type="checkbox" className="rounded border-gray-300 text-[#1089A4] w-4 h-4 cursor-pointer" /></th>
+                               <th className="p-4 w-10 text-center"><input type="checkbox" checked={orders.length > 0 && selectedOrders.length === orders.length} onChange={toggleAllOrders} className="rounded border-gray-300 text-[#1089A4] w-4 h-4 cursor-pointer" /></th>
                                <th className="p-4 font-black">#</th>
                                <th className="p-4 font-black text-center">ملاحظة</th>
                                <th className="p-4 font-black">المفصل</th>
@@ -865,8 +892,8 @@ export default function AdminDashboard() {
                          </thead>
                          <tbody className="divide-y divide-gray-100">
                             {orders.map((order, i) => (
-                               <tr key={order.id} className="hover:bg-gray-50 transition-colors bg-white group cursor-pointer">
-                                  <td className="p-4 text-center"><input type="checkbox" className="rounded border-gray-300 text-[#1089A4] w-4 h-4 cursor-pointer" /></td>
+                               <tr key={order.id} onClick={() => toggleOrderSelection(order.id)} className={`hover:bg-sky-50 transition-colors group cursor-pointer ${selectedOrders.includes(order.id) ? 'bg-sky-50/50' : 'bg-white'}`}>
+                                  <td className="p-4 text-center"><input type="checkbox" checked={selectedOrders.includes(order.id)} readOnly className="rounded border-gray-300 text-[#1089A4] w-4 h-4 cursor-pointer" /></td>
                                   <td className="p-4 font-bold text-gray-400">{i + 1}</td>
                                   <td className="p-4 text-center">
                                      <button className="w-7 h-7 rounded border border-gray-200 flex items-center justify-center text-gray-400 hover:text-green-500 hover:border-green-500 hover:bg-green-50 transition-colors mx-auto">

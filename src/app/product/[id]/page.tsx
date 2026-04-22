@@ -17,7 +17,37 @@ import { MOCK_PRODUCTS } from "@/lib/mockData/products";
 export default function ProductPage() {
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "iphone-15-pm";
-  const product = getProductById(id);
+  
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Try to fetch from API first
+    fetch(`/api/products/${id}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .then(data => {
+        setProduct(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        // Fallback to Mock Data if API fails or ID is a mock ID
+        const mockProduct = getProductById(id);
+        setProduct(mockProduct);
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center pt-32">
+       <div className="animate-spin w-10 h-10 border-4 border-[#1089A4] border-t-transparent rounded-full" />
+    </div>
+  );
+
+  if (!product) return <div className="p-20 text-center">المنتج غير موجود</div>;
+
   const related = getRelatedProducts(product.categoryId, product.id);
   const alsoViewed = MOCK_PRODUCTS.filter(p => p.id !== product.id).slice(0, 8);
   const vendorUpsells = getVendorUpsells(product.vendor, product.id);
@@ -47,7 +77,7 @@ export default function ProductPage() {
 
         {/* Pillar 3: Gallery (Right) */}
         <div className="lg:col-span-4 lg:order-3 order-1">
-           <ProductGallery images={[product.image]} />
+           <ProductGallery images={product.images || [product.image]} />
         </div>
       </div>
 

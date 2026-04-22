@@ -69,6 +69,7 @@ model Vendor {
   userId           String       @unique
   storeName        String
   storeDescription String?
+  slug             String?      @unique
   bankStatementUrl String?
   commercialRegUrl String?
   status           String       @default("PENDING")
@@ -76,6 +77,10 @@ model Vendor {
   commissionRate   Float        @default(10.0)
   fixedFee         Float        @default(0.0)
   subscriptionFee  Float        @default(0.0)
+  subscriptionEndsAt DateTime?
+  isTrialUsed      Boolean      @default(false)
+  planId           String?
+  plan             SubscriptionPlan? @relation(fields: [planId], references: [id])
   location         String?
   shippingModel    String       @default("VENDOR_PACKS") // VENDOR_PACKS | MERSAL_HANDLES
   phone            String?
@@ -85,6 +90,16 @@ model Vendor {
   products         Product[]
   user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   withdrawals      Withdrawal[]
+}
+
+model SubscriptionPlan {
+  id           String   @id @default(cuid())
+  name         String
+  price        Float
+  durationDays Int
+  isTrial      Boolean  @default(false)
+  vendors      Vendor[]
+  createdAt    DateTime @default(now())
 }
 
 model Product {

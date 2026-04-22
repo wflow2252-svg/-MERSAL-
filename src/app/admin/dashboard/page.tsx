@@ -11,7 +11,7 @@ import Link from "next/link";
 type TabId =
   | "overview" | "approvals" | "users" | "vendors"
   | "categories" | "employees" | "orders" | "payments"
-  | "delivery" | "shipping" | "finance" | "settings" | "inventory" | "drivers";
+  | "delivery" | "shipping" | "finance" | "settings" | "inventory" | "drivers" | "subscriptions";
 
 const NAV_ITEMS: { id: TabId; icon: string; label: string }[] = [
   { id: "overview",    icon: "dashboard_customize",  label: "التحكم" },
@@ -24,6 +24,7 @@ const NAV_ITEMS: { id: TabId; icon: string; label: string }[] = [
   { id: "employees",   icon: "badge",                 label: "الموظفون" },
   { id: "drivers",     icon: "sports_motorsports",    label: "المناديب" },
   { id: "payments",    icon: "payments",              label: "طرق الدفع" },
+  { id: "subscriptions",icon: "card_membership",       label: "الاشتراكات" },
   { id: "delivery",    icon: "local_shipping",        label: "مناطق التوصيل" },
   { id: "shipping",    icon: "settings_input_antenna",label: "شركة الشحن" },
   { id: "finance",     icon: "account_balance",       label: "المالية" },
@@ -48,7 +49,7 @@ const ROLES: Record<string, string> = {
 };
 
 const ROLE_PERMISSIONS: Record<string, TabId[]> = {
-  ADMIN: ["overview", "approvals", "users", "vendors", "categories", "employees", "orders", "payments", "delivery", "shipping", "finance", "settings", "inventory", "drivers"],
+  ADMIN: ["overview", "approvals", "users", "vendors", "categories", "employees", "orders", "payments", "delivery", "shipping", "finance", "settings", "inventory", "drivers", "subscriptions"],
   PACKING: ["orders", "inventory"],
   SHIPPING: ["orders", "drivers"],
   CUSTOMER_SERVICE: ["overview", "approvals", "orders", "users"],
@@ -289,6 +290,8 @@ export default function AdminDashboard() {
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [sysSettings, setSysSettings] = useState<any>(null);
   const [admins, setAdmins] = useState<any[]>([]);
+  const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([]);
+  const [newPlan, setNewPlan] = useState({ name: "", price: "", durationDays: "30", isTrial: false });
 
   // Vendor Modal States
   const [vendorModal, setVendorModal] = useState<null | "add">(null);
@@ -420,6 +423,12 @@ export default function AdminDashboard() {
           setAdmins(d.admins);
         }
       }
+      if (activeTab === "subscriptions") {
+        const r = await fetch("/api/admin/subscriptions/plans");
+        if (r.ok) setSubscriptionPlans(await r.json());
+        const vr = await fetch("/api/admin/vendors");
+        if (vr.ok) setAllVendors(await vr.json());
+      }
     } catch {}
     setLoading(false);
   }, [activeTab, orderStatus, orderSearch, inventorySearch, fetchStats]);
@@ -547,6 +556,35 @@ export default function AdminDashboard() {
     });
     setPendingVendors(prev => prev.filter(v => v.id !== id));
     fetchStats();
+    setActionLoading(null);
+  };
+
+  const handleAddPlan = async () => {
+    if (!newPlan.name || !newPlan.price) return;
+    setActionLoading("add_plan");
+    const r = await fetch("/api/admin/subscriptions/plans", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newPlan)
+    });
+    if (r.ok) {
+      setSubscriptionPlans(prev => [...prev, await r.json()]);
+      setNewPlan({ name: "", price: "", durationDays: "30", isTrial: false });
+    }
+    setActionLoading(null);
+  };
+
+  const handleAssignPlan = async (vendorId: string, planId: string) => {
+    setActionLoading(vendorId);
+    const r = await fetch("/api/admin/vendors/subscription", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ vendorId, planId, action: "assign_plan" })
+    });
+    if (r.ok) {
+      alert("تم تحديث اشتراك المتجر بنجاح");
+      fetchData();
+    }
     setActionLoading(null);
   };
 
@@ -1560,6 +1598,112 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── SUBSCRIPTIONS ── */}
+            {activeTab === "subscriptions" && (
+              <motion.div key="subscriptions" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                   {/* Plans Management */}
+                   <div className="lg:col-span-1 space-y-6">
+                      <div className="bg-white p-6 rounded-2xl border shadow-sm space-y-4">
+                        <h3 className="font-black text-[#021D24]">إضافة باقة اشتراك</h3>
+                        <div className="space-y-3">
+                           <input placeholder="اسم الباقة" className="input-mersal" value={newPlan.name} onChange={e => setNewPlan({...newPlan, name: e.target.value})} />
+                           <input type="number" placeholder="السعر (ج.س)" className="input-mersal" value={newPlan.price} onChange={e => setNewPlan({...newPlan, price: e.target.value})} />
+                           <input type="number" placeholder="المدة (أيام)" className="input-mersal" value={newPlan.durationDays} onChange={e => setNewPlan({...newPlan, durationDays: e.target.value})} />
+                           <label className="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-50 rounded-lg">
+                              <input type="checkbox" checked={newPlan.isTrial} onChange={e => setNewPlan({...newPlan, isTrial: e.target.checked})} className="w-4 h-4 rounded text-[#1089A4]" />
+                              <span className="text-xs font-bold text-gray-600">فترة تجريبية</span>
+                           </label>
+                           <button onClick={handleAddPlan} className="w-full bg-[#1089A4] text-white py-3 rounded-xl font-black text-xs shadow-lg shadow-[#1089A4]/20 hover:scale-[1.02] transition-all">
+                              {actionLoading === "add_plan" ? "جاري الحفظ..." : "حفظ الباقة الجديدة"}
+                           </button>
+                        </div>
+                      </div>
+
+                      <div className="bg-white p-6 rounded-2xl border shadow-sm space-y-4">
+                         <h3 className="font-black text-[#021D24] text-sm">الباقات الحالية</h3>
+                         <div className="space-y-3">
+                            {subscriptionPlans.map(plan => (
+                              <div key={plan.id} className="p-4 rounded-xl border border-gray-100 flex items-center justify-between group hover:border-[#1089A4]/30 transition-all">
+                                 <div>
+                                    <p className="font-black text-sm text-[#021D24]">{plan.name}</p>
+                                    <p className="text-[10px] text-gray-400 font-bold">{plan.durationDays} يوم - {plan.price} ج.س</p>
+                                 </div>
+                                 {plan.isTrial && <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded text-[8px] font-black uppercase">Trial</span>}
+                              </div>
+                            ))}
+                         </div>
+                      </div>
+                   </div>
+
+                   {/* Vendors Subscriptions */}
+                   <div className="lg:col-span-2 bg-white rounded-2xl border shadow-sm overflow-hidden">
+                      <div className="p-6 border-b flex items-center justify-between bg-gray-50/50">
+                        <h3 className="font-black text-[#021D24]">اشتراكات المتاجر</h3>
+                        <p className="text-[10px] text-gray-400 font-bold">إدارة تفعيل وتعطيل المتاجر بناءً على الدفع</p>
+                      </div>
+                      <div className="overflow-x-auto">
+                         <table className="w-full text-right">
+                            <thead className="bg-[#021D24] text-white/40 text-[10px] font-black uppercase tracking-widest">
+                               <tr>
+                                  <th className="px-6 py-4">المتجر</th>
+                                  <th className="px-6 py-4">الباقة الحالية</th>
+                                  <th className="px-6 py-4">تاريخ الانتهاء</th>
+                                  <th className="px-6 py-4">الحالة</th>
+                                  <th className="px-6 py-4">تعديل</th>
+                               </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                               {allVendors.map((v: any) => {
+                                 const endsAt = v.subscriptionEndsAt ? new Date(v.subscriptionEndsAt) : null;
+                                 const isExpired = endsAt ? endsAt < new Date() : true;
+                                 
+                                 return (
+                                   <tr key={v.id} className="hover:bg-gray-50/80 transition-colors">
+                                      <td className="px-6 py-4">
+                                         <div className="flex flex-col">
+                                            <span className="font-black text-[#021D24] text-sm">{v.storeName || v.name}</span>
+                                            <span className="text-[10px] text-[#1089A4] font-bold">{v.user?.email}</span>
+                                         </div>
+                                      </td>
+                                      <td className="px-6 py-4">
+                                         <span className="text-xs font-bold text-gray-500">{v.plan?.name || "—"}</span>
+                                      </td>
+                                      <td className="px-6 py-4">
+                                         <span className={cn("text-xs font-black", isExpired ? "text-red-500" : "text-green-600")}>
+                                            {endsAt ? endsAt.toLocaleDateString("ar-EG") : "لا يوجد اشتراك"}
+                                         </span>
+                                      </td>
+                                      <td className="px-6 py-4">
+                                         <span className={cn(
+                                           "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest",
+                                           isExpired ? "bg-red-50 text-red-500 border border-red-100" : "bg-green-50 text-green-600 border border-green-100"
+                                         )}>
+                                            {isExpired ? "مغلق" : "نشط"}
+                                         </span>
+                                      </td>
+                                      <td className="px-6 py-4">
+                                         <select 
+                                           onChange={(e) => handleAssignPlan(v.id, e.target.value)}
+                                           className="input-mersal py-1 px-3 text-[10px] w-32"
+                                         >
+                                            <option value="">تغيير الباقة...</option>
+                                            {subscriptionPlans.map(p => (
+                                              <option key={p.id} value={p.id}>{p.name} ({p.durationDays} يوم)</option>
+                                            ))}
+                                         </select>
+                                      </td>
+                                   </tr>
+                                 )
+                               })}
+                            </tbody>
+                         </table>
+                      </div>
+                   </div>
                 </div>
               </motion.div>
             )}

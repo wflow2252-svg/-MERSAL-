@@ -12,10 +12,17 @@ export async function GET(req: Request) {
     }
 
     const products = await prisma.product.findMany({
-      where: { status: "APPROVED" },
+      where: { 
+        status: "APPROVED",
+        vendor: {
+          subscriptionEndsAt: {
+            gt: new Date()
+          }
+        }
+      },
       include: {
         vendor: {
-          select: { storeName: true, location: true }
+          select: { storeName: true, location: true, slug: true }
         }
       },
       orderBy,

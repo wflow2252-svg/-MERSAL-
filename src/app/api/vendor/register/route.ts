@@ -52,10 +52,18 @@ export async function POST(req: Request) {
       });
 
       // Create Vendor
+      const slug = storeName
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-ء-ي0-9]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
       return await tx.vendor.create({
         data: {
           userId: user.id,
           storeName,
+          slug: `${slug}-${Math.random().toString(36).substring(2, 7)}`,
           location: storeCity,
           bankStatementUrl: bankStatementUrl || "pending",
           commercialRegUrl: commercialRegUrl || null,

@@ -15,6 +15,7 @@ export async function GET(req: Request) {
 
     const vendor = await prisma.vendor.findUnique({
       where: { userId },
+      include: { plan: true }
     });
 
     if (!vendor) {
@@ -55,6 +56,8 @@ export async function GET(req: Request) {
       totalSales,
       netProfit: Math.max(0, netProfit),
       activeOrdersCount,
+      subscriptionEndsAt: vendor.subscriptionEndsAt,
+      planName: vendor.plan?.name,
       currency: "ج.س"
     });
   } catch (error: any) {

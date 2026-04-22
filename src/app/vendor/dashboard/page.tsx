@@ -149,6 +149,32 @@ export default function VendorDashboard() {
                 ))}
               </div>
 
+              {/* Subscription Status Bar */}
+              {statsData?.subscriptionEndsAt && (
+                <div className="bg-gradient-to-r from-[#021D24] to-[#1089A4] p-1 rounded-[3rem] shadow-2xl">
+                   <div className="bg-white/95 backdrop-blur-md rounded-[2.8rem] px-12 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                      <div className="flex items-center gap-6">
+                         <div className="w-16 h-16 bg-blue-50 text-[#1089A4] rounded-2xl flex items-center justify-center shadow-inner">
+                            <span className="material-symbols-rounded text-3xl">verified_user</span>
+                         </div>
+                         <div>
+                            <h4 className="font-black text-[#021D24] text-xl">حالة الاشتراك النشط</h4>
+                            <p className="text-gray-400 font-bold text-sm">باقة {statsData?.planName || "التجريبية"} — ينتهي في {new Date(statsData.subscriptionEndsAt).toLocaleDateString("ar-EG")}</p>
+                         </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                         <div className="text-right">
+                            <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">الأيام المتبقية</p>
+                            <p className="text-2xl font-black text-[#F29124]">
+                               {Math.max(0, Math.ceil((new Date(statsData.subscriptionEndsAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} يوم
+                            </p>
+                         </div>
+                         <button className="bg-[#021D24] text-white px-8 py-3.5 rounded-2xl font-black text-xs hover:scale-105 transition-all">تجديد الآن</button>
+                      </div>
+                   </div>
+                </div>
+              )}
+
               <div className="bg-white rounded-[5rem] border-[12px] border-white shadow-[0_50px_100px_-20px_rgba(0,0,0,0.08)] overflow-hidden">
                 <div className="px-16 py-12 border-b border-border/50 flex items-center justify-between bg-white relative z-10">
                    <div className="flex flex-col gap-2">

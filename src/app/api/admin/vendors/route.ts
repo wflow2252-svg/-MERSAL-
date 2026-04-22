@@ -13,6 +13,7 @@ export async function GET() {
     const vendors = await prisma.vendor.findMany({
       include: {
         user: true,
+        plan: true,
         _count: {
           select: { products: true }
         }
@@ -24,10 +25,14 @@ export async function GET() {
       id: v.id,
       name: v.storeName,
       owner: v.user?.name || "بدون اسم",
-      sales: 0, // In a real app, calculate from OrderItems
+      email: v.user?.email,
+      sales: 0,
       rating: "5.0",
       status: v.status === 'APPROVED' ? 'نشط' : (v.status === 'PENDING' ? 'قيد المراجعة' : 'موقف'),
-      productsCount: v._count.products
+      productsCount: v._count.products,
+      subscriptionEndsAt: v.subscriptionEndsAt,
+      plan: v.plan,
+      slug: v.slug
     })));
 
   } catch (error) {
@@ -48,6 +53,14 @@ export async function POST(req: Request) {
     const bcrypt = await import("bcryptjs");
     const hashedPassword = await bcrypt.default.hash(ownerPassword, 12);
 
+    // Generate Slug
+    const slug = storeName
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-ء-ي0-9]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
     const vendor = await prisma.$transaction(async (tx: any) => {
       const user = await tx.user.create({
         data: {
@@ -64,6 +77,7 @@ export async function POST(req: Request) {
         data: {
           userId: user.id,
           storeName,
+          slug: `${slug}-${Math.random().toString(36).substring(2, 7)}`,
           location: location || "الخرطوم",
           status: "APPROVED",
           phone: phone,

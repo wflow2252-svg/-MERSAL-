@@ -80,10 +80,10 @@ export default function Navbar() {
             <motion.div 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="relative w-[150px] h-12 lg:w-[180px] lg:h-16"
+              className="relative w-12 h-12 lg:w-14 lg:h-14"
             >
               <Image 
-                src="/logo-najez-final.png" 
+                src="/icon.png" 
                 alt="ناجز - NAJEZ" 
                 fill 
                 className="object-contain" 

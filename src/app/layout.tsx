@@ -21,11 +21,11 @@ export const metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.png", sizes: "32x32" },
-      { url: "/icon.png", sizes: "192x192" },
+      { url: "/logo-najez-final.png", sizes: "32x32" },
+      { url: "/logo-najez-final.png", sizes: "192x192" },
     ],
-    shortcut: "/icon.png",
-    apple: "/icon.png",
+    shortcut: "/logo-najez-final.png",
+    apple: "/logo-najez-final.png",
   },
 };
 

@@ -26,6 +26,12 @@ export default function ProductDetails({ product }: { product: Product }) {
            {product.title}
         </h1>
 
+        {product.shortDescription && (
+          <p className="text-lg font-bold text-[#1089A4] bg-[#1089A4]/5 px-6 py-3 rounded-2xl border border-[#1089A4]/10 inline-block">
+             {product.shortDescription}
+          </p>
+        )}
+
         <div className="flex items-center gap-6 border-b border-gray-100 pb-8">
            <div className="flex flex-col">
               <span className="text-sm font-black text-[#CB2E26]">{product.discount ? `%${product.discount}-` : "سعر مغري"}</span>
@@ -57,13 +63,60 @@ export default function ProductDetails({ product }: { product: Product }) {
          </p>
          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
             <li className="flex items-center gap-3 text-xs font-bold text-gray-500">
-               <span className="w-1.5 h-1.5 bg-[#1089A4] rounded-full" /> العلامة التجارية: {product.brand || "فاين"}
+               <span className="w-1.5 h-1.5 bg-[#1089A4] rounded-full" /> العلامة التجارية: {product.brand || "غير محدد"}
             </li>
             <li className="flex items-center gap-3 text-xs font-bold text-gray-500">
-               <span className="w-1.5 h-1.5 bg-[#1089A4] rounded-full" /> النطاق: أصلي 100%
+               <span className="w-1.5 h-1.5 bg-[#1089A4] rounded-full" /> النطاق: {product.range || "أصلي 100%"}
             </li>
+            {product.sku && (
+              <li className="flex items-center gap-3 text-xs font-bold text-gray-500">
+                 <span className="w-1.5 h-1.5 bg-[#1089A4] rounded-full" /> رمز المنتج: {product.sku}
+              </li>
+            )}
          </ul>
       </div>
+
+      {/* Tech Specs (Grid) if available */}
+      {(product.ram || product.storage || product.screenSize) && (
+         <div className="grid grid-cols-3 gap-4 p-6 bg-gray-50 rounded-3xl border border-gray-100">
+            {product.ram && (
+               <div className="flex flex-col items-center gap-1 text-center">
+                  <span className="text-[8px] font-black text-gray-400 uppercase">ذاكرة الرام</span>
+                  <span className="text-xs font-black text-[#021D24]">{product.ram}</span>
+               </div>
+            )}
+            {product.storage && (
+               <div className="flex flex-col items-center gap-1 border-r border-gray-200 text-center">
+                  <span className="text-[8px] font-black text-gray-400 uppercase">سعة التخزين</span>
+                  <span className="text-xs font-black text-[#021D24]">{product.storage}</span>
+               </div>
+            )}
+            {product.screenSize && (
+               <div className="flex flex-col items-center gap-1 border-r border-gray-200 text-center">
+                  <span className="text-[8px] font-black text-gray-400 uppercase">حجم الشاشة</span>
+                  <span className="text-xs font-black text-[#021D24]">{product.screenSize}</span>
+               </div>
+            )}
+         </div>
+      )}
+
+      {/* Bundle Items for Composite Products */}
+      {product.type === 'BUNDLE' && product.bundleData && product.bundleData.length > 0 && (
+        <div className="space-y-6 p-8 bg-purple-50 rounded-[2.5rem] border border-purple-100">
+           <div className="flex items-center gap-3 text-purple-700">
+              <span className="material-symbols-rounded">inventory_2</span>
+              <h4 className="text-sm font-black uppercase tracking-widest">مكونات هذا العرض</h4>
+           </div>
+           <div className="space-y-3">
+              {product.bundleData.map((item: any, idx: number) => (
+                <div key={idx} className="flex items-center justify-between py-3 border-b border-purple-200/50 last:border-0">
+                   <span className="text-xs font-bold text-purple-900">{item.name}</span>
+                   <span className="text-[10px] font-black text-purple-600 bg-white px-2 py-1 rounded-lg">{item.price} ج.س</span>
+                </div>
+              ))}
+           </div>
+        </div>
+      )}
 
       {/* Variant Selection (Amazon Style Chips) */}
       <div className="space-y-12 pt-8 border-t border-gray-100">

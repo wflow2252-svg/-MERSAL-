@@ -13,11 +13,24 @@ export interface Product {
   rating: number;
   reviews: number;
   description: string;
+  shortDescription?: string;
   specs: Record<string, string>;
   colors?: { name: string; hex: string }[];
   sizes?: string[];
   otherOffers?: { vendor: string; price: number; rating: number }[];
   brand?: string;
+  range?: string;
+  type?: string;
+  sku?: string;
+  images?: string[];
+  weight?: number;
+  length?: number;
+  width?: number;
+  height?: number;
+  ram?: string;
+  storage?: string;
+  screenSize?: string;
+  bundleData?: any[];
 }
 
 export const MOCK_PRODUCTS: Product[] = [

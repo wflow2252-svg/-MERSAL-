@@ -32,24 +32,38 @@ export async function GET(
     }
 
     // Map to the interface expected by the UI (similar to Mock Product)
+    const p = product as any;
     const mappedProduct = {
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      description: product.description,
-      stock: product.stock,
-      image: product.images ? product.images.split(",")[0] : "",
-      images: product.images ? product.images.split(",") : [],
-      category: product.category?.name || "غير مصنف",
-      categoryId: product.categoryId || "others",
-      vendor: product.vendor.storeName,
-      vendorLocation: product.vendor.location || "السودان",
-      vendorId: product.vendorId,
+      id: p.id,
+      title: p.title,
+      price: p.price,
+      description: p.description,
+      stock: p.stock,
+      image: p.images ? p.images.split(",")[0] : "",
+      images: p.images ? p.images.split(",") : [],
+      category: p.category?.name || "غير مصنف",
+      categoryId: p.categoryId || "others",
+      vendor: p.vendor.storeName,
+      vendorLocation: p.vendor.location || "السودان",
+      vendorId: p.vendorId,
       rating: 4.5, // Default for now
       reviews: 12, // Default for now
       specs: {}, // Can be expanded if stored in JSON
-      colors: product.colors ? product.colors.split(",").map(c => ({ name: c, hex: "#ccc" })) : [],
-      sizes: product.sizes ? product.sizes.split(",") : [],
+      colors: p.colors ? p.colors.split(",").map((c: any) => ({ name: c, hex: "#ccc" })) : [],
+      sizes: p.sizes ? p.sizes.split(",") : [],
+      brand: p.brand || undefined,
+      range: p.range || undefined,
+      sku: p.sku || undefined,
+      shortDescription: p.shortDescription || undefined,
+      weight: p.weight || undefined,
+      length: p.length || undefined,
+      width: p.width || undefined,
+      height: p.height || undefined,
+      ram: p.ram || undefined,
+      storage: p.storage || undefined,
+      screenSize: p.screenSize || undefined,
+      bundleData: (p.bundleData && p.bundleData !== "null") ? JSON.parse(p.bundleData) : undefined,
+      type: p.type || "SIMPLE",
     };
 
     return NextResponse.json(mappedProduct);

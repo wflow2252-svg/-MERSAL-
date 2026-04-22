@@ -53,10 +53,18 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { title, description, price, stock, images, categoryId, sizes, colors } = body;
+    const { 
+      title, description, shortDescription, price, stock, images, categoryId, 
+      sizes, colors, brand, range, type, sku, weight, length, width, height,
+      ram, storage, screenSize, bundleData 
+    } = body;
 
     const numericPrice = parseFloat(price);
     const numericStock = parseInt(stock) || 0;
+    const numericWeight = weight ? parseFloat(weight) : null;
+    const numericLength = length ? parseFloat(length) : null;
+    const numericWidth = width ? parseFloat(width) : null;
+    const numericHeight = height ? parseFloat(height) : null;
 
     if (!title || isNaN(numericPrice)) {
       return NextResponse.json({ error: "الاسم والسعر مطلوبان بشكل صحيح" }, { status: 400 });
@@ -66,15 +74,28 @@ export async function POST(req: Request) {
       data: {
         title,
         description: description || "",
+        shortDescription: shortDescription || null,
         price: numericPrice,
         stock: numericStock,
         images: Array.isArray(images) ? images.join(",") : images || "",
         sizes: Array.isArray(sizes) ? sizes.join(",") : sizes || "",
         colors: Array.isArray(colors) ? colors.join(",") : colors || "",
+        brand: brand || null,
+        range: range || null,
+        type: type || "SIMPLE",
+        sku: sku || null,
+        weight: numericWeight,
+        length: numericLength,
+        width: numericWidth,
+        height: numericHeight,
+        ram: ram || null,
+        storage: storage || null,
+        screenSize: screenSize || null,
+        bundleData: bundleData || null,
         vendorId: vendor.id,
         categoryId: categoryId || null,
         status: "PENDING"
-      }
+      } as any
     });
 
     return NextResponse.json(product);

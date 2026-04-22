@@ -17,13 +17,28 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
   
   // Form State
   const [formData, setFormData] = useState({
+    type: "SIMPLE", // SIMPLE | VARIABLE | BUNDLE
     title: "",
+    shortDescription: "",
+    description: "",
+    sku: "",
+    brand: "",
+    range: "",
+    weight: "",
+    length: "",
+    width: "",
+    height: "",
     price: "",
     stock: "",
     categoryId: "",
-    description: "",
     images: "", // Commas separated URLs for now
+    externalImageUrl: "",
+    ram: "",
+    storage: "",
+    screenSize: "",
   });
+  
+  const [bundleItems, setBundleItems] = useState<{name: string, price: string}[]>([]);
 
   const [colors, setColors] = useState<string[]>([]);
   const [sizes, setSizes] = useState<string[]>([]);
@@ -86,6 +101,13 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
         finalImageUrl = urls.join(",");
       }
 
+      // Merge with external URL if provided
+      if (formData.externalImageUrl) {
+        finalImageUrl = finalImageUrl 
+          ? `${formData.externalImageUrl},${finalImageUrl}` 
+          : formData.externalImageUrl;
+      }
+
       const res = await fetch("/api/vendor/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -94,6 +116,7 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
           images: finalImageUrl,
           colors,
           sizes,
+          bundleData: formData.type === 'BUNDLE' ? JSON.stringify(bundleItems) : null,
         }),
       });
 
@@ -105,7 +128,12 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
       onClose();
       router.refresh();
       // Reset form
-      setFormData({ title: "", price: "", stock: "", categoryId: "", description: "", images: "" });
+      setFormData({ 
+        type: "SIMPLE", title: "", shortDescription: "", description: "", sku: "", brand: "", range: "", 
+        weight: "", length: "", width: "", height: "", price: "", stock: "", categoryId: "", 
+        images: "", externalImageUrl: "", ram: "", storage: "", screenSize: "" 
+      });
+      setBundleItems([]);
       setColors([]);
       setSizes([]);
     } catch (error: any) {
@@ -150,6 +178,32 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
           </div>
 
           <div className="flex-grow overflow-y-auto p-12 space-y-12 custom-scrollbar">
+            {/* Product Type Selector */}
+            <div className="bg-muted/30 p-6 rounded-[2.5rem] border-2 border-dashed border-[#1089A4]/10">
+               <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-2 block mb-6 text-center">نوع المنتج</label>
+               <div className="grid grid-cols-3 gap-4">
+                  {[
+                    { id: "SIMPLE", name: "منتج ثابت", icon: "inventory" },
+                    { id: "VARIABLE", name: "منتج متغير", icon: "style" },
+                    { id: "BUNDLE", name: "منتج مركب / عرض", icon: "layers" },
+                  ].map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setFormData({ ...formData, type: t.id })}
+                      className={cn(
+                        "flex flex-col items-center gap-3 p-6 rounded-[2rem] border-2 transition-all",
+                        formData.type === t.id 
+                        ? "bg-[#021D24] border-[#021D24] text-white shadow-xl" 
+                        : "bg-white border-transparent hover:bg-muted"
+                      )}
+                    >
+                      <span className="material-symbols-rounded text-2xl">{t.icon}</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">{t.name}</span>
+                    </button>
+                  ))}
+               </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="space-y-8">
                 <div className="space-y-2">
@@ -162,6 +216,18 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                     className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all font-bold text-sm" 
                   />
                 </div>
+                
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">وصف مصغر</label>
+                  <input 
+                    type="text" 
+                    value={formData.shortDescription}
+                    onChange={e => setFormData({ ...formData, shortDescription: e.target.value })}
+                    placeholder="وصف سريع يظهر بجانب السعر" 
+                    className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all font-bold text-sm" 
+                  />
+                </div>
+
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">السعر (ج.س)</label>
@@ -184,23 +250,115 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">التصنيف</label>
-                  <select 
-                    value={formData.categoryId}
-                    onChange={e => setFormData({ ...formData, categoryId: e.target.value })}
-                    className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all cursor-pointer font-bold text-sm"
-                  >
-                    <option value="">اختار التصنيف...</option>
-                    {categories.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                  </select>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">رمز المنتج (SKU)</label>
+                    <input 
+                      type="text" 
+                      value={formData.sku}
+                      onChange={e => setFormData({ ...formData, sku: e.target.value })}
+                      placeholder="e.g. ELE-001" 
+                      className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all font-bold text-sm" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">التصنيف</label>
+                    <select 
+                      value={formData.categoryId}
+                      onChange={e => setFormData({ ...formData, categoryId: e.target.value })}
+                      className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all cursor-pointer font-bold text-sm"
+                    >
+                      <option value="">اختار التصنيف...</option>
+                      {categories.map(cat => (
+                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">العلامة التجارية (اختياري)</label>
+                    <input 
+                      type="text" 
+                      value={formData.brand}
+                      onChange={e => setFormData({ ...formData, brand: e.target.value })}
+                      placeholder="مثلاً: سامسونج" 
+                      className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all font-bold text-sm" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">النطاق / الحالة</label>
+                    <input 
+                      type="text" 
+                      value={formData.range}
+                      onChange={e => setFormData({ ...formData, range: e.target.value })}
+                      placeholder="مثلاً: أصلي 100%" 
+                      className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all font-bold text-sm" 
+                    />
+                  </div>
+                </div>
+
+                {/* Conditional Fields for VARIABLE Products */}
+                {formData.type === "VARIABLE" && (
+                   <div className="p-6 bg-blue-50/50 rounded-[2rem] border-2 border-blue-100 space-y-6">
+                      <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-4">المواصفات التقنية</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-gray-400 uppercase">الرام (RAM)</label>
+                          <input value={formData.ram} onChange={e => setFormData({...formData, ram: e.target.value})} placeholder="e.g. 8GB" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none" />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-gray-400 uppercase">سعة التخزين</label>
+                          <input value={formData.storage} onChange={e => setFormData({...formData, storage: e.target.value})} placeholder="e.g. 256GB" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none" />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-gray-400 uppercase">حجم الشاشة</label>
+                          <input value={formData.screenSize} onChange={e => setFormData({...formData, screenSize: e.target.value})} placeholder="e.g. 6.7 inch" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none" />
+                        </div>
+                      </div>
+                   </div>
+                )}
               </div>
 
               <div className="space-y-4 h-full">
-                <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">صور المنتج (من المعرض)</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">رابط صورة خارجي (اختياري)</label>
+                  <input 
+                    type="text" 
+                    value={formData.externalImageUrl || ""}
+                    onChange={e => setFormData({ ...formData, externalImageUrl: e.target.value })}
+                    placeholder="https://example.com/image.jpg" 
+                    className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all font-bold text-sm" 
+                  />
+                  <p className="text-[10px] text-foreground/30 px-2">إذا قمت بإضافة رابط هنا، فسيتم استخدامه كصورة أساسية.</p>
+                </div>
+
+                {/* Dimensions & Weight */}
+                <div className="p-6 bg-orange-50/50 rounded-[2rem] border-2 border-orange-100 space-y-6">
+                   <p className="text-[10px] font-black text-orange-600 uppercase tracking-[0.2em] mb-2">أبعاد المنتج والوزن (اختياري)</p>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-gray-400 uppercase">الوزن (kg)</label>
+                        <input type="number" value={formData.weight} onChange={e => setFormData({...formData, weight: e.target.value})} placeholder="0.0" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-gray-400 uppercase">الطول (cm)</label>
+                        <input type="number" value={formData.length} onChange={e => setFormData({...formData, length: e.target.value})} placeholder="0" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-gray-400 uppercase">العرض (cm)</label>
+                        <input type="number" value={formData.width} onChange={e => setFormData({...formData, width: e.target.value})} placeholder="0" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-gray-400 uppercase">الارتفاع (cm)</label>
+                        <input type="number" value={formData.height} onChange={e => setFormData({...formData, height: e.target.value})} placeholder="0" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none" />
+                      </div>
+                   </div>
+                </div>
+
+                <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1 block mt-6">صور المنتج (من المعرض)</label>
                 <div className="space-y-6">
                   {/* Gallery Grid */}
                   {previews.length > 0 && (
@@ -232,12 +390,68 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                         <span className="material-symbols-rounded text-3xl text-[#1089A4]">add_photo_alternate</span>
                       </div>
                       <span className="text-xs font-black text-[#021D24]">اختر صوراً من المعرض</span>
-                      <span className="text-[9px] text-[#F29124] font-bold uppercase tracking-widest mt-2 px-6 text-center leading-relaxed">اسحب الصور هنا أو اضغط للاختيار</span>
                     </div>
                   </label>
                 </div>
               </div>
             </div>
+
+            {/* Composite Product Bundle Items */}
+            {formData.type === "BUNDLE" && (
+               <div className="p-10 bg-purple-50/50 rounded-[3rem] border-2 border-purple-100 space-y-8">
+                  <div className="flex items-center justify-between">
+                     <p className="text-xs font-black text-purple-700 uppercase tracking-[0.2em]">مكونات العرض المركب</p>
+                     <button 
+                       onClick={() => setBundleItems([...bundleItems, { name: "", price: "" }])}
+                       className="bg-purple-600 text-white px-6 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-lg shadow-purple-600/20"
+                     >
+                       إضافة منتج للحقيبة +
+                     </button>
+                  </div>
+                  <div className="space-y-4">
+                     {bundleItems.map((item, idx) => (
+                        <div key={idx} className="flex gap-4 items-end bg-white p-6 rounded-2xl border border-purple-100">
+                           <div className="flex-grow space-y-2">
+                              <label className="text-[9px] font-black text-gray-400">اسم المنتج المكون</label>
+                              <input 
+                                value={item.name} 
+                                onChange={e => {
+                                   const newItems = [...bundleItems];
+                                   newItems[idx].name = e.target.value;
+                                   setBundleItems(newItems);
+                                }}
+                                placeholder="مثلاً: قميص أبيض قطني" 
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:border-purple-300" 
+                              />
+                           </div>
+                           <div className="w-32 space-y-2">
+                              <label className="text-[9px] font-black text-gray-400">السعر ضمن العرض</label>
+                              <input 
+                                type="number"
+                                value={item.price} 
+                                onChange={e => {
+                                   const newItems = [...bundleItems];
+                                   newItems[idx].price = e.target.value;
+                                   setBundleItems(newItems);
+                                }}
+                                placeholder="0.0" 
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:border-purple-300" 
+                              />
+                           </div>
+                           <button 
+                             onClick={() => setBundleItems(bundleItems.filter((_, i) => i !== idx))}
+                             className="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all"
+                           >
+                              <span className="material-symbols-rounded text-sm">delete</span>
+                           </button>
+                        </div>
+                     ))}
+                     {bundleItems.length === 0 && (
+                        <p className="text-center py-6 text-[10px] text-gray-400 font-bold bg-white/50 rounded-2xl border-2 border-dashed border-purple-100">لم يتم إضافة أي منتجات لهذا العرض بعد</p>
+                     )}
+                  </div>
+               </div>
+            )}
 
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">وصف المنتج التفصيلي</label>
@@ -270,12 +484,12 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
               <div className="space-y-6">
                 <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">المقاسات (اضغط للإضافة)</label>
                 <div className="flex flex-wrap gap-3">
-                  {["S", "M", "L", "XL", "Universal"].map((s) => (
+                  {["34", "36", "40", "44", "32inch", "42inch", "4GB", "8GB", "16GB", "S", "M", "L", "XL", "XXL"].map((s) => (
                     <button 
                       key={s} 
                       onClick={() => setSizes(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])}
                       className={cn(
-                        "px-6 py-3 border-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all",
+                        "px-4 py-2 border-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
                         sizes.includes(s) ? "border-primary text-primary" : "border-border text-foreground/40"
                       )}
                     >

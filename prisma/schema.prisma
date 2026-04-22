@@ -111,6 +111,26 @@ model Product {
   images        String?
   sizes         String?
   colors        String?
+  brand         String?     // العلامة التجارية
+  range         String?     // النطاق / الحالة
+  
+  // New Fields for Product Management
+  type          String      @default("SIMPLE") // SIMPLE | VARIABLE | BUNDLE
+  sku           String?     // رمز المنتج
+  shortDescription String?  // وصف مصغر
+  weight        Float?      // الوزن
+  length        Float?      // الطول
+  width         Float?      // العرض
+  height        Float?      // الارتفاع
+  
+  // Tech Specs (for Variable Products)
+  ram           String?     // الرام
+  storage       String?     // سعة التخزين
+  screenSize    String?     // حجم الشاشة
+  
+  // Bundle Data (for Composite Products - JSON String)
+  bundleData    String?     // بيانات المنتجات المركبة
+  
   status        String      @default("PENDING")
   vendorId      String
   categoryId    String?

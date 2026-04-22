@@ -337,7 +337,28 @@ export default function AdminDashboard() {
   // Admin Product Add/Edit Modal
   const [productModal, setProductModal] = useState<"add" | "edit" | null>(null);
   const [editingProduct, setEditingProduct] = useState<any>(null);
-  const [productForm, setProductForm] = useState({ title: "", description: "", price: "", stock: "", categoryId: "", vendorId: "", images: "" });
+  const [productForm, setProductForm] = useState({ 
+    title: "", 
+    description: "", 
+    shortDescription: "",
+    price: "", 
+    stock: "", 
+    categoryId: "", 
+    vendorId: "", 
+    images: "", 
+    brand: "", 
+    range: "",
+    type: "SIMPLE",
+    sku: "",
+    weight: "",
+    length: "",
+    width: "",
+    height: "",
+    ram: "",
+    storage: "",
+    screenSize: "",
+    bundleData: ""
+  });
   const [productFormLoading, setProductFormLoading] = useState(false);
   const [productImageFiles, setProductImageFiles] = useState<File[]>([]);
   const [productPreviews, setProductPreviews] = useState<string[]>([]);
@@ -467,7 +488,21 @@ export default function AdminDashboard() {
         "الكمية المتوفرة (Stock)": p.stock,
         "الحالة": p.status,
         "اسم البائع": p.vendor?.storeName || "—",
-        "القسم": p.category?.name || "—"
+        "القسم": p.category?.name || "—",
+        "روابط الصور (فواصل ,)": p.images,
+        "العلامة التجارية": p.brand,
+        "النطاق / الحالة": p.range,
+        "نوع المنتج": p.type,
+        "رمز المنتج (SKU)": p.sku,
+        "وصف مصغر": p.shortDescription,
+        "الوزن": p.weight,
+        "الطول": p.length,
+        "العرض": p.width,
+        "الارتفاع": p.height,
+        "الرام": p.ram,
+        "التخزين": p.storage,
+        "الشاشة": p.screenSize,
+        "بيانات العرض": p.bundleData
       }));
       
       exportToExcel(exportData, "مرسال_المخزون");
@@ -489,7 +524,21 @@ export default function AdminDashboard() {
         title: row["اسم المنتج"],
         price: row["السعر الحالي (ج.س)"],
         stock: row["الكمية المتوفرة (Stock)"],
-        status: row["الحالة"]
+        status: row["الحالة"],
+        images: row["روابط الصور (فواصل ,)"],
+        brand: row["العلامة التجارية"],
+        range: row["النطاق / الحالة"],
+        type: row["نوع المنتج"] || "SIMPLE",
+        sku: row["رمز المنتج (SKU)"],
+        shortDescription: row["وصف مصغر"],
+        weight: row["الوزن"],
+        length: row["الطول"],
+        width: row["العرض"],
+        height: row["الارتفاع"],
+        ram: row["الرام"],
+        storage: row["التخزين"],
+        screenSize: row["الشاشة"],
+        bundleData: row["بيانات العرض"]
         })).filter((p: any) => !!p.id);
 
         if (formattedData.length > 0) {
@@ -568,7 +617,8 @@ export default function AdminDashboard() {
       body: JSON.stringify(newPlan)
     });
     if (r.ok) {
-      setSubscriptionPlans(prev => [...prev, await r.json()]);
+      const data = await r.json();
+      setSubscriptionPlans(prev => [...prev, data]);
       setNewPlan({ name: "", price: "", durationDays: "30", isTrial: false });
     }
     setActionLoading(null);
@@ -820,7 +870,12 @@ export default function AdminDashboard() {
   const openAddProduct = () => {
     setProductModal("add");
     setEditingProduct(null);
-    setProductForm({ title: "", description: "", price: "", stock: "", categoryId: "", vendorId: "", images: "" });
+    setProductForm({ 
+      title: "", description: "", shortDescription: "", price: "", stock: "", 
+      categoryId: "", vendorId: "", images: "", brand: "", range: "",
+      type: "SIMPLE", sku: "", weight: "", length: "", width: "", height: "",
+      ram: "", storage: "", screenSize: "", bundleData: ""
+    });
     setProductImageFiles([]);
     setProductPreviews([]);
   };
@@ -836,6 +891,19 @@ export default function AdminDashboard() {
       categoryId: p.categoryId || "",
       vendorId: p.vendorId || "",
       images: p.images || "",
+      brand: p.brand || "",
+      range: p.range || "",
+      type: p.type || "SIMPLE",
+      sku: p.sku || "",
+      shortDescription: p.shortDescription || "",
+      weight: p.weight || "",
+      length: p.length || "",
+      width: p.width || "",
+      height: p.height || "",
+      ram: p.ram || "",
+      storage: p.storage || "",
+      screenSize: p.screenSize || "",
+      bundleData: p.bundleData || "",
     });
     setProductPreviews(p.images ? p.images.split(",").filter(Boolean) : []);
     setProductImageFiles([]);
@@ -1086,6 +1154,75 @@ export default function AdminDashboard() {
                   <option value="">بدون قسم</option>
                   {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
+              </div>
+
+              {/* Brand & Range */}
+              <div className="grid grid-cols-2 gap-3">
+              {/* New Fields: Type, SKU, Short Description */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">نوع المنتج</label>
+                  <select value={productForm.type} onChange={e => setProductForm(p => ({...p, type: e.target.value}))} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1089A4]">
+                    <option value="SIMPLE">ثابت (قلم، حقيبة...)</option>
+                    <option value="VARIABLE">متغير (مقاسات، ألوان...)</option>
+                    <option value="BUNDLE">مركب (عرض، مجموعة...)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">رمز المنتج (SKU)</label>
+                  <input value={productForm.sku} onChange={e => setProductForm(p => ({...p, sku: e.target.value}))} placeholder="مثال: SKU-001" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1089A4]" />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">وصف مصغر</label>
+                <input value={productForm.shortDescription} onChange={e => setProductForm(p => ({...p, shortDescription: e.target.value}))} placeholder="وصف سريع يظهر بجانب السعر" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1089A4]" />
+              </div>
+
+              {/* Specs & Bundle Data */}
+              {productForm.type === "VARIABLE" && (
+                <div className="p-4 bg-blue-50 rounded-xl grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-[10px] font-black text-blue-600 block mb-1">رام</label>
+                    <input value={productForm.ram} onChange={e => setProductForm(p => ({...p, ram: e.target.value}))} className="w-full bg-white border border-blue-100 rounded-lg px-3 py-1.5 text-xs font-bold outline-none" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-blue-600 block mb-1">تخزين</label>
+                    <input value={productForm.storage} onChange={e => setProductForm(p => ({...p, storage: e.target.value}))} className="w-full bg-white border border-blue-100 rounded-lg px-3 py-1.5 text-xs font-bold outline-none" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-blue-600 block mb-1">شاشة</label>
+                    <input value={productForm.screenSize} onChange={e => setProductForm(p => ({...p, screenSize: e.target.value}))} className="w-full bg-white border border-blue-100 rounded-lg px-3 py-1.5 text-xs font-bold outline-none" />
+                  </div>
+                </div>
+              )}
+
+              {productForm.type === "BUNDLE" && (
+                <div>
+                  <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">بيانات العرض (JSON)</label>
+                  <textarea value={productForm.bundleData} onChange={e => setProductForm(p => ({...p, bundleData: e.target.value}))} rows={2} placeholder='[{"name":"منتج 1", "price":"100"}]' className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[10px] outline-none focus:border-[#1089A4] font-mono" />
+                </div>
+              )}
+
+              {/* Logistics */}
+              <div className="grid grid-cols-4 gap-2">
+                <div>
+                   <label className="text-[9px] font-black text-gray-400 block mb-1">الوزن</label>
+                   <input type="number" value={productForm.weight} onChange={e => setProductForm(p => ({...p, weight: e.target.value}))} className="w-full bg-gray-50 border rounded-lg px-2 py-1.5 text-xs" />
+                </div>
+                <div>
+                   <label className="text-[9px] font-black text-gray-400 block mb-1">الطول</label>
+                   <input type="number" value={productForm.length} onChange={e => setProductForm(p => ({...p, length: e.target.value}))} className="w-full bg-gray-50 border rounded-lg px-2 py-1.5 text-xs" />
+                </div>
+                <div>
+                   <label className="text-[9px] font-black text-gray-400 block mb-1">العرض</label>
+                   <input type="number" value={productForm.width} onChange={e => setProductForm(p => ({...p, width: e.target.value}))} className="w-full bg-gray-50 border rounded-lg px-2 py-1.5 text-xs" />
+                </div>
+                <div>
+                   <label className="text-[9px] font-black text-gray-400 block mb-1">الارتفاع</label>
+                   <input type="number" value={productForm.height} onChange={e => setProductForm(p => ({...p, height: e.target.value}))} className="w-full bg-gray-50 border rounded-lg px-2 py-1.5 text-xs" />
+                </div>
+              </div>
               </div>
 
               {/* Description */}

@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { title, description, price, stock, images, categoryId, vendorId, sizes, colors, action, id } = body;
+    const { title, description, price, stock, images, categoryId, vendorId, sizes, colors, action, id, brand, range } = body;
 
     // لو عندنا action (موافقة/رفض)
     if (action && id) {
@@ -71,6 +71,8 @@ export async function POST(req: Request) {
         colors: Array.isArray(colors) ? colors.join(",") : colors || "",
         vendorId,
         categoryId: categoryId || null,
+        brand: brand || "",
+        range: range || "",
         status: "APPROVED", // الأدمن يضيف مباشرة بدون مراجعة
       },
     });
@@ -91,7 +93,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { id, title, description, price, stock, images, categoryId, vendorId, status } = body;
+    const { id, title, description, price, stock, images, categoryId, vendorId, status, brand, range } = body;
 
     if (!id) return NextResponse.json({ error: "id مطلوب" }, { status: 400 });
 
@@ -106,6 +108,8 @@ export async function PATCH(req: Request) {
         ...(categoryId !== undefined && { categoryId }),
         ...(vendorId && { vendorId }),
         ...(status && { status }),
+        ...(brand !== undefined && { brand }),
+        ...(range !== undefined && { range }),
       },
     });
 

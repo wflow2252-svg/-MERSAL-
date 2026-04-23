@@ -56,6 +56,29 @@ export async function POST(req: Request) {
   }
 }
 
+export async function PATCH(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if ((session?.user as any)?.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id, isActive, action } = await req.json();
+    if (!id) return NextResponse.json({ error: "ID Required" }, { status: 400 });
+
+    const updated = await prisma.deliveryDriver.update({
+      where: { id },
+      data: { 
+        isActive: action === 'APPROVE' ? true : (isActive !== undefined ? isActive : undefined)
+      }
+    });
+
+    return NextResponse.json(updated);
+  } catch (error: any) {
+    return NextResponse.json({ error: "Failed to update" }, { status: 500 });
+  }
+}
+
 export async function DELETE(req: Request) {
   try {
     const session = await getServerSession(authOptions);

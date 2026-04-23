@@ -86,11 +86,54 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(vendor);
-  } catch (error: any) {
-    console.error("Admin Create Vendor Error:", error);
-    if (error.code === 'P2002') {
-      return NextResponse.json({ error: "البريد الإلكتروني مستخدم بالفعل" }, { status: 400 });
+// PATCH — موافقة أو رفض بائع
+export async function PATCH(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!(session as any)?.user?.email || (session as any).user.role !== 'ADMIN') {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
+
+    const { id, action } = await req.json();
+    if (!id || !action) return NextResponse.json({ error: "Missing ID or Action" }, { status: 400 });
+
+    const status = action === 'APPROVE' ? 'APPROVED' : 'REJECTED';
+
+    const updatedVendor = await prisma.vendor.update({
+      where: { id },
+      data: { 
+        status,
+        subscriptionEndsAt: action === 'APPROVE' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : undefined // 30 days trial
+      },
+    });
+
+    // If approved, update user role to VENDOR if it's not already
+    if (action === 'APPROVE') {
+      await prisma.user.update({
+        where: { id: updatedVendor.userId },
+        data: { role: 'VENDOR' }
+      });
+    }
+
+    return NextResponse.json(updatedVendor);
+  } catch (error: any) {
+    console.error("Admin Update Vendor Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!(session as any)?.user?.email || (session as any).user.role !== 'ADMIN') {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    const { id } = await req.json();
+    await prisma.vendor.delete({ where: { id } });
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+

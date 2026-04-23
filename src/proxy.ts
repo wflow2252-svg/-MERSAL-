@@ -49,7 +49,7 @@ export default async function proxy(request: NextRequest) {
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.gstatic.com;
     img-src 'self' blob: data: https://images.unsplash.com https://*.googleusercontent.com https://*.svgrepo.com;
     font-src 'self' https://fonts.gstatic.com;
-    connect-src 'self' https://*.googleapis.com;
+    connect-src 'self' https://*.googleapis.com https://ipapi.co;
     frame-ancestors 'none';
   `.replace(/\s{2,}/g, ' ').trim();
 

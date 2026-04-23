@@ -368,10 +368,14 @@ export default function AdminDashboard() {
       const res = await fetch("/api/admin/stats");
       if (res.ok) {
         const data = await res.json();
-        setStats(data.stats);
-        setPendingVendors(data.pendingVendors);
+        setStats(data.stats || []);
+        setPendingVendors(data.pendingVendors || []);
+      } else {
+        console.error("Failed to fetch stats:", res.status);
       }
-    } catch {}
+    } catch (err) {
+      console.error("Error fetching stats:", err);
+    }
   }, []);
 
   const fetchData = useCallback(async () => {

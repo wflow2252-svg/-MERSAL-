@@ -86,6 +86,12 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(vendor);
+  } catch (error: any) {
+    console.error("Admin Create Vendor Error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
 // PATCH — موافقة أو رفض بائع
 export async function PATCH(req: Request) {
   try {

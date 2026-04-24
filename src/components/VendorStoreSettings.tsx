@@ -219,7 +219,17 @@ export default function VendorStoreSettings() {
                   <input 
                     type="text" 
                     value={formData.slug}
-                    onChange={e => setFormData({ ...formData, slug: e.target.value })}
+                    onChange={e => {
+                      let val = e.target.value;
+                      // Remove full URL if pasted
+                      val = val.replace(/^(https?:\/\/)?(www\.)?morsall\.com\/store\//, "");
+                      val = val.replace(/^(https?:\/\/)?(www\.)?morsall\.net\/store\//, "");
+                      val = val.replace(/[^\u0600-\u06FFa-z0-9\s-]/g, "")
+                        .replace(/\s+/g, "-")
+                        .replace(/-+/g, "-");
+                      
+                      setFormData({ ...formData, slug: val });
+                    }}
                     className="flex-grow bg-transparent py-3 outline-none font-black text-sm text-[#1089A4]"
                   />
                 </div>

@@ -613,14 +613,28 @@ export default function AdminDashboard() {
 
   const handleVendorAction = async (id: string, status: string) => {
     setActionLoading(id);
-    await fetch(`/api/admin/vendors/${id}`, { 
-      method: "PATCH", 
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }) 
-    });
-    setPendingVendors(prev => prev.filter(v => v.id !== id));
-    fetchStats();
-    setActionLoading(null);
+    try {
+      const res = await fetch(`/api/admin/vendors/${id}`, { 
+        method: "PATCH", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }) 
+      });
+      
+      if (res.ok) {
+        setPendingVendors(prev => prev.filter(v => v.id !== id));
+        setAllVendors(prev => prev.map(v => v.id === id ? { ...v, status } : v));
+        fetchStats();
+      }
+    } catch (err) {
+      console.error("Vendor Action Error:", err);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleVendorDetails = (vendor: any) => {
+    alert(`تفاصيل المتجر: ${vendor.name || vendor.storeName}\nالمالك: ${vendor.owner || vendor.ownerName}\nالحالة: ${vendor.status}`);
+    // Future: Open a detailed modal
   };
 
   const handleAddPlan = async () => {
@@ -1765,11 +1779,17 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                       <div className="flex gap-2 mt-4">
-                        <button onClick={() => handleVendorAction(store.id, store.status === "APPROVED" ? "SUSPENDED" : "APPROVED")}
-                          className="flex-1 py-2 text-xs font-bold rounded-lg border border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-colors">
-                          {store.status === "APPROVED" ? "إيقاف" : "تفعيل"}
+                        <button 
+                          disabled={actionLoading === store.id}
+                          onClick={() => handleVendorAction(store.id, store.status === "APPROVED" ? "SUSPENDED" : "APPROVED")}
+                          className="flex-1 py-2 text-xs font-bold rounded-lg border border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-colors disabled:opacity-50">
+                          {actionLoading === store.id ? "..." : (store.status === "APPROVED" ? "إيقاف" : "تفعيل")}
                         </button>
-                        <button className="flex-1 py-2 text-xs font-bold rounded-lg bg-[#021D24] text-white">التفاصيل</button>
+                        <button 
+                          onClick={() => handleVendorDetails(store)}
+                          className="flex-1 py-2 text-xs font-bold rounded-lg bg-[#021D24] text-white hover:bg-[#1089A4] transition-colors">
+                          التفاصيل
+                        </button>
                       </div>
                     </div>
                   ))}

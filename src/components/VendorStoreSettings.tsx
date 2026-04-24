@@ -51,6 +51,30 @@ export default function VendorStoreSettings() {
     fetchSettings();
   }, []);
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "storeLogo" | "storeBanner") => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setLoading(true);
+    const formDataUpload = new FormData();
+    formDataUpload.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formDataUpload
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "فشل رفع الملف");
+
+      setFormData(prev => ({ ...prev, [type]: data.url }));
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSave = async () => {
     setLoading(true);
     try {
@@ -122,24 +146,42 @@ export default function VendorStoreSettings() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">رابط البانر</label>
-                <input 
-                  type="text" 
-                  value={formData.storeBanner}
-                  onChange={e => setFormData({ ...formData, storeBanner: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full bg-white border rounded-xl px-4 py-3 outline-none focus:border-[#1089A4] transition-all font-bold text-xs"
-                />
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">تغيير البانر</label>
+                <div className="relative group">
+                  <input 
+                    type="file" 
+                    id="banner-upload"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={e => handleFileUpload(e, "storeBanner")}
+                  />
+                  <label 
+                    htmlFor="banner-upload"
+                    className="w-full flex items-center justify-between bg-white border border-dashed border-gray-200 rounded-xl px-4 py-3 cursor-pointer hover:border-[#1089A4] hover:bg-gray-50 transition-all"
+                  >
+                    <span className="text-xs font-bold text-gray-400">اختر صورة للغلاف...</span>
+                    <span className="material-symbols-rounded text-[#1089A4]">upload_file</span>
+                  </label>
+                </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">رابط الشعار</label>
-                <input 
-                  type="text" 
-                  value={formData.storeLogo}
-                  onChange={e => setFormData({ ...formData, storeLogo: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full bg-white border rounded-xl px-4 py-3 outline-none focus:border-[#1089A4] transition-all font-bold text-xs"
-                />
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">تغيير الشعار</label>
+                <div className="relative group">
+                  <input 
+                    type="file" 
+                    id="logo-upload"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={e => handleFileUpload(e, "storeLogo")}
+                  />
+                  <label 
+                    htmlFor="logo-upload"
+                    className="w-full flex items-center justify-between bg-white border border-dashed border-gray-200 rounded-xl px-4 py-3 cursor-pointer hover:border-[#1089A4] hover:bg-gray-50 transition-all"
+                  >
+                    <span className="text-xs font-bold text-gray-400">اختر صورة الشعار...</span>
+                    <span className="material-symbols-rounded text-[#1089A4]">cloud_upload</span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>

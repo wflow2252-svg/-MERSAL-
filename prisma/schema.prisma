@@ -82,6 +82,19 @@ model Vendor {
   planId           String?
   plan             SubscriptionPlan? @relation(fields: [planId], references: [id])
   location         String?
+  address          String?      // العنوان التفصيلي للمتجر
+  
+  // Store Customization
+  storeLogo        String?      // شعار المتجر
+  storeBanner      String?      // بانر المتجر
+  primaryColor     String       @default("#0F1629") // اللون الأساسي
+  secondaryColor   String       @default("#3B82F6") // اللون الفرعي
+  
+  // Social Media
+  facebookUrl      String?
+  instagramUrl     String?
+  whatsappNumber   String?
+  
   shippingModel    String       @default("VENDOR_PACKS") // VENDOR_PACKS | MERSAL_HANDLES
   phone            String?
   createdAt        DateTime     @default(now())

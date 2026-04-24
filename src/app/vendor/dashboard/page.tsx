@@ -7,6 +7,8 @@ import AddProductModal from "@/components/AddProductModal";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import VendorStoreSettings from "@/components/VendorStoreSettings";
+
 export default function VendorDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
@@ -357,6 +359,10 @@ export default function VendorDashboard() {
                   ))}
                </div>
             </div>
+          )}
+
+          {activeTab === "settings" && (
+            <VendorStoreSettings />
           )}
         </div>
       </main>

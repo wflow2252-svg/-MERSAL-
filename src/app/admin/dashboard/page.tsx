@@ -11,7 +11,7 @@ import Link from "next/link";
 type TabId =
   | "overview" | "approvals" | "users" | "vendors"
   | "categories" | "employees" | "orders" | "payments"
-  | "delivery" | "shipping" | "finance" | "settings" | "inventory" | "drivers" | "subscriptions";
+  | "delivery" | "shipping" | "finance" | "settings" | "inventory" | "drivers" | "subscriptions" | "attributes";
 
 const NAV_ITEMS: { id: TabId; icon: string; label: string }[] = [
   { id: "overview",    icon: "dashboard_customize",  label: "التحكم" },
@@ -20,6 +20,7 @@ const NAV_ITEMS: { id: TabId; icon: string; label: string }[] = [
   { id: "users",       icon: "person_search",         label: "المستخدمون" },
   { id: "vendors",     icon: "storefront",            label: "الموردون" },
   { id: "categories",  icon: "category",              label: "الأقسام" },
+  { id: "attributes",  icon: "tune",                  label: "المنتجات المتغيرة" },
   { id: "inventory",   icon: "inventory_2",           label: "المنتجات" },
   { id: "employees",   icon: "badge",                 label: "الموظفون" },
   { id: "drivers",     icon: "sports_motorsports",    label: "المناديب" },
@@ -49,11 +50,11 @@ const ROLES: Record<string, string> = {
 };
 
 const ROLE_PERMISSIONS: Record<string, TabId[]> = {
-  ADMIN: ["overview", "approvals", "users", "vendors", "categories", "employees", "orders", "payments", "delivery", "shipping", "finance", "settings", "inventory", "drivers", "subscriptions"],
+  ADMIN: ["overview", "approvals", "users", "vendors", "categories", "employees", "orders", "payments", "delivery", "shipping", "finance", "settings", "inventory", "drivers", "subscriptions", "attributes"],
   PACKING: ["orders", "inventory"],
   SHIPPING: ["orders", "drivers"],
   CUSTOMER_SERVICE: ["overview", "approvals", "orders", "users"],
-  INVENTORY: ["inventory", "categories", "vendors"],
+  INVENTORY: ["inventory", "categories", "vendors", "attributes"],
 };
 
 // ── Shipping Label Component ───────────────────────────
@@ -292,6 +293,8 @@ export default function AdminDashboard() {
   const [admins, setAdmins] = useState<any[]>([]);
   const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([]);
   const [newPlan, setNewPlan] = useState({ name: "", price: "", durationDays: "30", isTrial: false });
+  const [attributes, setAttributes] = useState<any[]>([]);
+  const [newAttribute, setNewAttribute] = useState({ name: "", options: "" });
 
   // Vendor Modal States
   const [vendorModal, setVendorModal] = useState<null | "add">(null);
@@ -357,7 +360,9 @@ export default function AdminDashboard() {
     ram: "",
     storage: "",
     screenSize: "",
-    bundleData: ""
+    bundleData: "",
+    discountPrice: "",
+    discountType: "FIXED"
   });
   const [productFormLoading, setProductFormLoading] = useState(false);
   const [productImageFiles, setProductImageFiles] = useState<File[]>([]);
@@ -439,6 +444,10 @@ export default function AdminDashboard() {
         await fetchStats();
         const r = await fetch("/api/admin/withdrawals");
         if (r.ok) setWithdrawals(await r.json());
+      }
+      if (activeTab === "attributes") {
+        const r = await fetch("/api/admin/attributes");
+        if (r.ok) setAttributes(await r.json());
       }
       if (activeTab === "settings") {
         const r = await fetch("/api/admin/settings");
@@ -747,6 +756,37 @@ export default function AdminDashboard() {
     }
     setActionLoading(null);
   };
+  
+  const handleAddAttribute = async () => {
+    if (!newAttribute.name || !newAttribute.options) return;
+    setActionLoading("attr");
+    const r = await fetch("/api/admin/attributes", { 
+      method: "POST", 
+      body: JSON.stringify({ 
+        name: newAttribute.name, 
+        options: newAttribute.options.split(",").map(o => o.trim()) 
+      }) 
+    });
+    if (r.ok) {
+      const data = await r.json();
+      setAttributes(prev => [data, ...prev]);
+      setNewAttribute({ name: "", options: "" });
+    }
+    setActionLoading(null);
+  };
+
+  const handleDeleteAttribute = async (id: string) => {
+    if (!confirm("هل أنت متأكد من حذف هذا المتغير؟")) return;
+    setActionLoading(id);
+    const r = await fetch("/api/admin/attributes", { 
+      method: "DELETE", 
+      body: JSON.stringify({ id }) 
+    });
+    if (r.ok) {
+      setAttributes(prev => prev.filter(a => a.id !== id));
+    }
+    setActionLoading(null);
+  };
 
   const handleDeleteDriver = async (id: string) => {
     await fetch("/api/admin/drivers", { method: "DELETE", body: JSON.stringify({ id }) });
@@ -883,7 +923,8 @@ export default function AdminDashboard() {
       title: "", description: "", shortDescription: "", price: "", stock: "", 
       categoryId: "", vendorId: "", images: "", brand: "", range: "",
       type: "SIMPLE", sku: "", weight: "", length: "", width: "", height: "",
-      ram: "", storage: "", screenSize: "", bundleData: ""
+      ram: "", storage: "", screenSize: "", bundleData: "",
+      discountPrice: "", discountType: "FIXED"
     });
     setProductImageFiles([]);
     setProductPreviews([]);
@@ -913,6 +954,8 @@ export default function AdminDashboard() {
       storage: p.storage || "",
       screenSize: p.screenSize || "",
       bundleData: p.bundleData || "",
+      discountPrice: String(p.discountPrice || ""),
+      discountType: p.discountType || "FIXED",
     });
     setProductPreviews(p.images ? p.images.split(",").filter(Boolean) : []);
     setProductImageFiles([]);
@@ -2424,6 +2467,73 @@ export default function AdminDashboard() {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── 16. ATTRIBUTES (المنتجات المتغيرة) ── */}
+            {activeTab === "attributes" && (
+              <motion.div key="attributes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm space-y-4">
+                  <h3 className="font-black text-[#021D24] text-lg">إضافة متغير جديد (ألوان، مقاسات...)</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                       <label className="text-xs font-bold text-gray-400">اسم المتغير</label>
+                       <input
+                        type="text"
+                        placeholder="مثلاً: الألوان، الرام، المقاس"
+                        className="input-mersal"
+                        value={newAttribute.name}
+                        onChange={e => setNewAttribute({ ...newAttribute, name: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                       <label className="text-xs font-bold text-gray-400">الخيارات (افصل بينها بفاصلة ,)</label>
+                       <input
+                        type="text"
+                        placeholder="أحمر, أخضر, أزرق..."
+                        className="input-mersal"
+                        value={newAttribute.options}
+                        onChange={e => setNewAttribute({ ...newAttribute, options: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleAddAttribute}
+                    disabled={actionLoading === "attr"}
+                    className="btn-primary w-full py-3"
+                  >
+                    {actionLoading === "attr" ? "جاري الحفظ..." : "حفظ المتغير والخيارات"}
+                  </button>
+                </div>
+
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                  <div className="p-4 border-b font-black text-[#021D24]">قائمة المتغيرات المتاحة</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                    {attributes.map(attr => (
+                      <div key={attr.id} className="p-6 bg-gray-50 rounded-2xl border border-gray-200 space-y-4 relative group">
+                        <button 
+                          onClick={() => handleDeleteAttribute(attr.id)}
+                          className="absolute top-4 left-4 text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all"
+                        >
+                          <span className="material-symbols-rounded text-sm">delete</span>
+                        </button>
+                        <div>
+                          <h4 className="font-black text-[#021D24] text-lg mb-2">{attr.name}</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {attr.options?.map((opt: any) => (
+                              <span key={opt.id} className="px-3 py-1 bg-white border border-gray-100 rounded-lg text-xs font-bold text-gray-600 shadow-sm">
+                                {opt.value}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {attributes.length === 0 && (
+                      <div className="col-span-full text-center py-12 text-gray-400 font-bold">لا توجد متغيرات مسجلة حالياً</div>
+                    )}
                   </div>
                 </div>
               </motion.div>

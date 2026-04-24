@@ -14,6 +14,7 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
+  const [availableAttributes, setAvailableAttributes] = useState<any[]>([]);
   
   // Form State
   const [formData, setFormData] = useState({
@@ -30,6 +31,8 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
     height: "",
     price: "",
     stock: "",
+    discountPrice: "",
+    discountType: "FIXED", // FIXED | PERCENTAGE
     categoryId: "",
     images: "", // Commas separated URLs for now
     externalImageUrl: "",
@@ -47,10 +50,17 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
 
   useEffect(() => {
     if (isOpen) {
+      // Fetch Categories
       fetch("/api/admin/categories")
         .then(res => res.json())
         .then(data => setCategories(data))
         .catch(err => console.error("Failed to fetch categories", err));
+
+      // Fetch Global Attributes
+      fetch("/api/attributes")
+        .then(res => res.json())
+        .then(data => setAvailableAttributes(data))
+        .catch(err => console.error("Failed to fetch attributes", err));
     }
   }, [isOpen]);
 
@@ -130,7 +140,9 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
       // Reset form
       setFormData({ 
         type: "SIMPLE", title: "", shortDescription: "", description: "", sku: "", brand: "", range: "", 
-        weight: "", length: "", width: "", height: "", price: "", stock: "", categoryId: "", 
+        weight: "", length: "", width: "", height: "", price: "", stock: "", 
+        discountPrice: "", discountType: "FIXED",
+        categoryId: "", 
         images: "", externalImageUrl: "", ram: "", storage: "", screenSize: "" 
       });
       setBundleItems([]);
@@ -248,6 +260,30 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                       placeholder="0" 
                       className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all font-black text-sm" 
                     />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">سعر الخصم (اختياري)</label>
+                    <input 
+                      type="number" 
+                      value={formData.discountPrice}
+                      onChange={e => setFormData({ ...formData, discountPrice: e.target.value })}
+                      placeholder="0.00" 
+                      className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-[#F29124] focus:bg-white outline-none transition-all font-black text-sm text-[#F29124]" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">نوع الخصم</label>
+                    <select 
+                      value={formData.discountType}
+                      onChange={e => setFormData({ ...formData, discountType: e.target.value })}
+                      className="w-full bg-muted/30 border-2 border-transparent rounded-[1.5rem] px-6 py-4 focus:border-primary focus:bg-white outline-none transition-all cursor-pointer font-bold text-sm"
+                    >
+                      <option value="FIXED">مبلغ ثابت</option>
+                      <option value="PERCENTAGE">نسبة مئوية (%)</option>
+                    </select>
                   </div>
                 </div>
 
@@ -463,41 +499,48 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-10 border-t border-border/50">
-              <div className="space-y-6">
-                <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">الألوان (اختياري)</label>
-                <div className="flex flex-wrap gap-3">
-                  {["#000000", "#FFFFFF", "#CB2E26", "#1089A4"].map((c) => (
-                    <button 
-                      key={c} 
-                      onClick={() => setColors(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c])}
-                      className={cn(
-                        "w-10 h-10 rounded-full border-2 p-1 hover:scale-110 transition-all",
-                        colors.includes(c) ? "border-primary" : "border-border"
-                      )}
-                    >
-                      <div className="w-full h-full rounded-full" style={{ background: c }} />
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-6">
-                <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1">المقاسات (اضغط للإضافة)</label>
-                <div className="flex flex-wrap gap-3">
-                  {["34", "36", "40", "44", "32inch", "42inch", "4GB", "8GB", "16GB", "S", "M", "L", "XL", "XXL"].map((s) => (
-                    <button 
-                      key={s} 
-                      onClick={() => setSizes(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])}
-                      className={cn(
-                        "px-4 py-2 border-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                        sizes.includes(s) ? "border-primary text-primary" : "border-border text-foreground/40"
-                      )}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            <div className="grid grid-cols-1 gap-12 pt-10 border-t border-border/50">
+               <div className="space-y-8">
+                  <h4 className="text-sm font-black text-[#021D24] uppercase tracking-widest border-b pb-4">متغيرات المنتج المتاحة (من الإدارة)</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    {availableAttributes.map((attr) => (
+                      <div key={attr.id} className="space-y-4">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 px-1 block">{attr.name}</label>
+                        <div className="flex flex-wrap gap-3">
+                          {attr.options?.map((opt: any) => {
+                            const isSelected = attr.name.includes("لون") || attr.name.toLowerCase().includes("color")
+                              ? colors.includes(opt.value)
+                              : sizes.includes(opt.value);
+                            
+                            return (
+                              <button 
+                                key={opt.id} 
+                                onClick={() => {
+                                  if (attr.name.includes("لون") || attr.name.toLowerCase().includes("color")) {
+                                    setColors(prev => prev.includes(opt.value) ? prev.filter(x => x !== opt.value) : [...prev, opt.value]);
+                                  } else {
+                                    setSizes(prev => prev.includes(opt.value) ? prev.filter(x => x !== opt.value) : [...prev, opt.value]);
+                                  }
+                                }}
+                                className={cn(
+                                  "px-5 py-3 border-2 rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest transition-all",
+                                  isSelected ? "border-primary text-primary bg-primary/5 shadow-lg" : "border-border text-foreground/40 hover:bg-muted"
+                                )}
+                              >
+                                {opt.value}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                    {availableAttributes.length === 0 && (
+                      <div className="col-span-full py-10 text-center bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                        <p className="text-xs font-bold text-gray-400">لا توجد متغيرات إضافية حالياً</p>
+                      </div>
+                    )}
+                  </div>
+               </div>
             </div>
           </div>
 

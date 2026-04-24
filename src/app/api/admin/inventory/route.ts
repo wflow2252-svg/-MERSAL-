@@ -84,6 +84,8 @@ export async function POST(req: Request) {
         if (p.storage !== undefined) updateData.storage = p.storage;
         if (p.screenSize !== undefined) updateData.screenSize = p.screenSize;
         if (p.bundleData !== undefined) updateData.bundleData = p.bundleData;
+        if (p.discountPrice !== undefined) updateData.discountPrice = parseFloat(p.discountPrice) || null;
+        if (p.discountType !== undefined) updateData.discountType = p.discountType;
 
         await prisma.product.update({
           where: { id: p.id },

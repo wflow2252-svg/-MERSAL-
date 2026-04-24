@@ -365,6 +365,14 @@ export default function VendorDashboard() {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
       />
+
+      {/* Floating Action Button for Mobile */}
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="md:hidden fixed bottom-8 left-8 w-16 h-16 bg-[#F29124] text-[#021D24] rounded-full shadow-2xl flex items-center justify-center z-[60] border-4 border-white active:scale-90 transition-all"
+      >
+        <span className="material-symbols-rounded text-3xl">add</span>
+      </button>
     </div>
   );
 }

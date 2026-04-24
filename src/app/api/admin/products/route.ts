@@ -3,6 +3,12 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
+const toNum = (v: any): number | null => {
+  if (v === "" || v === null || v === undefined) return null;
+  const n = Number(v);
+  return isNaN(n) ? null : n;
+};
+
 // GET — جلب منتجات بفلتر (للمخزون) أو منتجات معلقة
 export async function GET(req: Request) {
   try {
@@ -40,7 +46,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { title, description, price, stock, images, categoryId, vendorId, sizes, colors, action, id, brand, range } = body;
+    const { title, description, price, stock, images, categoryId, vendorId, sizes, colors, action, id, brand, range, discountPrice, discountType } = body;
 
     // لو عندنا action (موافقة/رفض)
     if (action && id) {
@@ -48,9 +54,9 @@ export async function POST(req: Request) {
         where: { id },
         data: {
           status: action === 'APPROVE' ? 'APPROVED' : 'REJECTED',
-          ...(body.price !== undefined && { price: parseFloat(body.price) }),
-          ...(body.stock !== undefined && { stock: parseInt(body.stock) }),
-        },
+          ...(body.price !== undefined && { price: toNum(body.price) || 0 }),
+          ...(body.stock !== undefined && { stock: toNum(body.stock) || 0 }),
+        } as any,
       });
       return NextResponse.json(updated);
     }
@@ -64,28 +70,30 @@ export async function POST(req: Request) {
       data: {
         title,
         description: description || "",
-        price: parseFloat(price),
-        stock: parseInt(stock) || 0,
+        price: toNum(price) || 0,
+        stock: toNum(stock) || 0,
         images: Array.isArray(images) ? images.join(",") : images || "",
-        sizes: Array.isArray(sizes) ? sizes.join(",") : sizes || "",
-        colors: Array.isArray(colors) ? colors.join(",") : colors || "",
+        sizes: Array.isArray(sizes) ? sizes.join(",") : sizes || null,
+        colors: Array.isArray(colors) ? colors.join(",") : colors || null,
         vendorId,
         categoryId: categoryId || null,
-        brand: brand || "",
-        range: range || "",
+        brand: brand || null,
+        range: range || null,
         type: body.type || "SIMPLE",
-        sku: body.sku || "",
-        shortDescription: body.shortDescription || "",
-        weight: body.weight ? parseFloat(body.weight) : null,
-        length: body.length ? parseFloat(body.length) : null,
-        width: body.width ? parseFloat(body.width) : null,
-        height: body.height ? parseFloat(body.height) : null,
-        ram: body.ram || "",
-        storage: body.storage || "",
-        screenSize: body.screenSize || "",
-        bundleData: body.bundleData || "",
-        status: "APPROVED", // الأدمن يضيف مباشرة بدون مراجعة
-      },
+        sku: body.sku || null,
+        shortDescription: body.shortDescription || null,
+        weight: toNum(body.weight),
+        length: toNum(body.length),
+        width: toNum(body.width),
+        height: toNum(body.height),
+        ram: body.ram || null,
+        storage: body.storage || null,
+        screenSize: body.screenSize || null,
+        bundleData: body.bundleData || null,
+        discountPrice: toNum(discountPrice),
+        discountType: discountType || null,
+        status: "APPROVED", 
+      } as any,
     });
 
     return NextResponse.json(product);
@@ -104,7 +112,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { id, title, description, price, stock, images, categoryId, vendorId, status, brand, range, type, sku, shortDescription, weight, length, width, height, ram, storage, screenSize, bundleData } = body;
+    const { id, title, description, price, stock, images, categoryId, vendorId, status, brand, range, type, sku, shortDescription, weight, length, width, height, ram, storage, screenSize, bundleData, discountPrice, discountType } = body;
 
     if (!id) return NextResponse.json({ error: "id مطلوب" }, { status: 400 });
 
@@ -113,26 +121,28 @@ export async function PATCH(req: Request) {
       data: {
         ...(title && { title }),
         ...(description !== undefined && { description }),
-        ...(price !== undefined && { price: parseFloat(price) }),
-        ...(stock !== undefined && { stock: parseInt(stock) }),
+        ...(price !== undefined && { price: toNum(price) || 0 }),
+        ...(stock !== undefined && { stock: toNum(stock) || 0 }),
         ...(images !== undefined && { images: Array.isArray(images) ? images.join(",") : images }),
-        ...(categoryId !== undefined && { categoryId }),
+        ...(categoryId !== undefined && { categoryId: categoryId || null }),
         ...(vendorId && { vendorId }),
         ...(status && { status }),
-        ...(brand !== undefined && { brand }),
-        ...(range !== undefined && { range }),
+        ...(brand !== undefined && { brand: brand || null }),
+        ...(range !== undefined && { range: range || null }),
         ...(type !== undefined && { type }),
-        ...(sku !== undefined && { sku }),
-        ...(shortDescription !== undefined && { shortDescription }),
-        ...(weight !== undefined && { weight: parseFloat(weight) || null }),
-        ...(length !== undefined && { length: parseFloat(length) || null }),
-        ...(width !== undefined && { width: parseFloat(width) || null }),
-        ...(height !== undefined && { height: parseFloat(height) || null }),
-        ...(ram !== undefined && { ram }),
-        ...(storage !== undefined && { storage }),
-        ...(screenSize !== undefined && { screenSize }),
-        ...(bundleData !== undefined && { bundleData }),
-      },
+        ...(sku !== undefined && { sku: sku || null }),
+        ...(shortDescription !== undefined && { shortDescription: shortDescription || null }),
+        ...(weight !== undefined && { weight: toNum(weight) }),
+        ...(length !== undefined && { length: toNum(length) }),
+        ...(width !== undefined && { width: toNum(width) }),
+        ...(height !== undefined && { height: toNum(height) }),
+        ...(ram !== undefined && { ram: ram || null }),
+        ...(storage !== undefined && { storage: storage || null }),
+        ...(screenSize !== undefined && { screenSize: screenSize || null }),
+        ...(bundleData !== undefined && { bundleData: bundleData || null }),
+        ...(discountPrice !== undefined && { discountPrice: toNum(discountPrice) }),
+        ...(discountType !== undefined && { discountType: discountType || null }),
+      } as any,
     });
 
     return NextResponse.json(updated);

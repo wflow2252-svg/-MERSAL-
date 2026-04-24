@@ -123,6 +123,10 @@ model Product {
   width         Float?      // العرض
   height        Float?      // الارتفاع
   
+  // Discount Fields
+  discountPrice Float?      // سعر الخصم
+  discountType  String?     // PERCENTAGE | FIXED
+  
   // Tech Specs (for Variable Products)
   ram           String?     // الرام
   storage       String?     // سعة التخزين
@@ -140,6 +144,22 @@ model Product {
   orderItems    OrderItem[]
   category      Category?   @relation(fields: [categoryId], references: [id])
   vendor        Vendor      @relation(fields: [vendorId], references: [id])
+}
+
+model Attribute {
+  id        String   @id @default(cuid())
+  name      String   @unique // e.g. "Colors", "Sizes", "RAM"
+  options   AttributeOption[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AttributeOption {
+  id          String    @id @default(cuid())
+  attributeId String
+  value       String    // e.g. "Red", "XL", "8GB"
+  attribute   Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
 }
 
 model Category {

@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     const { 
       title, description, shortDescription, price, stock, images, categoryId, 
       sizes, colors, brand, range, type, sku, weight, length, width, height,
-      ram, storage, screenSize, bundleData 
+      ram, storage, screenSize, bundleData, discountPrice, discountType
     } = body;
 
     const numericPrice = parseFloat(price);
@@ -65,6 +65,7 @@ export async function POST(req: Request) {
     const numericLength = length ? parseFloat(length) : null;
     const numericWidth = width ? parseFloat(width) : null;
     const numericHeight = height ? parseFloat(height) : null;
+    const numericDiscountPrice = discountPrice ? parseFloat(discountPrice) : null;
 
     if (!title || isNaN(numericPrice)) {
       return NextResponse.json({ error: "الاسم والسعر مطلوبان بشكل صحيح" }, { status: 400 });
@@ -88,6 +89,8 @@ export async function POST(req: Request) {
         length: numericLength,
         width: numericWidth,
         height: numericHeight,
+        discountPrice: numericDiscountPrice,
+        discountType: discountType || null,
         ram: ram || null,
         storage: storage || null,
         screenSize: screenSize || null,

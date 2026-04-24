@@ -193,33 +193,41 @@ export default function VendorDashboard() {
                   </div>
                </div>
                
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {products.map(p => (
-                    <div key={p.id} className="bg-white p-5 rounded-2xl border border-border shadow-sm group relative">
-                       <div className="flex gap-4">
-                          <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-gray-100 border shrink-0">
-                             <Image src={p.images?.split(",")[0] || "/placeholder.png"} alt={p.title} fill className="object-cover" />
+                    <div key={p.id} className="bg-white rounded-[2rem] border border-border shadow-sm group hover:border-[#1089A4] transition-all overflow-hidden flex flex-col h-full">
+                       <div className="relative aspect-square bg-gray-50 group-hover:scale-105 transition-transform duration-500">
+                          <Image src={p.images?.split(",")[0] || "/placeholder.png"} alt={p.title} fill className="object-cover" />
+                          <div className="absolute top-4 left-4 flex gap-2">
+                             <button onClick={() => handleDeleteProduct(p.id)} className="w-10 h-10 bg-white/90 backdrop-blur text-red-500 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-red-500 hover:text-white">
+                                <span className="material-symbols-rounded text-sm">delete</span>
+                             </button>
+                             <button className="w-10 h-10 bg-white/90 backdrop-blur text-[#1089A4] rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-[#1089A4] hover:text-white">
+                                <span className="material-symbols-rounded text-sm">edit</span>
+                             </button>
                           </div>
-                          <div className="flex-grow">
-                             <div className="flex items-center gap-2 mb-1">
-                                <h4 className="font-black text-[#021D24] line-clamp-1">{p.title}</h4>
-                                <span className={cn(
-                                  "px-2 py-0.5 rounded-full text-[8px] font-black uppercase",
-                                  p.status === "PENDING" ? "bg-orange-50 text-orange-500 border border-orange-100" : "bg-green-50 text-green-500 border border-green-100"
-                                )}>
-                                  {p.status === "PENDING" ? "مراجعة" : "نشط"}
-                                </span>
+                          {p.status === "PENDING" && (
+                             <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest shadow-lg">
+                                قيد المراجعة
                              </div>
-                             <p className="text-[10px] text-gray-400 font-bold mb-3">{p.category?.name || "بدون تصنيف"}</p>
-                             <div className="flex items-center justify-between border-t pt-3">
-                                <span className="font-black text-[#1089A4]">{p.price.toLocaleString()} ج.س</span>
-                                <span className="text-[10px] text-gray-400 font-bold">المخزون: {p.stock}</span>
+                          )}
+                       </div>
+                       
+                       <div className="p-6 flex-grow flex flex-col">
+                          <p className="text-[10px] font-black text-[#1089A4] uppercase tracking-widest mb-1">{p.category?.name || "بدون تصنيف"}</p>
+                          <h4 className="font-black text-[#021D24] text-lg mb-4 line-clamp-1 group-hover:text-[#1089A4] transition-colors">{p.title}</h4>
+                          
+                          <div className="mt-auto pt-4 border-t flex items-center justify-between">
+                             <div>
+                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">السعر</p>
+                                <p className="font-black text-[#021D24]">{p.price.toLocaleString()} <span className="text-[10px]">ج.س</span></p>
+                             </div>
+                             <div className="text-left">
+                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">المخزون</p>
+                                <p className={cn("font-black", p.stock < 10 ? "text-red-500" : "text-[#021D24]")}>{p.stock} <span className="text-[10px]">ق</span></p>
                              </div>
                           </div>
                        </div>
-                       <button onClick={() => handleDeleteProduct(p.id)} className="absolute top-2 left-2 w-8 h-8 bg-red-50 text-red-500 rounded-lg opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-red-500 hover:text-white">
-                          <span className="material-symbols-rounded text-base">delete</span>
-                       </button>
                     </div>
                   ))}
                </div>
@@ -227,40 +235,112 @@ export default function VendorDashboard() {
           )}
 
           {activeTab === "orders" && (
-            <div className="bg-white rounded-3xl border border-border overflow-hidden shadow-sm">
-               <div className="px-8 py-6 border-b">
-                  <h3 className="font-black text-[#021D24] text-xl">إدارة الطلبات</h3>
+            <div className="space-y-6">
+               <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-2xl font-black text-[#021D24]">إدارة الطلبات</h3>
+                    <p className="text-sm text-gray-400 font-bold mt-1">تتبع وحالات طلبات متجرك</p>
+                  </div>
+                  <div className="flex gap-3">
+                     <button className="bg-white border border-border px-6 py-2.5 rounded-xl text-sm font-bold text-gray-600 hover:bg-gray-50 transition-colors">تصدير الفواتير</button>
+                     <button className="bg-[#021D24] text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-[#021D24]/90 transition-colors">طباعة البوليصات</button>
+                  </div>
                </div>
-               <div className="overflow-x-auto">
-                  <table className="w-full text-right">
-                     <thead>
-                        <tr className="bg-gray-50/50 text-[11px] font-black text-gray-400 uppercase tracking-widest border-b">
-                           <th className="px-8 py-4">الطلب</th>
-                           <th className="px-8 py-4">العميل</th>
-                           <th className="px-8 py-4">المدينة</th>
-                           <th className="px-8 py-4">المبلغ</th>
-                           <th className="px-8 py-4">الحالة</th>
-                        </tr>
-                     </thead>
-                     <tbody>
-                        {orders.map(order => (
-                           <tr key={order.id} className="border-b last:border-0 hover:bg-gray-50/50 transition-colors">
-                              <td className="px-8 py-6 font-black text-[#1089A4]">#{order.id.slice(-6)}</td>
-                              <td className="px-8 py-6 font-black text-[#021D24]">{order.customerName}</td>
-                              <td className="px-8 py-6 text-gray-400 text-sm">{order.city}</td>
-                              <td className="px-8 py-6 font-black">{order.totalAmount.toLocaleString()} ج.س</td>
-                              <td className="px-8 py-6">
-                                 <span className={cn(
-                                   "px-3 py-1 rounded-lg text-[10px] font-black uppercase",
-                                   order.status === "DELIVERED" ? "bg-green-100 text-green-600" : "bg-orange-100 text-orange-600"
-                                 )}>
-                                    {order.status}
-                                 </span>
-                              </td>
+
+               <div className="bg-white rounded-3xl border border-border overflow-hidden shadow-sm">
+                  <div className="overflow-x-auto">
+                     <table className="w-full text-right">
+                        <thead>
+                           <tr className="bg-gray-50/50 text-[11px] font-black text-gray-400 uppercase tracking-widest border-b">
+                              <th className="px-8 py-5">الطلب</th>
+                              <th className="px-8 py-5">العميل</th>
+                              <th className="px-8 py-5">المدينة</th>
+                              <th className="px-8 py-5">المبلغ الصافي</th>
+                              <th className="px-8 py-5 text-center">حالة التوصيل</th>
+                              <th className="px-8 py-5 text-center">الإجراء</th>
                            </tr>
-                        ))}
-                     </tbody>
-                  </table>
+                        </thead>
+                        <tbody>
+                           {orders.map(order => {
+                             const statusColor = order.status === "DELIVERED" ? "bg-green-50 text-green-600 border-green-100" : 
+                                               order.status === "SHIPPED" ? "bg-blue-50 text-blue-600 border-blue-100" :
+                                               "bg-orange-50 text-orange-600 border-orange-100";
+                             return (
+                               <tr key={order.id} className="border-b last:border-0 hover:bg-gray-50/50 transition-colors group">
+                                  <td className="px-8 py-6">
+                                     <p className="font-black text-[#1089A4] text-sm leading-none">#{order.id.slice(-6).toUpperCase()}</p>
+                                     <p className="text-[10px] text-gray-400 mt-1 font-bold">{new Date(order.createdAt).toLocaleDateString("ar-EG")}</p>
+                                  </td>
+                                  <td className="px-8 py-6">
+                                     <p className="font-black text-[#021D24] text-sm leading-none">{order.customerName}</p>
+                                     <p className="text-[10px] text-gray-400 mt-1 font-bold">{order.customerPhone}</p>
+                                  </td>
+                                  <td className="px-8 py-6">
+                                     <span className="text-xs font-bold text-gray-500">{order.city}</span>
+                                  </td>
+                                  <td className="px-8 py-6 font-black text-sm text-[#021D24]">{order.totalAmount.toLocaleString()} ج.س</td>
+                                  <td className="px-8 py-6 text-center">
+                                     <span className={cn("px-3 py-1 rounded-full text-[9px] font-black uppercase border", statusColor)}>
+                                        {order.status}
+                                     </span>
+                                  </td>
+                                  <td className="px-8 py-6 text-center">
+                                     <button className="w-8 h-8 rounded-lg bg-gray-50 text-gray-400 flex items-center justify-center mx-auto group-hover:bg-[#1089A4]/10 group-hover:text-[#1089A4] transition-all">
+                                        <span className="material-symbols-rounded text-sm">visibility</span>
+                                     </button>
+                                  </td>
+                               </tr>
+                             )
+                           })}
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+          )}
+
+          {activeTab === "finance" && (
+            <div className="space-y-8">
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-[#021D24] p-8 rounded-[2rem] text-white shadow-2xl relative overflow-hidden">
+                     <div className="relative z-10">
+                        <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-2">الرصيد القابل للسحب</p>
+                        <p className="text-4xl font-black">{statsData?.netProfit?.toLocaleString() || 0} <span className="text-sm">ج.س</span></p>
+                        <button className="mt-8 bg-[#1089A4] text-white w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#0d6e84] transition-all shadow-xl shadow-[#1089A4]/20">
+                           طلب سحب الأرباح
+                        </button>
+                     </div>
+                     <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
+                  </div>
+                  
+                  <div className="bg-white p-8 rounded-[2rem] border shadow-sm flex flex-col justify-center">
+                     <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">إجمالي المبيعات</p>
+                     <p className="text-3xl font-black text-[#021D24]">{statsData?.totalSales?.toLocaleString() || 0} <span className="text-sm font-bold opacity-40">ج.س</span></p>
+                     <div className="mt-4 flex items-center gap-2 text-green-500 bg-green-50 w-fit px-2 py-1 rounded-lg">
+                        <span className="material-symbols-rounded text-sm">trending_up</span>
+                        <span className="text-[10px] font-black">+12% هذا الشهر</span>
+                     </div>
+                  </div>
+
+                  <div className="bg-white p-8 rounded-[2rem] border shadow-sm flex flex-col justify-center">
+                     <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">العمولات المدفوعة</p>
+                     <p className="text-3xl font-black text-[#F29124]">{(statsData?.totalSales - statsData?.netProfit)?.toLocaleString() || 0} <span className="text-sm font-bold opacity-40">ج.س</span></p>
+                     <p className="text-[10px] text-gray-400 font-bold mt-2">بناءً على نسبة عمولة 10%</p>
+                  </div>
+               </div>
+
+               <div className="bg-white rounded-3xl border border-border overflow-hidden shadow-sm">
+                  <div className="px-8 py-6 border-b flex items-center justify-between">
+                     <h3 className="font-black text-[#021D24] text-xl">سجل السحوبات</h3>
+                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">آخر 10 عمليات</span>
+                  </div>
+                  <div className="p-12 text-center">
+                     <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-dashed border-gray-200">
+                        <span className="material-symbols-rounded text-3xl text-gray-300">receipt_long</span>
+                     </div>
+                     <p className="text-gray-400 font-bold">لا يوجد سجل سحوبات حالياً</p>
+                     <p className="text-[10px] text-gray-300 mt-1 uppercase tracking-widest">تظهر هنا العمليات بعد اكتمال أول طلب سحب</p>
+                  </div>
                </div>
             </div>
           )}

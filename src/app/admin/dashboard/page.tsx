@@ -268,6 +268,7 @@ export default function AdminDashboard() {
 
   // Data states
   const [stats, setStats] = useState<any[]>([]);
+  const [chartData, setChartData] = useState<any[]>([]);
   const [pendingVendors, setPendingVendors] = useState<any[]>([]);
   const [pendingProducts, setPendingProducts] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
@@ -374,6 +375,7 @@ export default function AdminDashboard() {
       if (res.ok) {
         const data = await res.json();
         setStats(data.stats || []);
+        setChartData(data.chartData || []);
         setPendingVendors(data.pendingVendors || []);
       } else {
         console.error("Failed to fetch stats:", res.status);
@@ -1398,13 +1400,63 @@ export default function AdminDashboard() {
                     </div>
                   ))}
                 </div>
+
+                {/* Platform Sales Chart */}
+                <div className="bg-white p-6 rounded-2xl border shadow-sm">
+                  <div className="flex items-center justify-between mb-8">
+                    <div>
+                      <h3 className="text-lg font-black text-[#021D24]">نمو المبيعات</h3>
+                      <p className="text-xs text-gray-400 font-bold">إجمالي مبيعات المنصة خلال آخر 7 أيام</p>
+                    </div>
+                    <div className="flex items-center gap-2 text-[#1089A4] bg-[#1089A4]/10 px-3 py-1.5 rounded-lg">
+                      <span className="material-symbols-rounded text-sm">trending_up</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">تحديث تلقائي</span>
+                    </div>
+                  </div>
+                  <div className="h-64 w-full relative">
+                    <svg viewBox="0 0 100 40" className="w-full h-full preserve-3d" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="adminChartGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#1089A4" stopOpacity="0.3" />
+                          <stop offset="100%" stopColor="#1089A4" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      {/* Grid Lines */}
+                      {[...Array(5)].map((_, i) => (
+                        <line key={i} x1="0" y1={i * 10} x2="100" y2={i * 10} stroke="#f0f0f0" strokeWidth="0.1" />
+                      ))}
+                      {chartData.length > 1 && (
+                        <>
+                          <path
+                            d={`M 0 40 ${chartData.map((d, i) => `L ${(i / (chartData.length - 1)) * 100} ${40 - (d.value / Math.max(...chartData.map(x => x.value || 1))) * 35}`).join(' ')} L 100 40 Z`}
+                            fill="url(#adminChartGradient)"
+                          />
+                          <path
+                            d={`M ${chartData.map((d, i) => `${(i / (chartData.length - 1)) * 100} ${40 - (d.value / Math.max(...chartData.map(x => x.value || 1))) * 35}`).join(' L ')}`}
+                            fill="none"
+                            stroke="#1089A4"
+                            strokeWidth="0.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </>
+                      )}
+                    </svg>
+                    <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 pt-4">
+                      {chartData.map((d, i) => (
+                        <span key={i} className="text-[8px] font-black text-gray-400 uppercase tracking-tighter">{d.name}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 {pendingVendors.length > 0 && (
-                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 flex items-center justify-between">
                     <p className="font-black text-orange-700 flex items-center gap-2">
                       <span className="material-symbols-rounded">warning</span>
                       {pendingVendors.length} موردون ينتظرون الموافقة
-                      <button onClick={() => setActiveTab("approvals")} className="mr-auto text-xs bg-orange-200 px-3 py-1 rounded-lg">عرض</button>
                     </p>
+                    <button onClick={() => setActiveTab("approvals")} className="text-xs bg-orange-200 px-3 py-1 rounded-lg font-bold hover:bg-orange-300 transition-all">عرض الطلبات</button>
                   </div>
                 )}
               </motion.div>
@@ -1499,139 +1551,77 @@ export default function AdminDashboard() {
                   {/* Table */}
                   <div className="overflow-x-auto min-h-[400px]">
                     <table className="w-full text-center text-xs whitespace-nowrap">
-                      <thead className="bg-white text-gray-500 border-b border-gray-200">
+                      <thead className="bg-white text-gray-400 border-b border-gray-200 uppercase tracking-widest text-[9px] font-black">
                         <tr>
-                          {/* content */}
-                          <th className="p-2 border-l min-w-[120px]">
-                             <div className="font-bold mb-1">المحتوى</div>
-                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" value={oContentSearch} onChange={e => setOContentSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
-                                <span className="material-symbols-rounded text-[14px]">search</span>
-                             </div>
-                          </th>
-                          {/* Special Notes */}
-                          <th className="p-2 border-l min-w-[120px]">
-                             <div className="font-bold mb-1">ملاحظات خاصة</div>
-                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" value={oNotesSearch} onChange={e => setONotesSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
-                                <span className="material-symbols-rounded text-[14px]">search</span>
-                             </div>
-                          </th>
-                          {/* Status */}
-                          <th className="p-2 border-l min-w-[120px]">
-                             <div className="font-bold mb-1">الحالة</div>
-                             {oStatusFilter === "قيد المراجعة" ? (
-                               <div className="bg-blue-50 border border-blue-200 text-blue-600 rounded px-2 py-1 flex items-center justify-between font-bold text-[10px]">
-                                  قيد المراجعة <span className="material-symbols-rounded text-[14px] cursor-pointer" onClick={() => setOStatusFilter("")}>close</span>
-                               </div>
-                             ) : (
-                               <select value={oStatusFilter} onChange={e => setOStatusFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full">
-                                  <option value="">الكل</option>
-                                  <option value="قيد المراجعة">قيد المراجعة</option>
-                                  <option value="REJECTED">ملغاة</option>
-                                  <option value="COMPLETED">مكتمل</option>
-                               </select>
-                             )}
-                          </th>
-                          {/* Track */}
-                          <th className="p-2 border-l">
-                             <div className="font-bold">متابعة الطرد</div>
-                          </th>
-                          {/* Dispatch Number */}
-                          <th className="p-2 border-l min-w-[120px]">
-                             <div className="font-bold mb-1">رقم الإرسالية</div>
-                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" value={oTrackingSearch} onChange={e => setOTrackingSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
-                                <span className="material-symbols-rounded text-[14px]">search</span>
-                             </div>
-                          </th>
-                          {/* COD */}
-                          <th className="p-2 border-l">
-                             <div className="font-bold mb-1">COD</div>
-                          </th>
-                          {/* Price */}
-                          <th className="p-2 border-l">
-                             <div className="font-bold mb-1">السعر</div>
-                          </th>
-                          {/* Created By */}
-                          <th className="p-2 border-l min-w-[140px]">
-                             <div className="font-bold mb-1">تم إنشاؤها بواسطة</div>
-                             <select value={oVendorFilter} onChange={e => setOVendorFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full">
-                                <option value="الكل">الكل</option>
-                                {Array.from(new Set(orders.map(o => o.customerEmail).filter(Boolean))).map(email => (
-                                   <option key={email as string} value={email as string}>{email as string}</option>
-                                ))}
-                             </select>
-                          </th>
-                          {/* Address */}
-                          <th className="p-2 border-l min-w-[180px]">
-                             <div className="font-bold mb-1">العنوان</div>
-                             <div className="flex gap-1">
-                                <select className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] flex-1"><option>تخصيص</option></select>
-                                <button className="bg-gray-50 border border-gray-200 rounded px-2 py-1 text-[10px]"><span className="material-symbols-rounded text-[14px]">edit</span></button>
-                             </div>
-                          </th>
-                          {/* Package No */}
-                          <th className="p-2 border-l min-w-[120px]">
-                             <div className="font-bold mb-1">رقم الطرد</div>
-                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
-                                <input type="text" value={oPackageSearch} onChange={e => setOPackageSearch(e.target.value)} placeholder="بحث" className="bg-transparent outline-none w-full text-[10px]" />
-                                <span className="material-symbols-rounded text-[14px]">search</span>
-                             </div>
-                          </th>
-                          {/* Checkbox */}
-                          <th className="p-4 w-10 text-center border-l"></th>
+                          <th className="p-3 border-l min-w-[150px]">المحتوى</th>
+                          <th className="p-3 border-l min-w-[120px]">حالة الطلب</th>
+                          <th className="p-3 border-l">المسار</th>
+                          <th className="p-3 border-l">عرض</th>
+                          <th className="p-3 border-l min-w-[120px]">رقم التتبع</th>
+                          <th className="p-3 border-l">COD</th>
+                          <th className="p-3 border-l">الإجمالي</th>
+                          <th className="p-3 border-l min-w-[140px]">البائع</th>
+                          <th className="p-3 border-l min-w-[180px]">العنوان</th>
+                          <th className="p-3 border-l">رقم الطرد</th>
+                          <th className="p-3 w-10"></th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
                         {filteredOrdersArray.map((order) => {
                           const statusConfig: any = {
-                            'PENDING': { label: 'معلق', color: 'bg-yellow-500' },
-                            'PROCESSING': { label: 'قيد التجهيز', color: 'bg-blue-500' },
-                            'SHIPPED': { label: 'قيد التوصيل', color: 'bg-purple-500' },
-                            'DELIVERED': { label: 'تم التوصيل', color: 'bg-green-500' },
-                            'POSTPONED': { label: 'مؤجل', color: 'bg-orange-500' },
-                            'RETURNED': { label: 'مرتجع', color: 'bg-gray-500' },
-                            'REJECTED': { label: 'ملغاة', color: 'bg-red-500' },
+                            'PENDING': { label: 'معلق', color: 'bg-yellow-500', icon: 'schedule' },
+                            'PROCESSING': { label: 'قيد التجهيز', color: 'bg-blue-500', icon: 'package' },
+                            'SHIPPED': { label: 'قيد التوصيل', color: 'bg-purple-500', icon: 'local_shipping' },
+                            'DELIVERED': { label: 'تم التوصيل', color: 'bg-green-500', icon: 'check_circle' },
+                            'POSTPONED': { label: 'مؤجل', color: 'bg-orange-500', icon: 'event_busy' },
+                            'RETURNED': { label: 'مرتجع', color: 'bg-gray-500', icon: 'keyboard_return' },
+                            'REJECTED': { label: 'ملغاة', color: 'bg-red-500', icon: 'cancel' },
                           };
-                          const s = statusConfig[order.status] || { label: order.status, color: 'bg-gray-400' };
+                          const s = statusConfig[order.status] || { label: order.status, color: 'bg-gray-400', icon: 'help' };
 
                           return (
                             <tr 
                               key={order.id} 
                               onClick={() => openEditOrder(order)} 
                               className={cn(
-                                "transition-colors cursor-pointer border-b",
-                                order.status === 'REJECTED' ? 'bg-red-50 hover:bg-red-100' : 'bg-white hover:bg-gray-50'
+                                "transition-colors cursor-pointer group",
+                                order.status === 'REJECTED' ? 'bg-red-50/50 hover:bg-red-50' : 'bg-white hover:bg-gray-50/50'
                               )}
                             >
-                              <td className="p-3 border-l text-gray-400 max-w-[150px] truncate">
-                                 {order.notes || "—"}
+                              <td className="p-4 border-l text-gray-500 max-w-[150px] truncate text-right">
+                                 {order.items?.[0]?.product?.title || "—"}
+                                 {order.items?.length > 1 && <span className="text-[10px] text-[#1089A4] block mt-0.5">+{order.items.length - 1} منتجات أخرى</span>}
                               </td>
-                              <td className="p-3 border-l font-bold text-gray-500">
-                                 <button className={cn("text-white px-4 py-1.5 rounded-lg font-black text-[10px] shadow-sm min-w-[80px]", s.color)}>
+                              <td className="p-4 border-l">
+                                 <div className={cn("inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white font-black text-[9px] shadow-sm", s.color)}>
+                                   <span className="material-symbols-rounded text-xs">{s.icon}</span>
                                    {s.label}
-                                 </button>
-                              </td>
-                              <td className="p-3 border-l">
-                                 <div className="flex items-center justify-center gap-1">
-                                   <div className={cn("w-2.5 h-2.5 rounded-full", s.color)}></div>
-                                   <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
                                  </div>
                               </td>
-                              <td className="p-3 border-l text-blue-500 hover:underline">
-                                 <span className="material-symbols-rounded text-sm">visibility</span>
+                              <td className="p-4 border-l">
+                                 <div className="flex items-center justify-center gap-1">
+                                   <div className={cn("w-2 h-2 rounded-full", s.color)}></div>
+                                   <div className="w-1.5 h-1.5 rounded-full bg-gray-200"></div>
+                                   <div className="w-1.5 h-1.5 rounded-full bg-gray-200"></div>
+                                 </div>
                               </td>
-                              <td className="p-3 border-l font-bold text-gray-600">{order.trackingNumber || "—"}</td>
-                              <td className="p-3 border-l font-black">ج.س {order.paymentMethod === "COD" ? order.totalAmount?.toLocaleString() : 0}</td>
-                              <td className="p-3 border-l font-black text-[#1089A4]">ج.س {order.totalAmount?.toLocaleString()}</td>
-                              <td className="p-3 border-l text-gray-500 text-[10px] font-bold">
-                                {order.items?.[0]?.vendor?.storeName || order.customerEmail || "—"}
+                              <td className="p-4 border-l">
+                                 <button className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 group-hover:text-[#1089A4] transition-colors">
+                                   <span className="material-symbols-rounded text-sm">visibility</span>
+                                 </button>
                               </td>
-                              <td className="p-3 border-l text-[10px] text-gray-600 leading-tight w-[200px] whitespace-normal text-right">
-                                 {`${order.street || ''}، ${order.district || ''}، ${order.city}`}
+                              <td className="p-4 border-l font-mono text-gray-600 font-bold">{order.trackingNumber || "—"}</td>
+                              <td className="p-4 border-l font-black text-gray-700">{order.paymentMethod === "COD" ? order.totalAmount?.toLocaleString() : 0}</td>
+                              <td className="p-4 border-l font-black text-[#1089A4]">{order.totalAmount?.toLocaleString()}</td>
+                              <td className="p-4 border-l">
+                                <span className="text-[10px] font-black text-gray-400 bg-gray-50 px-2 py-1 rounded-md">
+                                  {order.items?.[0]?.product?.vendor?.storeName || "—"}
+                                </span>
                               </td>
-                              <td className="p-3 font-mono text-gray-400 border-l">#100{order.id?.slice(-5).toUpperCase()}</td>
+                              <td className="p-4 border-l text-[10px] text-gray-500 leading-tight w-[200px] whitespace-normal text-right">
+                                 {order.city} — {order.district}
+                              </td>
+                              <td className="p-4 border-l font-mono text-gray-400">#100{order.id?.slice(-5).toUpperCase()}</td>
                               <td className="p-4 text-center" onClick={(e) => { e.stopPropagation(); toggleOrderSelection(order.id); }}>
                                 <input type="checkbox" checked={selectedOrders.includes(order.id)} readOnly className="rounded text-[#1089A4] w-4 h-4 cursor-pointer" />
                               </td>
@@ -2365,18 +2355,38 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Filter Bar */}
-                  <div className="bg-gray-50 p-3 flex justify-between items-center border-b border-gray-200">
-                    <div className="flex items-center gap-2">
-                       <div className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-2">
-                          <span className="material-symbols-rounded text-sm text-gray-400">search</span>
-                          <input type="text" value={inventorySearch} onChange={e => setInventorySearch(e.target.value)} placeholder="بحث سريح..." className="bg-transparent outline-none w-40 text-xs" />
-                       </div>
-                       <select className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 outline-none text-xs w-24 font-bold text-gray-500"><option>تخصيص</option></select>
-                       <select className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 outline-none text-xs w-24 font-bold text-gray-500"><option>الفلاتر</option></select>
+                  <div className="bg-white p-6 grid grid-cols-1 md:grid-cols-4 gap-4 border-b border-gray-100">
+                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 flex flex-col gap-1">
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">إجمالي المنتجات</span>
+                      <span className="text-2xl font-black text-[#021D24]">{inventoryProducts.length}</span>
                     </div>
+                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col gap-1">
+                      <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">نشطة</span>
+                      <span className="text-2xl font-black text-[#1089A4]">{inventoryProducts.filter(p => p.status === 'APPROVED').length}</span>
+                    </div>
+                    <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100 flex flex-col gap-1">
+                      <span className="text-[10px] font-black text-yellow-600 uppercase tracking-widest">قيد المراجعة</span>
+                      <span className="text-2xl font-black text-yellow-600">{inventoryProducts.filter(p => p.status === 'PENDING').length}</span>
+                    </div>
+                    <div className="bg-red-50 p-4 rounded-xl border border-red-100 flex flex-col gap-1">
+                      <span className="text-[10px] font-black text-red-400 uppercase tracking-widest">مرفوضة</span>
+                      <span className="text-2xl font-black text-red-500">{inventoryProducts.filter(p => p.status === 'REJECTED').length}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50/50 p-4 flex justify-between items-center border-b border-gray-200">
                     <div className="flex items-center gap-3">
-                       <span className="text-gray-400 font-bold">تحديد الكل</span>
-                       <input type="checkbox" className="rounded text-[#1089A4] w-4 h-4 cursor-pointer" />
+                       <div className="bg-white border border-gray-200 rounded-xl px-3 py-2 flex items-center gap-2 shadow-sm focus-within:border-[#1089A4] transition-all">
+                          <span className="material-symbols-rounded text-sm text-gray-400">search</span>
+                          <input type="text" value={inventorySearch} onChange={e => setInventorySearch(e.target.value)} placeholder="بحث في المنتجات..." className="bg-transparent outline-none w-56 text-xs font-bold" />
+                       </div>
+                       <div className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl shadow-sm text-xs font-bold text-gray-500 cursor-pointer hover:bg-gray-50 transition-all">
+                          <span className="material-symbols-rounded text-sm">filter_list</span>
+                          تصفية متقدمة
+                       </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                       <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">عرض 25 من {inventoryProducts.length}</span>
                     </div>
                   </div>
 
@@ -2430,41 +2440,63 @@ export default function AdminDashboard() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
-                        {filteredInventoryArray.map(p => (
-                          <tr key={p.id} className={cn("transition-colors cursor-pointer", p.status === 'REJECTED' ? 'bg-red-50 hover:bg-red-100' : 'bg-white hover:bg-gray-50')}>
-                            <td className="p-3 border-l text-right flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 border flex-shrink-0">
-                                {p.images && <Image src={p.images.split(",")[0]} alt="" width={40} height={40} className="object-cover w-full h-full" />}
-                              </div>
-                              <span className="font-bold text-gray-700 truncate max-w-[200px]">{p.title}</span>
-                            </td>
-                            <td className="p-3 border-l text-gray-500 font-bold">{p.category?.name || '—'}</td>
-                            <td className="p-3 border-l text-[#1089A4] font-black">{p.vendor?.storeName || '—'}</td>
-                            <td className="p-3 border-l font-black text-gray-700">
-                              <span className={cn("px-2 py-0.5 rounded-md", p.stock < 10 ? "bg-red-100 text-red-600" : "bg-gray-100")}>{p.stock}</span>
-                            </td>
-                            <td className="p-3 border-l font-black text-[#F29124]">ج.س {p.price?.toLocaleString()}</td>
-                            <td className="p-3 border-l">
-                               <button className={cn(
-                                 "text-white px-4 py-1 rounded-lg font-black text-[9px] shadow-sm",
-                                 p.status === 'APPROVED' ? 'bg-green-500' : p.status === 'PENDING' ? 'bg-yellow-500' : 'bg-red-500'
-                               )}>
-                                 {p.status === 'APPROVED' ? 'نشط' : p.status === 'PENDING' ? 'بانتظار الموافقة' : 'مرفوض'}
-                               </button>
-                            </td>
-                            <td className="p-3 border-l">
-                              <div className="flex items-center justify-center gap-2">
-                                <button onClick={(e) => { e.stopPropagation(); openEditProduct(p); }} className="w-7 h-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors">
-                                  <span className="material-symbols-rounded text-sm">edit</span>
-                                </button>
-                                <button onClick={(e) => { e.stopPropagation(); handleDeleteProduct(p.id); }} className="w-7 h-7 bg-red-50 text-red-600 rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors">
-                                  <span className="material-symbols-rounded text-sm">delete</span>
-                                </button>
-                              </div>
-                            </td>
-                            <td className="p-3 font-mono text-gray-400">#{p.id.slice(-6).toUpperCase()}</td>
-                          </tr>
-                        ))}
+                        {filteredInventoryArray.map(p => {
+                          const statusConfig: any = {
+                            'APPROVED': { label: 'نشط', color: 'bg-green-500', icon: 'check_circle' },
+                            'PENDING': { label: 'قيد المراجعة', color: 'bg-yellow-500', icon: 'schedule' },
+                            'REJECTED': { label: 'مرفوض', color: 'bg-red-500', icon: 'cancel' },
+                          };
+                          const s = statusConfig[p.status] || { label: p.status, color: 'bg-gray-400', icon: 'help' };
+
+                          return (
+                            <tr key={p.id} className={cn("transition-colors cursor-pointer group", p.status === 'REJECTED' ? 'bg-red-50/50 hover:bg-red-50' : 'bg-white hover:bg-gray-50/50')}>
+                              <td className="p-4 border-l text-right flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-50 border flex-shrink-0 group-hover:scale-105 transition-transform">
+                                  {p.images && <Image src={p.images.split(",")[0]} alt="" width={48} height={48} className="object-cover w-full h-full" />}
+                                </div>
+                                <div>
+                                  <span className="font-black text-gray-700 block text-sm">{p.title}</span>
+                                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{p.id.slice(-8).toUpperCase()}</span>
+                                </div>
+                              </td>
+                              <td className="p-4 border-l">
+                                 <span className="bg-gray-50 text-gray-500 px-3 py-1 rounded-lg font-bold text-[10px] border border-gray-100">
+                                   {p.category?.name || '—'}
+                                 </span>
+                              </td>
+                              <td className="p-4 border-l text-[#1089A4] font-black text-sm">
+                                {p.vendor?.storeName || '—'}
+                              </td>
+                              <td className="p-4 border-l">
+                                <div className="flex flex-col items-center">
+                                  <span className={cn("px-2.5 py-1 rounded-lg font-black text-xs shadow-sm border", p.stock < 10 ? "bg-red-50 text-red-600 border-red-100" : "bg-gray-50 text-gray-700 border-gray-100")}>
+                                    {p.stock}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="p-4 border-l font-black text-sm text-[#021D24]">
+                                {p.price?.toLocaleString()} <span className="text-[10px] opacity-40">ج.س</span>
+                              </td>
+                              <td className="p-4 border-l">
+                                 <div className={cn("inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white font-black text-[9px] shadow-sm", s.color)}>
+                                   <span className="material-symbols-rounded text-xs">{s.icon}</span>
+                                   {s.label}
+                                 </div>
+                              </td>
+                              <td className="p-4 border-l">
+                                <div className="flex items-center justify-center gap-2">
+                                  <button onClick={(e) => { e.stopPropagation(); openEditProduct(p); }} className="w-8 h-8 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all shadow-sm">
+                                    <span className="material-symbols-rounded text-sm">edit</span>
+                                  </button>
+                                  <button onClick={(e) => { e.stopPropagation(); handleDeleteProduct(p.id); }} className="w-8 h-8 bg-red-50 text-red-600 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                                    <span className="material-symbols-rounded text-sm">delete</span>
+                                  </button>
+                                </div>
+                              </td>
+                              <td className="p-4 font-mono text-gray-300 text-[10px]">#{p.id.slice(-6).toUpperCase()}</td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>

@@ -2423,6 +2423,13 @@ export default function AdminDashboard() {
                              </div>
                           </th>
                           <th className="p-3 border-l min-w-[120px]">
+                             <div className="font-black mb-1">باركود</div>
+                             <div className="bg-gray-50 border border-gray-200 rounded px-2 py-1 flex items-center justify-between">
+                                <input type="text" value={pIdSearch} onChange={e => setPIdSearch(e.target.value)} placeholder="رقم SKU" className="bg-transparent outline-none w-full text-[10px]" />
+                                <span className="material-symbols-rounded text-[14px]">barcode</span>
+                             </div>
+                          </th>
+                          <th className="p-3 border-l min-w-[120px]">
                              <div className="font-black mb-1">القسم</div>
                              <select value={pCategoryFilter} onChange={e => setPCategoryFilter(e.target.value)} className="bg-gray-50 border border-gray-200 rounded px-2 py-1 outline-none text-[10px] w-full font-bold">
                                 <option value="الكل">الكل</option>

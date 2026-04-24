@@ -194,7 +194,21 @@ export default function VendorStoreSettings() {
                 <input 
                   type="text" 
                   value={formData.storeName}
-                  onChange={e => setFormData({ ...formData, storeName: e.target.value })}
+                  onChange={e => {
+                    const name = e.target.value;
+                    const generatedSlug = name
+                      .toLowerCase()
+                      .trim()
+                      .replace(/[^\u0600-\u06FFa-z0-9\s-]/g, "") // Keep Arabic letters, English letters, numbers, spaces, and hyphens
+                      .replace(/\s+/g, "-") // Replace spaces with hyphens
+                      .replace(/-+/g, "-"); // Consolidate multiple hyphens
+                    
+                    setFormData({ 
+                      ...formData, 
+                      storeName: name,
+                      slug: generatedSlug 
+                    });
+                  }}
                   className="w-full bg-gray-50 border border-transparent rounded-xl px-4 py-3 focus:border-[#1089A4] focus:bg-white outline-none transition-all font-black text-sm"
                 />
               </div>

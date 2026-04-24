@@ -215,7 +215,7 @@ export default function VendorStoreSettings() {
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">رابط المتجر (Slug)</label>
                 <div className="flex items-center bg-gray-50 rounded-xl border border-transparent focus-within:border-[#1089A4] focus-within:bg-white transition-all overflow-hidden px-4">
-                  <span className="text-[10px] font-black text-gray-300">/store/</span>
+                  <span className="text-[10px] font-black text-[#1089A4]/50">https://www.morsall.com/store/</span>
                   <input 
                     type="text" 
                     value={formData.slug}

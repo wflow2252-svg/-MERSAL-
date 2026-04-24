@@ -24,21 +24,21 @@ export default function VendorReviews() {
   return (
     <div className="space-y-12">
       <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h2 className="text-4xl font-black text-[#021D24] tracking-tighter">تقييمات <span className="text-yellow-500">العملاء</span></h2>
-          <p className="text-gray-400 font-bold">راقب آراء العملاء حول منتجاتك لتحسين جودة متجرك.</p>
+        <div className="space-y-1">
+          <h2 className="text-3xl font-black text-[#021D24]">تقييمات العملاء</h2>
+          <p className="text-gray-400 font-bold">راقب آراء العملاء حول منتجاتك لتحسين الجودة.</p>
         </div>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-20 animate-spin material-symbols-rounded text-4xl text-gray-200">sync</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {reviews.map(review => (
-            <div key={review.id} className="bg-white p-8 rounded-[3rem] border-4 border-white shadow-xl space-y-6 group">
+            <div key={review.id} className="bg-white p-6 rounded-2xl border shadow-sm space-y-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gray-100 rounded-full overflow-hidden flex items-center justify-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-full overflow-hidden flex items-center justify-center">
                     {review.user?.image ? (
                       <img src={review.user.image} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -46,7 +46,7 @@ export default function VendorReviews() {
                     )}
                   </div>
                   <div>
-                    <h4 className="font-black text-[#021D24] text-sm">{review.user?.name || "عميل مجهول"}</h4>
+                    <h4 className="font-black text-[#021D24] text-xs">{review.user?.name || "عميل مجهول"}</h4>
                     <p className="text-[10px] text-gray-400 font-bold">{new Date(review.createdAt).toLocaleDateString("ar-EG")}</p>
                   </div>
                 </div>
@@ -56,11 +56,11 @@ export default function VendorReviews() {
                   ))}
                 </div>
               </div>
-              <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 italic text-gray-500 text-xs font-medium leading-relaxed">
+              <div className="p-4 bg-gray-50/50 rounded-xl border border-gray-100 italic text-gray-500 text-xs font-medium leading-relaxed">
                 "{review.comment}"
               </div>
-              <div className="flex items-center gap-4 pt-4 border-t border-gray-50">
-                 <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-gray-100">
+              <div className="flex items-center gap-3 pt-3 border-t">
+                 <div className="relative w-10 h-10 rounded-lg overflow-hidden border">
                     <img src={review.product?.images?.split(',')[0]} alt="" className="w-full h-full object-cover" />
                  </div>
                  <div className="flex flex-col">
@@ -72,9 +72,9 @@ export default function VendorReviews() {
           ))}
 
           {reviews.length === 0 && (
-            <div className="col-span-full py-20 text-center bg-gray-50 rounded-[4rem] border-4 border-dashed border-gray-200">
-              <span className="material-symbols-rounded text-6xl text-gray-200 mb-4 block">rate_review</span>
-              <p className="text-gray-400 font-black text-xl uppercase tracking-widest">لا توجد تقييمات بعد</p>
+            <div className="col-span-full py-20 text-center bg-gray-50/50 rounded-3xl border border-dashed">
+              <span className="material-symbols-rounded text-5xl text-gray-200 mb-3 block">rate_review</span>
+              <p className="text-gray-400 font-black text-sm uppercase tracking-widest">لا توجد تقييمات بعد</p>
             </div>
           )}
         </div>

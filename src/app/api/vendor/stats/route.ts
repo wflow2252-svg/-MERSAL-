@@ -58,6 +58,7 @@ export async function GET(req: Request) {
       activeOrdersCount,
       subscriptionEndsAt: vendor.subscriptionEndsAt,
       planName: vendor.plan?.name,
+      slug: vendor.slug,
       currency: "ج.س"
     });
   } catch (error: any) {

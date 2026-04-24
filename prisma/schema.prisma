@@ -28,6 +28,7 @@ model User {
   orders        Order[]
   sessions      Session[]
   vendorProfile Vendor?
+  reviews       Review[]
 }
 
 model Account {
@@ -103,6 +104,7 @@ model Vendor {
   products         Product[]
   user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   withdrawals      Withdrawal[]
+  coupons          Coupon[]
 }
 
 model SubscriptionPlan {
@@ -157,6 +159,7 @@ model Product {
   orderItems    OrderItem[]
   category      Category?   @relation(fields: [categoryId], references: [id])
   vendor        Vendor      @relation(fields: [vendorId], references: [id])
+  reviews       Review[]
 }
 
 model Attribute {
@@ -291,4 +294,27 @@ model DeliveryDriver {
   isActive    Boolean  @default(true)
   orders      Order[]
   createdAt   DateTime @default(now())
+}model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String?
+  productId String
+  userId    String
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Coupon {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  discountType    String   // PERCENTAGE | FIXED
+  discountValue   Float
+  minOrderAmount  Float?   @default(0)
+  maxDiscount     Float?   @default(0)
+  expiryDate      DateTime?
+  isActive        Boolean  @default(true)
+  vendorId        String
+  vendor          Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
 }

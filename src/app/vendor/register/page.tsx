@@ -9,9 +9,10 @@ import { useSession } from "next-auth/react";
 
 export default function VendorRegister() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
@@ -38,6 +39,30 @@ export default function VendorRegister() {
     }
   }, [session]);
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "bankStatementUrl" | "commercialRegUrl") => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(type);
+    const formDataUpload = new FormData();
+    formDataUpload.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formDataUpload
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "فشل رفع الملف");
+
+      setFormData(prev => ({ ...prev, [type]: data.url }));
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsUploading(null);
+    }
+  };
+
   const nextStep = () => {
     if (step === 1 && (!formData.name || !formData.email || !formData.phone)) return;
     if (step === 2 && !formData.storeName) return;
@@ -57,6 +82,8 @@ export default function VendorRegister() {
       });
 
       if (res.ok) {
+        // Refresh session to get vendor status immediately
+        await update();
         router.push("/vendor/dashboard?status=pending");
       } else {
         const data = await res.json();
@@ -237,13 +264,62 @@ export default function VendorRegister() {
                   <p className="text-[10px] font-black text-[#CB2E26] uppercase tracking-[0.4em]">تحميل الأوراق الثبوتية للمتجر</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="p-10 border-4 border-dashed border-gray-100 rounded-[3rem] text-center bg-muted/10 hover:border-[#1089A4] hover:bg-sky-50 transition-all cursor-pointer group">
-                      <span className="material-symbols-rounded text-4xl text-[#1089A4] mb-4 block group-hover:scale-125 transition-transform">cloud_upload</span>
-                      <h4 className="text-[10px] font-black text-[#021D24] uppercase tracking-widest">كشف الحساب</h4>
+                    <div 
+                      onClick={() => document.getElementById('bank-upload')?.click()}
+                      className={cn(
+                        "p-10 border-4 border-dashed rounded-[3rem] text-center transition-all cursor-pointer group relative overflow-hidden",
+                        formData.bankStatementUrl && formData.bankStatementUrl !== "placeholder_url" ? "border-[#10B981] bg-green-50" : "border-gray-100 bg-muted/10 hover:border-[#1089A4] hover:bg-sky-50"
+                      )}
+                    >
+                      <input 
+                        id="bank-upload" 
+                        type="file" 
+                        className="hidden" 
+                        onChange={(e) => handleFileUpload(e, "bankStatementUrl")} 
+                        accept="image/*,.pdf"
+                      />
+                      {isUploading === "bankStatementUrl" ? (
+                        <div className="w-10 h-10 border-4 border-[#1089A4] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                      ) : (
+                        <span className={cn(
+                          "material-symbols-rounded text-4xl mb-4 block group-hover:scale-125 transition-transform",
+                          formData.bankStatementUrl && formData.bankStatementUrl !== "placeholder_url" ? "text-[#10B981]" : "text-[#1089A4]"
+                        )}>
+                          {formData.bankStatementUrl && formData.bankStatementUrl !== "placeholder_url" ? "check_circle" : "cloud_upload"}
+                        </span>
+                      )}
+                      <h4 className="text-[10px] font-black text-[#021D24] uppercase tracking-widest">
+                        {formData.bankStatementUrl && formData.bankStatementUrl !== "placeholder_url" ? "تم رفع كشف الحساب" : "كشف الحساب"}
+                      </h4>
                     </div>
-                    <div className="p-10 border-4 border-dashed border-gray-100 rounded-[3rem] text-center bg-muted/10 hover:border-[#F29124] hover:bg-orange-50 transition-all cursor-pointer group">
-                      <span className="material-symbols-rounded text-4xl text-[#F29124] mb-4 block group-hover:scale-125 transition-transform">verified</span>
-                      <h4 className="text-[10px] font-black text-[#021D24] uppercase tracking-widest">السجل التجاري</h4>
+
+                    <div 
+                      onClick={() => document.getElementById('comm-upload')?.click()}
+                      className={cn(
+                        "p-10 border-4 border-dashed rounded-[3rem] text-center transition-all cursor-pointer group relative overflow-hidden",
+                        formData.commercialRegUrl ? "border-[#F29124] bg-orange-50" : "border-gray-100 bg-muted/10 hover:border-[#F29124] hover:bg-orange-50"
+                      )}
+                    >
+                      <input 
+                        id="comm-upload" 
+                        type="file" 
+                        className="hidden" 
+                        onChange={(e) => handleFileUpload(e, "commercialRegUrl")} 
+                        accept="image/*,.pdf"
+                      />
+                      {isUploading === "commercialRegUrl" ? (
+                        <div className="w-10 h-10 border-4 border-[#F29124] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                      ) : (
+                        <span className={cn(
+                          "material-symbols-rounded text-4xl mb-4 block group-hover:scale-125 transition-transform",
+                          formData.commercialRegUrl ? "text-[#F29124]" : "text-[#F29124]"
+                        )}>
+                          {formData.commercialRegUrl ? "verified" : "verified"}
+                        </span>
+                      )}
+                      <h4 className="text-[10px] font-black text-[#021D24] uppercase tracking-widest">
+                        {formData.commercialRegUrl ? "تم رفع السجل التجاري" : "السجل التجاري"}
+                      </h4>
                     </div>
                 </div>
                 <div className="flex gap-4 pt-12">

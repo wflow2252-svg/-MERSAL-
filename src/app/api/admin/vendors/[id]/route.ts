@@ -16,15 +16,27 @@ export async function PATCH(
     const { id } = await params;
     const data = await req.json();
 
-    const updatedVendor = await prisma.vendor.update({
-      where: { id },
-      data: {
-        status: data.status,
-        commissionType: data.commissionType,
-        commissionRate: data.commissionRate,
-        fixedFee: data.fixedFee,
-        subscriptionFee: data.subscriptionFee,
+    const updatedVendor = await prisma.$transaction(async (tx) => {
+      const v = await tx.vendor.update({
+        where: { id },
+        data: {
+          status: data.status,
+          commissionType: data.commissionType,
+          commissionRate: data.commissionRate,
+          fixedFee: data.fixedFee,
+          subscriptionFee: data.subscriptionFee,
+          subscriptionEndsAt: data.status === 'APPROVED' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : undefined,
+        }
+      });
+
+      if (data.status === 'APPROVED') {
+        await tx.user.update({
+          where: { id: v.userId },
+          data: { role: 'VENDOR' }
+        });
       }
+
+      return v;
     });
 
     return NextResponse.json(updatedVendor);

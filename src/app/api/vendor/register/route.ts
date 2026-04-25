@@ -19,7 +19,8 @@ export async function POST(req: Request) {
       storeName, 
       storeCity, 
       bankStatementUrl, 
-      commercialRegUrl 
+      commercialRegUrl,
+      shippingModel
     } = body;
 
     // 1. Find the existing user
@@ -67,8 +68,10 @@ export async function POST(req: Request) {
           location: storeCity,
           bankStatementUrl: bankStatementUrl || "pending",
           commercialRegUrl: commercialRegUrl || null,
+          shippingModel: shippingModel || "VENDOR_PACKS",
           status: "PENDING",
           commissionRate: 10.0,
+          subscriptionEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days trial
         },
       });
     });

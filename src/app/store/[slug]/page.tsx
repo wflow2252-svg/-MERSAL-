@@ -21,7 +21,7 @@ export default async function VendorStorePage({ params }: { params: Promise<{ sl
 
   if (!vendor) notFound();
 
-  const isExpired = vendor.subscriptionEndsAt ? new Date(vendor.subscriptionEndsAt) < new Date() : true;
+  const isExpired = vendor.subscriptionEndsAt ? new Date(vendor.subscriptionEndsAt) < new Date() : false;
   
   // Custom Styles from Vendor
   const primaryColor = vendor.primaryColor || "#0F1629";

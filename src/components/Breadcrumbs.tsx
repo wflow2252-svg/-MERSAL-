@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils"
 export default function Breadcrumbs() {
   const pathname = usePathname()
   
-  // Skip breadcrumbs on home
-  if (pathname === "/") return null
+  // Skip breadcrumbs on home and dashboard routes
+  if (pathname === "/" || pathname?.startsWith("/admin") || pathname?.startsWith("/vendor")) return null
 
   const paths = pathname.split("/").filter(Boolean)
   

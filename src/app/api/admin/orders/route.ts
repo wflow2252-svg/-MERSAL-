@@ -52,6 +52,11 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "id و status مطلوبان" }, { status: 400 });
     }
 
+    const existingOrder = await db.order.findUnique({ where: { id } });
+    if (existingOrder?.status === "DELIVERED") {
+      return NextResponse.json({ error: "لا يمكن تعديل حالة الطلب بعد التسليم النهائي" }, { status: 400 });
+    }
+
     const updateData: any = {
       status,
       updatedAt: new Date(),

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useSession, signOut } from "next-auth/react";
 import { useCart } from "@/lib/CartContext";
 import { useWishlist } from "@/lib/WishlistContext";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const NAV_CATS = [
@@ -32,8 +32,13 @@ export default function Navbar() {
   const [userCity, setUserCity] = useState("جاري التحديد...");
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
   const isAdmin = (session?.user as any)?.role === "ADMIN";
   const isAuthenticated = status === "authenticated";
+
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/vendor")) {
+    return null;
+  }
 
 
   const handleSearch = (e?: React.FormEvent) => {

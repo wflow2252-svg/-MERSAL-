@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const COLS = [
   {
@@ -43,6 +44,9 @@ const COLS = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/vendor")) return null;
+
   return (
     <footer dir="rtl" className="mt-12">
 

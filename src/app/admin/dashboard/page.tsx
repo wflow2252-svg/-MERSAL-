@@ -336,6 +336,7 @@ export default function AdminDashboard() {
   const [editOrderStatus, setEditOrderStatus] = useState("");
   const [editOrderTracking, setEditOrderTracking] = useState("");
   const [editOrderNotes, setEditOrderNotes] = useState("");
+  const [editOrderShippingCost, setEditOrderShippingCost] = useState("");
   const [editOrderLoading, setEditOrderLoading] = useState(false);
 
   // Admin Product Add/Edit Modal
@@ -391,7 +392,7 @@ export default function AdminDashboard() {
       if (activeTab === "overview") await fetchStats();
       if (activeTab === "approvals") {
         await fetchStats();
-        const r = await fetch("/api/admin/products");
+        const r = await fetch("/api/admin/products?type=pending");
         if (r.ok) setPendingProducts(await r.json());
       }
       if (activeTab === "users") {
@@ -679,6 +680,9 @@ export default function AdminDashboard() {
   };
 
   const handleOrderStatus = async (id: string, status: string) => {
+    const currentOrder = orders.find(o => o.id === id);
+    if (currentOrder?.status === "DELIVERED") return alert("لا يمكن تغيير حالة الطلب بعد التسليم");
+    
     if (status === "SHIPPED") {
       const order = orders.find(o => o.id === id);
       setDeliveryPrice(order?.shippingCost?.toString() || "0");
@@ -909,10 +913,15 @@ export default function AdminDashboard() {
 
   // ── Order Edit (Logestechs-style) ──
   const openEditOrder = (order: any) => {
+    if (order.status === "DELIVERED") {
+       alert("هذا الطلب تم تسليمه بنجاح ولا يمكن تعديله.");
+       return;
+    }
     setEditOrderModal(order);
     setEditOrderStatus(order.status || "");
     setEditOrderTracking(order.trackingNumber || "");
     setEditOrderNotes(order.notes || "");
+    setEditOrderShippingCost(order.shippingCost?.toString() || "0");
   };
 
   const handleSaveOrderEdit = async () => {
@@ -921,7 +930,7 @@ export default function AdminDashboard() {
     const res = await fetch("/api/admin/orders", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: editOrderModal.id, status: editOrderStatus, trackingNumber: editOrderTracking, notes: editOrderNotes }),
+      body: JSON.stringify({ id: editOrderModal.id, status: editOrderStatus, trackingNumber: editOrderTracking, notes: editOrderNotes, shippingCost: parseFloat(editOrderShippingCost) }),
     });
     if (res.ok) {
       const updated = await res.json();
@@ -1142,6 +1151,16 @@ export default function AdminDashboard() {
                   value={editOrderTracking}
                   onChange={e => setEditOrderTracking(e.target.value)}
                   placeholder="أدخل رقم التتبع..."
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:border-[#1089A4] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-1.5">تكلفة التوصيل (ج.س)</label>
+                <input
+                  type="number"
+                  value={editOrderShippingCost}
+                  onChange={e => setEditOrderShippingCost(e.target.value)}
+                  placeholder="0"
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:border-[#1089A4] transition-colors"
                 />
               </div>
@@ -1572,6 +1591,7 @@ export default function AdminDashboard() {
                           <th className="p-3 border-l">المسار</th>
                           <th className="p-3 border-l">عرض</th>
                           <th className="p-3 border-l min-w-[120px]">رقم التتبع</th>
+                          <th className="p-3 border-l">التوصيل</th>
                           <th className="p-3 border-l">COD</th>
                           <th className="p-3 border-l">الإجمالي</th>
                           <th className="p-3 border-l min-w-[140px]">البائع</th>
@@ -1625,6 +1645,7 @@ export default function AdminDashboard() {
                                  </button>
                               </td>
                               <td className="p-4 border-l font-mono text-gray-600 font-bold">{order.trackingNumber || "—"}</td>
+                              <td className="p-4 border-l font-black text-gray-700">{order.shippingCost || 0} ج.س</td>
                               <td className="p-4 border-l font-black text-gray-700">{order.paymentMethod === "COD" ? order.totalAmount?.toLocaleString() : 0}</td>
                               <td className="p-4 border-l font-black text-[#1089A4]">{order.totalAmount?.toLocaleString()}</td>
                               <td className="p-4 border-l">

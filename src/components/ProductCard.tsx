@@ -67,22 +67,24 @@ export default function ProductCard({ id, title, price, image, vendor, vendorLoc
       </div>
 
       {/* Quick Actions (Left) */}
-      <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
         <button
           onClick={(e) => { e.preventDefault(); toggleFavorite(id); }}
-          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 focus-visible:ring-2 focus-visible:ring-[#1089A4] focus-visible:outline-none transition-transform"
           title="أضف للمفضلة"
+          aria-label="أضف للمفضلة"
         >
-          <span className={`material-symbols-rounded text-base ${isInFavorites(id) ? "text-red-500 fill-1" : "text-gray-400"}`}>
+          <span aria-hidden="true" className={`material-symbols-rounded text-base ${isInFavorites(id) ? "text-red-500 fill-1" : "text-gray-400"}`}>
             {isInFavorites(id) ? "favorite" : "favorite"}
           </span>
         </button>
         <button
           onClick={(e) => { e.preventDefault(); toggleCompare(id); }}
-          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 focus-visible:ring-2 focus-visible:ring-[#1089A4] focus-visible:outline-none transition-transform"
           title="مقارنة المنتج"
+          aria-label="مقارنة المنتج"
         >
-          <span className={`material-symbols-rounded text-base ${isInCompare(id) ? "text-[#1089A4] font-bold" : "text-gray-400"}`}>
+          <span aria-hidden="true" className={`material-symbols-rounded text-base ${isInCompare(id) ? "text-[#1089A4] font-bold" : "text-gray-400"}`}>
             compare_arrows
           </span>
         </button>

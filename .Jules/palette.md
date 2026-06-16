@@ -1,0 +1,3 @@
+## 2024-05-18 - Making hover-reveal icon actions accessible
+**Learning:** Icon-only action buttons (like Favorite/Compare) nested within `opacity-0 group-hover:opacity-100` containers are invisible to keyboard users who tab through the interface. Furthermore, lacking `aria-label`s and `aria-pressed` states makes them completely ambiguous to screen reader users when their visual state relies purely on color/icon changes.
+**Action:** Always add `focus-within:opacity-100` to the parent container when using hover-based reveals. For icon-only toggle buttons, implement `aria-label`, `title`, and `aria-pressed` based on state, and use `aria-hidden="true"` on the actual icon elements to prevent confusing screen reader ligatures readout.

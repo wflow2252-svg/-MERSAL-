@@ -1,0 +1,3 @@
+## 2026-04-26 - Accessible Hover Actions & Dynamic States
+**Learning:** In Next.js/Tailwind components, using `group-hover:opacity-100` on containers hides actionable items from keyboard navigation. Furthermore, icon-only buttons need `aria-label` and interactive buttons (like Add to Cart) that change state need `aria-live` to announce feedback to screen readers.
+**Action:** Always combine `group-hover:opacity-100` with `focus-within:opacity-100` for containers of actionable items. Add `focus-visible` styles for visible focus rings. Add `aria-label` to icon-only buttons. Add `aria-live="polite"` and `aria-atomic="true"` to dynamic interactive elements like "Add to Cart" to ensure screen reader announcements without interrupting user flow.

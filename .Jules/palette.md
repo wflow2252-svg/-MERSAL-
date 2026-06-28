@@ -1,0 +1,4 @@
+
+## 2024-05-18 - Hover-only Quick Actions Accessibility
+**Learning:** In the `ProductCard` component, Quick Actions (like Favorite and Compare) were wrapped in a container that only became visible on mouse hover (`group-hover:opacity-100`). This made them completely inaccessible to keyboard-only and screen reader users who could focus them, but couldn't see what they were focused on. Furthermore, icon-only buttons lacked proper context.
+**Action:** Always pair hover-based visibility classes (`group-hover:opacity-100`) with focus-within classes (`focus-within:opacity-100`) on the parent container to ensure the actions become visible during keyboard navigation. Use `aria-hidden="true"` on decorative icons and provide dynamic `aria-label`s and `aria-pressed` for icon-only toggle buttons. Add `aria-live="polite"` on actionable buttons that have dynamic text (e.g. "Add to Cart" transitioning to "Added").

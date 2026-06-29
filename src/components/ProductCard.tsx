@@ -67,11 +67,12 @@ export default function ProductCard({ id, title, price, image, vendor, vendorLoc
       </div>
 
       {/* Quick Actions (Left) */}
-      <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
         <button
           onClick={(e) => { e.preventDefault(); toggleFavorite(id); }}
-          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform focus-visible:ring-2 focus-visible:ring-[#1089A4]"
           title="أضف للمفضلة"
+          aria-label={isInFavorites(id) ? "إزالة من المفضلة" : "أضف للمفضلة"}
         >
           <span className={`material-symbols-rounded text-base ${isInFavorites(id) ? "text-red-500 fill-1" : "text-gray-400"}`}>
             {isInFavorites(id) ? "favorite" : "favorite"}
@@ -79,8 +80,9 @@ export default function ProductCard({ id, title, price, image, vendor, vendorLoc
         </button>
         <button
           onClick={(e) => { e.preventDefault(); toggleCompare(id); }}
-          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform focus-visible:ring-2 focus-visible:ring-[#1089A4]"
           title="مقارنة المنتج"
+          aria-label={isInCompare(id) ? "إزالة من المقارنة" : "مقارنة المنتج"}
         >
           <span className={`material-symbols-rounded text-base ${isInCompare(id) ? "text-[#1089A4] font-bold" : "text-gray-400"}`}>
             compare_arrows
@@ -141,7 +143,10 @@ export default function ProductCard({ id, title, price, image, vendor, vendorLoc
               {/* Counter Style Add to Cart */}
               <button
                 onClick={handleAdd}
-                className={`flex items-center justify-center h-10 px-4 rounded-xl font-black text-[11px] transition-all duration-300 shadow-sm grow ml-2 ${
+                disabled={added}
+                aria-live="polite"
+                aria-atomic="true"
+                className={`flex items-center justify-center h-10 px-4 rounded-xl font-black text-[11px] transition-all duration-300 shadow-sm grow ml-2 focus-visible:ring-2 focus-visible:ring-[#1089A4] focus-visible:ring-offset-2 ${
                   added
                     ? "bg-green-600 text-white scale-95"
                     : "bg-[#1089A4] hover:bg-[#0E7A92] text-white hover:shadow-lg hover:-translate-y-0.5"

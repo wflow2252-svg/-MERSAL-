@@ -1,0 +1,3 @@
+## 2024-05-19 - Keyboard Accessibility for Styled Radio Buttons
+**Learning:** Using `hidden` on input elements (like radio buttons) inside custom styled labels removes them completely from the accessibility tree, breaking keyboard navigation (tabbing) and screen reader support.
+**Action:** Always use `sr-only` instead of `hidden` for custom styled inputs. Additionally, pair this with `focus-within:ring-2 focus-within:ring-[brand-color]` on the parent wrapper (like the `<label>`) so that when the invisible `sr-only` input receives keyboard focus, the custom UI visually indicates the focus state.

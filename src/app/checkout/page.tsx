@@ -225,8 +225,8 @@ export default function CheckoutPage() {
                   { value: "BANK_TRANSFER", icon: "account_balance", label: "تحويل بنكي",        sub: "حوّل المبلغ وارفع الإيصال" },
                 ].map(m => (
                   <label key={m.value}
-                    className={`flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${form.paymentMethod === m.value ? "border-[#1089A4] bg-[#1089A4]/5" : "border-gray-200 hover:border-gray-300"}`}>
-                    <input type="radio" name="paymentMethod" value={m.value} checked={form.paymentMethod === m.value} onChange={handleChange} className="hidden" />
+                    className={`flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all focus-within:ring-2 focus-within:ring-[#1089A4] focus-within:ring-offset-1 ${form.paymentMethod === m.value ? "border-[#1089A4] bg-[#1089A4]/5" : "border-gray-200 hover:border-gray-300"}`}>
+                    <input type="radio" name="paymentMethod" value={m.value} checked={form.paymentMethod === m.value} onChange={handleChange} className="sr-only" />
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${form.paymentMethod === m.value ? "bg-[#1089A4] text-white" : "bg-gray-100 text-gray-400"}`}>
                       <span className="material-symbols-rounded text-xl">{m.icon}</span>
                     </div>

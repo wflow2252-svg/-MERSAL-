@@ -55,13 +55,15 @@ export default function StickyCartBar({ product }: { product: Product }) {
            <div className="hidden sm:flex items-center gap-4 border-l border-gray-100 pl-6 ml-0">
               <button 
                 onClick={() => toggleFavorite(product.id)}
-                className={cn("transition-all hover:scale-110", isInFavorites(product.id) ? "text-red-500" : "text-gray-300 hover:text-red-400")}
+                aria-label={isInFavorites(product.id) ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+                className={cn("transition-all hover:scale-110 rounded-full focus-visible:ring-2 focus-visible:ring-[#1089A4] focus-visible:outline-none p-1", isInFavorites(product.id) ? "text-red-500" : "text-gray-300 hover:text-red-400")}
               >
                  <span className={cn("material-symbols-rounded text-xl", isInFavorites(product.id) && "fill-1")}>favorite</span>
               </button>
               <button 
                 onClick={() => toggleCompare(product.id)}
-                className={cn("transition-all hover:scale-110", isInCompare(product.id) ? "text-[#1089A4]" : "text-gray-300 hover:text-blue-400")}
+                aria-label={isInCompare(product.id) ? "إزالة من المقارنة" : "إضافة إلى المقارنة"}
+                className={cn("transition-all hover:scale-110 rounded-full focus-visible:ring-2 focus-visible:ring-[#1089A4] focus-visible:outline-none p-1", isInCompare(product.id) ? "text-[#1089A4]" : "text-gray-300 hover:text-blue-400")}
               >
                  <span className="material-symbols-rounded text-xl">compare_arrows</span>
               </button>

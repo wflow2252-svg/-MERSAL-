@@ -162,7 +162,8 @@ export default function Navbar() {
             />
             <button
               type="submit"
-              className="px-6 flex items-center justify-center text-white/50 hover:text-[#C5A021] transition-colors"
+              aria-label="بحث"
+              className="px-6 flex items-center justify-center text-white/50 hover:text-[#C5A021] transition-colors rounded-lg focus-visible:ring-2 focus-visible:ring-[#1089A4] focus-visible:outline-none"
             >
               <span className="material-symbols-rounded text-2xl">search</span>
             </button>
@@ -363,7 +364,11 @@ export default function Navbar() {
             >
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-xl font-black">أقسام مرسال</h3>
-                <button onClick={() => setShowCategories(false)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10">
+                <button
+                  onClick={() => setShowCategories(false)}
+                  aria-label="إغلاق القائمة"
+                  className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-[#1089A4] focus-visible:outline-none"
+                >
                   <span className="material-symbols-rounded">close</span>
                 </button>
               </div>

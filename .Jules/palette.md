@@ -1,0 +1,3 @@
+## 2024-07-06 - Modal Dialog Keyboard Accessibility
+**Learning:** In highly interactive custom modals (like `AddProductModal.tsx`), icon-only action buttons (close, remove image, delete item) are frequently missed during keyboard navigation if they rely solely on hover states for visibility or lack descriptive labels for screen readers. Using `hidden` on file inputs breaks accessibility entirely.
+**Action:** When adding or auditing icon-only buttons, always ensure they have an `aria-label` and a visible focus state (e.g., `focus-visible:ring-2`). For custom styled file uploads, never use `hidden`; instead, use Tailwind's `sr-only` on the input and apply `focus-within` styles to the parent container to maintain keyboard navigability.

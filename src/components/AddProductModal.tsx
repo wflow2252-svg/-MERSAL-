@@ -184,7 +184,11 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                 <p className="text-[10px] text-[#F29124] font-black uppercase tracking-widest mt-1">سيخضع المنتج لمراجعة الإدارة والموافقة البرمجية</p>
               </div>
             </div>
-            <button onClick={onClose} className="p-4 hover:bg-muted rounded-2xl transition-all group">
+            <button
+              onClick={onClose}
+              aria-label="إغلاق"
+              className="p-4 hover:bg-muted rounded-2xl transition-all group focus-visible:ring-2 focus-visible:ring-[#1089A4] outline-none"
+            >
               <span className="material-symbols-rounded text-2xl text-foreground/20 group-hover:text-red-500 transition-colors">close</span>
             </button>
           </div>
@@ -404,7 +408,8 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                           <img src={src} alt="Preview" className="w-full h-full object-cover" />
                           <button 
                             onClick={(e) => { e.preventDefault(); removeFile(idx); }}
-                            className="absolute top-2 left-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                            aria-label="إزالة الصورة"
+                            className="absolute top-2 left-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 focus:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#1089A4] outline-none transition-opacity shadow-lg"
                           >
                             <span className="material-symbols-rounded text-sm">close</span>
                           </button>
@@ -413,13 +418,13 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                     </div>
                   )}
 
-                  <label className="cursor-pointer group block">
+                  <label className="cursor-pointer group block focus-within:ring-2 focus-within:ring-[#1089A4] focus-within:ring-offset-2 rounded-[2.5rem] outline-none transition-all">
                     <input 
                       type="file" 
                       multiple 
                       accept="image/*" 
                       onChange={handleFileChange} 
-                      className="hidden" 
+                      className="sr-only"
                     />
                     <div className="border-4 border-dashed border-[#1089A4]/20 rounded-[2.5rem] flex flex-col items-center justify-center p-10 bg-[#1089A4]/5 group-hover:bg-[#1089A4]/10 group-hover:border-[#1089A4]/40 transition-all">
                       <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-xl mb-4 group-hover:scale-110 transition-transform">
@@ -476,7 +481,8 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                            </div>
                            <button 
                              onClick={() => setBundleItems(bundleItems.filter((_, i) => i !== idx))}
-                             className="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all"
+                             aria-label="حذف المكون"
+                             className="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all focus-visible:ring-2 focus-visible:ring-[#1089A4] outline-none"
                            >
                               <span className="material-symbols-rounded text-sm">delete</span>
                            </button>

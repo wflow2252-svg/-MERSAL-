@@ -72,6 +72,7 @@ export default function ProductCard({ id, title, price, image, vendor, vendorLoc
           onClick={(e) => { e.preventDefault(); toggleFavorite(id); }}
           className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
           title="أضف للمفضلة"
+          aria-label="أضف للمفضلة"
         >
           <span className={`material-symbols-rounded text-base ${isInFavorites(id) ? "text-red-500 fill-1" : "text-gray-400"}`}>
             {isInFavorites(id) ? "favorite" : "favorite"}
@@ -81,6 +82,7 @@ export default function ProductCard({ id, title, price, image, vendor, vendorLoc
           onClick={(e) => { e.preventDefault(); toggleCompare(id); }}
           className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
           title="مقارنة المنتج"
+          aria-label="مقارنة المنتج"
         >
           <span className={`material-symbols-rounded text-base ${isInCompare(id) ? "text-[#1089A4] font-bold" : "text-gray-400"}`}>
             compare_arrows

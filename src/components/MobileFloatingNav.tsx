@@ -3,15 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/lib/CartContext";
 
 export default function MobileFloatingNav() {
   const pathname = usePathname();
+  const { cartCount } = useCart();
 
   const navItems = [
     { label: "الرئيسية", icon: "home", href: "/" },
     { label: "الأقسام", icon: "grid_view", href: "/categories" },
     { label: "البحث", icon: "search", href: "/search" },
-    { label: "السلة", icon: "shopping_cart", href: "/cart", count: 0 },
+    { label: "السلة", icon: "shopping_cart", href: "/cart", count: cartCount },
     { label: "حسابي", icon: "person", href: "/login" },
   ];
 
@@ -25,6 +27,8 @@ export default function MobileFloatingNav() {
               key={i} 
               href={item.href}
               className="relative flex flex-col items-center gap-1 group"
+              aria-label={item.label}
+              aria-current={isActive ? "page" : undefined}
             >
               <div className={cn(
                 "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500",

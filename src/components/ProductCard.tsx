@@ -70,17 +70,21 @@ export default function ProductCard({ id, title, price, image, vendor, vendorLoc
       <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={(e) => { e.preventDefault(); toggleFavorite(id); }}
-          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
-          title="أضف للمفضلة"
+          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform focus-visible:ring-2 focus-visible:ring-[#1089A4] focus:outline-none"
+          title={isInFavorites(id) ? "إزالة من المفضلة" : "أضف للمفضلة"}
+          aria-label={isInFavorites(id) ? "إزالة من المفضلة" : "أضف للمفضلة"}
+          aria-pressed={isInFavorites(id)}
         >
           <span className={`material-symbols-rounded text-base ${isInFavorites(id) ? "text-red-500 fill-1" : "text-gray-400"}`}>
-            {isInFavorites(id) ? "favorite" : "favorite"}
+            favorite
           </span>
         </button>
         <button
           onClick={(e) => { e.preventDefault(); toggleCompare(id); }}
-          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
-          title="مقارنة المنتج"
+          className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform focus-visible:ring-2 focus-visible:ring-[#1089A4] focus:outline-none"
+          title={isInCompare(id) ? "إزالة من المقارنة" : "مقارنة المنتج"}
+          aria-label={isInCompare(id) ? "إزالة من المقارنة" : "مقارنة المنتج"}
+          aria-pressed={isInCompare(id)}
         >
           <span className={`material-symbols-rounded text-base ${isInCompare(id) ? "text-[#1089A4] font-bold" : "text-gray-400"}`}>
             compare_arrows

@@ -1,0 +1,3 @@
+## 2026-04-21 - Focus Within Opacity for Hidden Elements
+**Learning:** When hiding elements (like icon buttons or toolbars) with `opacity-0` that appear on `group-hover:opacity-100`, they become completely invisible to keyboard users who navigate via Tab. They can be focused but they will remain at opacity-0 unless hovered over with a mouse, making the interface inaccessible for screen-reader and keyboard-only users.
+**Action:** Always add `focus-within:opacity-100` alongside `group-hover:opacity-100` to containers that wrap interactive elements to ensure they visually appear when one of their descendants receives keyboard focus.

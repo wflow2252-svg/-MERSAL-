@@ -1,0 +1,3 @@
+## 2026-04-22 - Missing focus visibility for hover-only quick actions
+**Learning:** Hover-only hidden controls (like quick actions revealed on `group-hover:opacity-100`) become inaccessible to keyboard users because focusing on the hidden children doesn't make the parent visible without `focus-within:opacity-100`. Additionally, icon-only toggle buttons need `aria-pressed` to reflect boolean toggle state for screen readers.
+**Action:** Always combine `group-hover:opacity-100` with `focus-within:opacity-100` on containers of interactive elements. Add explicit `aria-pressed` to toggle-based icon buttons instead of relying solely on titles or color changes.

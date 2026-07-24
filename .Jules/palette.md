@@ -1,0 +1,3 @@
+## 2026-04-23 - Focus-within visibility for hidden actionable items
+**Learning:** When hiding actionable items (like favorite/compare buttons on product cards) behind a hover state (`group-hover:opacity-100`), keyboard-only users and screen readers cannot access or see these items because tabbing into them doesn't trigger the hover state.
+**Action:** Always add `focus-within:opacity-100` alongside `group-hover:opacity-100` on the container so that when a nested interactive element receives keyboard focus, the entire container becomes visible. Also ensure the interactive elements themselves have proper `aria-label`, `aria-pressed` (for toggles), and clear `focus-visible` styles.

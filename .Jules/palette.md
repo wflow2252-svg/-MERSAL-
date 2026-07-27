@@ -1,0 +1,3 @@
+## 2026-04-22 - Improved Keyboard and Screen Reader Accessibility in Interactive Cards
+**Learning:** Hidden interactive elements (e.g., using `group-hover:opacity-100` on containers) can block keyboard users from seeing what they have focused on. Screen readers also need explicit toggle state mapping on icon buttons and assertive announcements on temporary state changes (like adding items to cart).
+**Action:** Always combine `focus-within:opacity-100` with `group-hover:opacity-100` to reveal interactive containers when tab-navigating. Use explicit `aria-pressed` on toggle buttons instead of relying solely on tooltips or colors. Use `aria-live="polite"` on buttons that temporarily flip state (e.g. "Added to cart" checkmarks).

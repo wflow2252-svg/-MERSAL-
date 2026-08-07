@@ -1,0 +1,3 @@
+## 2025-08-07 - Accessible Icon Action Overlays
+**Learning:** In Next.js product card implementations, quick action overlays (like favorite/compare) that rely purely on `group-hover:opacity-100` are completely invisible to keyboard navigators, making core actions inaccessible. Also, icon buttons that act as toggles (add/remove favorite) need `aria-pressed` rather than just a static `aria-label` to communicate their active state correctly.
+**Action:** When implementing hidden quick actions, always combine `group-hover` with `focus-within:opacity-100` on the parent container. For stateful icon buttons, always manage `aria-pressed` mirroring the active state, and use explicit focus rings (e.g. `focus-visible:ring-2`) to guide the user's eye when tabbing.

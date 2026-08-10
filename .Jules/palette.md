@@ -1,0 +1,3 @@
+## 2026-04-10 - Make Product Card Hover Actions Accessible
+**Learning:** Hover-only actions on product cards (like Favorite or Compare) are inaccessible to keyboard users unless explicitly revealed on focus. Additionally, toggle buttons (like favoriting or comparing) need `aria-pressed` to convey state correctly to screen readers, rather than just relying on title attributes or icons.
+**Action:** Always add `focus-within:opacity-100` (or similar utility classes) to parent containers that hide action groups, and ensure individual buttons have `aria-label`, `aria-pressed`, and clear focus indicators like `focus-visible:ring-2`.

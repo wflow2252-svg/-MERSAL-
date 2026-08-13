@@ -1,0 +1,3 @@
+## 2024-08-13 - Product Card Quick Actions Accessibility
+**Learning:** Icon-only buttons that are only revealed via CSS hover states (`opacity-0 group-hover:opacity-100`) become invisible traps for keyboard-only users because they receive focus but remain visually hidden. Furthermore, icon-only buttons need explicit `aria-label`s and state indicators like `aria-pressed` for screen readers.
+**Action:** When hiding functional actions behind a hover state on a parent container, always pair it with `focus-within:opacity-100` so they appear during sequential keyboard navigation. Add appropriate ARIA labels to icon buttons and `focus-visible` rings for clear focus indication.

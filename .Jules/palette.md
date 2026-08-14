@@ -1,0 +1,3 @@
+## 2024-08-14 - Improve Quick Action Accessibility and Dynamic Announcements
+**Learning:** Hidden action menus relying on `group-hover` create a complete blocker for keyboard-only users, as they never gain focus. Additionally, icon-only toggle buttons need `aria-pressed` for clear state communication. Dynamic status changes (like "Added to Cart") must be wrapped in `aria-live` to ensure screen readers announce the success state without forcing a focus change.
+**Action:** Always apply `focus-within:opacity-100` alongside `group-hover:opacity-100` for container menus with interactive children. Add `aria-pressed` to boolean toggle buttons. Wrap dynamically changing inner text (e.g. success states) with `aria-live="polite"` and `aria-atomic="true"`.

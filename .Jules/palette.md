@@ -1,0 +1,3 @@
+## 2024-05-14 - Interactive Icon Buttons in Next.js Products
+**Learning:** By default, dynamic overlay actions (like Favorite and Compare buttons) in `ProductCard` are styled only with `group-hover:opacity-100`, making them completely invisible and inaccessible to keyboard users tabbing through the document.
+**Action:** Always pair `group-hover:opacity-100` with `focus-within:opacity-100` on the parent container of overlay actions to ensure they become visible when an element inside receives keyboard focus. Furthermore, explicitly add `focus-visible:ring-2` to the buttons themselves so the focus state is clearly identifiable.

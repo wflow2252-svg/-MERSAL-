@@ -1,0 +1,3 @@
+## 2024-08-18 - Missing ARIA Labels in Interactive Elements
+**Learning:** Found several interactable buttons such as "Add to Cart", "Favorite", and "Compare" in ProductCard that rely entirely on titles or inner text, occasionally missing critical accessibility attributes like `aria-label`, `aria-pressed`, or `focus-visible`. Since this application serves RTL users, maintaining explicit focus states and appropriate localized ARIA attributes is key.
+**Action:** Always ensure icon-only buttons include `aria-label`, correct focus rings (`focus-visible:ring-2 focus-visible:ring-[#1089A4]`), and use `aria-pressed` for toggle states rather than assuming visual states alone convey the intent.

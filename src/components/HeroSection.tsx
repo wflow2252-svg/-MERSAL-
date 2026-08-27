@@ -123,7 +123,9 @@ export default function HeroSection() {
             <button
               key={i}
               onClick={() => changeSlide(i)}
-              className={cn("h-1.5 rounded-full transition-all duration-300", i === active ? "w-8 bg-[#C5A021]" : "w-4 bg-white/30")}
+              aria-label={"Go to slide " + (i + 1)}
+              aria-current={i === active ? "true" : undefined}
+              className={cn("h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C5A021] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent", i === active ? "w-8 bg-[#C5A021]" : "w-4 bg-white/30")}
             />
           ))}
         </div>
@@ -131,15 +133,17 @@ export default function HeroSection() {
         {/* Arrow Navigation */}
         <button
           onClick={() => changeSlide((active - 1 + SLIDES.length) % SLIDES.length)}
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full border border-white/20 flex items-center justify-center transition-all"
+          aria-label="Previous slide"
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full border border-white/20 flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C5A021]"
         >
-          <span className="material-symbols-rounded">chevron_right</span>
+          <span className="material-symbols-rounded" aria-hidden="true">chevron_right</span>
         </button>
         <button
           onClick={() => changeSlide((active + 1) % SLIDES.length)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full border border-white/20 flex items-center justify-center transition-all"
+          aria-label="Next slide"
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full border border-white/20 flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C5A021]"
         >
-          <span className="material-symbols-rounded">chevron_left</span>
+          <span className="material-symbols-rounded" aria-hidden="true">chevron_left</span>
         </button>
       </div>
 

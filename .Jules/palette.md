@@ -1,0 +1,3 @@
+## 2024-05-18 - Discovering Focus Visibility Issue on Group-Hover Action Buttons
+**Learning:** Found an accessibility issue where action buttons (like favorite/compare) that appear only on `group-hover` remain completely invisible to keyboard-only users who use the `Tab` key to navigate, rendering core features inaccessible without a mouse. The issue stems from the parent container missing a `focus-within` styling clause to trigger the same visibility logic.
+**Action:** When creating 'Quick Actions' overlays that use `opacity-0 group-hover:opacity-100` to hide buttons by default, you must *always* pair the hover class with `focus-within:opacity-100` on the container to ensure those buttons become visible when a user tabs into them.

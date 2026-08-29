@@ -1,0 +1,3 @@
+## 2024-08-29 - Focus-within on hidden action containers
+**Learning:** In list-view components (like `ProductCard`) where action buttons are hidden by default using `opacity-0` and revealed on hover (`group-hover:opacity-100`), keyboard accessibility is fundamentally broken because screen reader and keyboard-only users cannot "hover".
+**Action:** When implementing hidden quick actions, always combine `group-hover:opacity-100` with `focus-within:opacity-100` on the parent container. This ensures that when a keyboard user tabs into any element within the container, the entire action group becomes visibly accessible. Also, manually verify that focus styles (e.g., `focus-visible:ring-*`) are applied to the buttons themselves, as hidden items often lack focus indicators.

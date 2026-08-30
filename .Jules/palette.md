@@ -1,0 +1,3 @@
+## 2026-08-30 - Accessible Interactive Overlays
+**Learning:** When using `opacity-0 group-hover:opacity-100` to hide interactive elements (like quick action buttons) until hover, those elements become effectively invisible to keyboard-only users who navigate via the Tab key, causing them to focus on elements they cannot see.
+**Action:** Always pair `group-hover:opacity-100` with `focus-within:opacity-100` on the parent container (or `focus:opacity-100` on the element itself) to ensure hidden actions become visible when they receive keyboard focus. Additionally, ensure all interactive elements have visible focus rings (`focus-visible:ring-2 focus-visible:outline-none`) and icon-only toggle buttons have `aria-label` and `aria-pressed` states.

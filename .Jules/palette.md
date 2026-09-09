@@ -1,0 +1,3 @@
+## 2024-09-09 - Product Card Quick Actions Accessibility
+**Learning:** Icon-only buttons that only appear on `group-hover` are completely inaccessible to keyboard users unless the parent container also responds to `focus-within`. Additionally, toggle states (like favorites or compare) need both `aria-label` (re-using the verified localized text from `title` attributes) and `aria-pressed` to communicate properly to screen readers.
+**Action:** When adding hover-revealed icon actions on cards, ensure the container includes `focus-within:opacity-100` and the buttons include `focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-[BRAND_COLOR]` alongside the necessary ARIA attributes for toggle states.

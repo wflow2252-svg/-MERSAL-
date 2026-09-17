@@ -1,0 +1,3 @@
+## 2024-11-20 - Ensure Tooltip Availability on Icon-only Buttons via Focus Visibility
+**Learning:** Tooltips acting as primary descriptors (or aria labels referencing toggled states) for icon-only action buttons are inaccessible to keyboard and screen reader users if the container's visibility is tied strictly to mouse interactions (like `group-hover`).
+**Action:** When adding hover-based action overlays (e.g., favorite/compare toggles over an image), always ensure the container logic pairs `group-hover:opacity-100` with `focus-within:opacity-100` to allow the actions to become visible and interpretable when navigating via keyboard `Tab`.

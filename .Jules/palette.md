@@ -1,0 +1,4 @@
+
+## 2024-05-18 - Added Screen Reader/Keyboard accessibility for ProductCard interactive elements
+**Learning:** Found an app-specific pattern where quick action buttons inside absolute-positioned overlay layers (which only become visible on group-hover) can become totally invisible to keyboard-only users who tab to them. Screen reader also won't know when things change state or how to use them without additional elements.
+**Action:** Always add `focus-within:opacity-100` alongside `group-hover:opacity-100` so hidden layers show up when child elements are tabbed into. Make sure icon buttons reflect toggle states using `aria-pressed`. Also, dynamic visual changes like an "Added to Cart" state need `aria-live="polite"` so screen readers read out the temporary state switch without needing focus.

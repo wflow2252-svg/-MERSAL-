@@ -1,0 +1,3 @@
+## 2024-05-20 - Product Card Action Buttons Accessibility
+**Learning:** Icon-only buttons revealed via hover states (like favorite/compare actions on product cards) are completely inaccessible to keyboard users unless explicitly managed. Furthermore, stateful toggle icons require `aria-pressed` to convey their active state to assistive technologies, as the visual change (color or filled icon) is not announced.
+**Action:** Always ensure hover-revealed containers include `focus-within:opacity-100` so focusable elements inside them become visible when tabbed to. For stateful icon buttons, always apply `aria-pressed` alongside `aria-label`.

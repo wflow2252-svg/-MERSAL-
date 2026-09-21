@@ -1,0 +1,3 @@
+## 2026-04-21 - Accessible Toggle Buttons in Hover Containers
+**Learning:** When interactive elements (like favorite or compare buttons) are inside containers that only show on hover (`group-hover:opacity-100`), they are invisible to keyboard users when tabbing. Additionally, icon-only toggle buttons need `aria-pressed` to communicate their active/inactive state to screen readers.
+**Action:** Always add `focus-within:opacity-100` to hover-revealed containers so they become visible when their children receive keyboard focus. For icon-only toggles, always include `aria-label`, `aria-pressed`, and explicit focus rings (`focus-visible:ring-2 focus-visible:outline-none`).

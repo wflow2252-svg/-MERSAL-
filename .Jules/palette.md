@@ -1,0 +1,3 @@
+## 2026-04-23 - Accessibility for Quick Actions
+**Learning:** Icon-only buttons for favorite and compare actions currently lack ARIA labels, focus-visible states, and rely solely on `title` attributes (which are insufficient for screen readers and touch users). Furthermore, toggle state should use `aria-pressed`.
+**Action:** Enhance the favorite and compare icon buttons in `ProductCard.tsx` with proper `aria-label`, `aria-pressed`, and `focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-[#1089A4]` styles for robust keyboard and screen-reader accessibility. Ensure the parent container supports keyboard navigation by adding `focus-within:opacity-100`.

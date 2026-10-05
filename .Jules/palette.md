@@ -1,0 +1,3 @@
+## 2024-05-18 - Improved Keyboard Navigation in Hover Contexts
+**Learning:** Container components that rely solely on `opacity-0 group-hover:opacity-100` hide nested actionable elements from keyboard-only and screen reader users because tabbing into them does not trigger the hover state.
+**Action:** When hiding interactive child elements (like quick-action buttons) behind a container hover state, always pair it with `focus-within:opacity-100` on the container so the buttons become visible when they receive keyboard focus. Additionally, ensure icon-only buttons include explicit `aria-label`s and visible focus states (e.g., `focus-visible:ring-2`) to provide necessary context and visual feedback during sequential navigation.

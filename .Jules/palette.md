@@ -1,0 +1,3 @@
+## 2024-05-18 - ProductCard Icon Buttons A11y and Focus State
+**Learning:** Hidden actionable items (`opacity-0`) inside components like ProductCard prevent keyboard-only users from discovering or interacting with them unless `focus-within:opacity-100` is applied. Furthermore, icon-only toggle buttons need `aria-pressed` in addition to `aria-label` to communicate state changes to screen readers properly.
+**Action:** When hiding icon-only action buttons until hover, always pair `group-hover:opacity-100` with `focus-within:opacity-100` on the container. Ensure the buttons themselves use `aria-label` (derived from their localized `title` text), `aria-pressed` for toggle states, and explicit `focus-visible:ring-2 focus-visible:outline-none` styles.

@@ -1,0 +1,3 @@
+## 2024-05-15 - Interactive Overlay Buttons Needs Focus States & ARIA Attributes
+**Learning:** Icon-only buttons revealed on hover (`group-hover:opacity-100`) often lack both an explicit ARIA label (instead relying on the `title` attribute) and focus styles (making them inaccessible via keyboard navigation). Additionally, the parent container may need `focus-within:opacity-100` so the hidden items become visible on keyboard focus.
+**Action:** When working on hover-reveal elements in this system, ensure both `aria-label` and focus visibility (`focus-visible:ring-2 focus-visible:outline-none`) are included. Also ensure the parent container properly shows the nested items when focused.

@@ -1,0 +1,3 @@
+## 2024-10-26 - Accessible Hover Actions
+**Learning:** The app's design system uses `opacity-0 group-hover:opacity-100` to hide quick actions (like favorite/compare) until hovered, making them inaccessible to keyboard users. Additionally, Arabic localization requires careful reuse of existing tooltips instead of creating new text.
+**Action:** Always pair `group-hover:opacity-100` with `focus-within:opacity-100` on the container, add custom focus rings (`focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-[#1089A4]`), and use `aria-pressed` with existing localized text for toggle states.

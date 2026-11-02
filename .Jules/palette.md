@@ -1,0 +1,3 @@
+## 2026-04-24 - Keyboard accessibility for hidden actions
+**Learning:** Actions hidden behind opacity (e.g., `opacity-0 group-hover:opacity-100`) become inaccessible to keyboard users unless `focus-within:opacity-100` is also applied. Furthermore, icon-only toggle buttons require `aria-pressed` to reflect their boolean state to screen readers.
+**Action:** Always pair `group-hover:opacity-100` with `focus-within:opacity-100` on containers holding interactive elements, and use `aria-pressed` for boolean toggles along with explicit focus outlines (`focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-[#1089A4]`).

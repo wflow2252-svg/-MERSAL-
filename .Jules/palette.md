@@ -1,0 +1,3 @@
+## 2024-05-23 - Toggle-Based Icon Buttons Accessibility
+**Learning:** Relying solely on `title` attributes for icon-only toggle buttons and visually hiding them via `opacity-0` without `focus-within:opacity-100` causes keyboard navigation and screen reader issues, rendering the actions unreachable for some users.
+**Action:** Always pair `group-hover:opacity-100` with `focus-within:opacity-100` on containers hiding actionable items. Use `aria-pressed` to communicate active/inactive states for toggle buttons, `aria-label` for screen reader text, and explicit `focus-visible:ring-2` styling for keyboard navigation.

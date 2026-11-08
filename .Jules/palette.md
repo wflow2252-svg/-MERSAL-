@@ -1,0 +1,3 @@
+## 2024-11-08 - ProductCard Quick Actions Accessibility
+**Learning:** Icon buttons that only appear on hover (`group-hover:opacity-100`) are invisible to keyboard users unless their container also responds to focus (`focus-within:opacity-100`). Without explicit `aria-pressed` states, toggle buttons do not communicate their active/inactive status to screen readers.
+**Action:** Always apply `focus-within:opacity-100` to containers of hover-revealed actionable items. For toggle buttons, explicitly set `aria-pressed` to reflect boolean state and provide `aria-label` matching the visual tooltip. Ensure explicit focus rings (e.g., `focus-visible:ring-2`) are used for keyboard navigability.
